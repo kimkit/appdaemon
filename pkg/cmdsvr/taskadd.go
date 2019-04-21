@@ -166,6 +166,15 @@ func (job *taskJob) ExecHandler(_job *jobctl.Job) {
 }
 
 func (job *taskJob) ExitHandler(_job *jobctl.Job) {
+	if job.expr != nil {
+		for i := 0; i < common.Config.StopTimeout*10; i++ {
+			if job.proc.IsRunning() {
+				time.Sleep(time.Millisecond * 100)
+			} else {
+				break
+			}
+		}
+	}
 	for {
 		if err := job.proc.Signal(syscall.SIGTERM); err != nil {
 			common.Logger.LogError("cmdsvr.taskJob.ExitHandler", "%v (%s)", err, common.JobManager.GetJobName(_job))

@@ -1,7 +1,6 @@
 package cmdsvr
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/kimkit/appdaemon/pkg/common"
@@ -36,9 +35,7 @@ func init() {
 
 func Run() {
 	if common.Config.Daemon {
-		logFile := fmt.Sprintf("%s/appdaemon.log", common.Config.LogsDir)
-		pidFile := fmt.Sprintf("%s/appdaemon.pid", common.Config.LogsDir)
-		daemon.Daemon(logFile, pidFile)
+		daemon.Daemon(common.Config.LogFile, common.Config.PidFile)
 	}
 	common.JobManager.LoadJobs(common.Config.JobsFile, func(info []interface{}) error {
 		return common.Client.Do(info...).Err()
