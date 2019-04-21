@@ -94,7 +94,7 @@ type taskJob struct {
 
 func getTaskOutputFile(job *jobctl.Job) string {
 	return fmt.Sprintf(
-		"%s%c%s.ouput",
+		"%s%c%s.output",
 		common.Config.LogsDir,
 		os.PathSeparator,
 		common.JobManager.GetJobName(job),
