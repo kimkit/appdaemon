@@ -20,6 +20,8 @@ github.com/kimkit/logger v0.0.0-20190421055409-d37049967e09 h1:eF6DWjsejeJlKiQ4T
 github.com/kimkit/logger v0.0.0-20190421055409-d37049967e09/go.mod h1:qXlcMTBomo44LOfgpk7beqY5RFvjQO/MKwpU+tRsiKg=
 github.com/kimkit/proctl v0.0.0-20190418140359-2f0a3093bd20 h1:04P4MNCr9RMp2b0ZNti5DOvxLY/vMFnE7zrdYGgY88I=
 github.com/kimkit/proctl v0.0.0-20190418140359-2f0a3093bd20/go.mod h1:u0lPj6IrMcBD8KTTl6L2Lx2/G2nSjRrkvHlj/OBsdV8=
+github.com/kimkit/proctl v0.0.0-20190421063323-f7d3ecf97d21 h1:c9nbidxDnJADmgT46T2qD1AfAEmTDCoO/F8naqGjoUM=
+github.com/kimkit/proctl v0.0.0-20190421063323-f7d3ecf97d21/go.mod h1:u0lPj6IrMcBD8KTTl6L2Lx2/G2nSjRrkvHlj/OBsdV8=
 github.com/kimkit/redsvr v0.0.0-20190327070501-e1cdea9134f0/go.mod h1:MO6vIkHBYjqf9aEXct+EBuSrP6R9pb5W2xBM4tt0Gns=
 github.com/kimkit/redsvr v0.0.0-20190409021028-880cbd6a0195 h1:5b2d0gKYbp6LqjknAhOztfm5EPK0W3IoUsfXnXKHr54=
 github.com/kimkit/redsvr v0.0.0-20190409021028-880cbd6a0195/go.mod h1:MO6vIkHBYjqf9aEXct+EBuSrP6R9pb5W2xBM4tt0Gns=

@@ -9,6 +9,6 @@ require (
 	github.com/kimkit/jobctl v0.0.0-20190409020851-262d222c1b93
 	github.com/kimkit/jobext v0.0.0-20190401071046-e9837a0dc011
 	github.com/kimkit/logger v0.0.0-20190421055409-d37049967e09
-	github.com/kimkit/proctl v0.0.0-20190418140359-2f0a3093bd20
+	github.com/kimkit/proctl v0.0.0-20190421063323-f7d3ecf97d21
 	github.com/kimkit/redsvr v0.0.0-20190409021028-880cbd6a0195
 )
