@@ -134,7 +134,7 @@ func (job *taskJob) ExecHandler(_job *jobctl.Job) {
 		if now.Unix() >= job.next.Unix() {
 			job.next = job.expr.Next(now)
 			if err := job.proc.Run(); err != nil {
-				redsvr.Log("ERROR", "cmdsvr.taskJob.ExecHandler: %v (%s)", err, common.JobManager.GetJobName(_job))
+				common.Logger.LogError("cmdsvr.taskJob.ExecHandler", "%v (%s)", err, common.JobManager.GetJobName(_job))
 			}
 		}
 		return
@@ -152,7 +152,7 @@ func (job *taskJob) ExecHandler(_job *jobctl.Job) {
 			} else {
 				if int(now.Unix())-status > common.Config.ReportInterval {
 					if err := job.proc.Kill(); err != nil {
-						redsvr.Log("ERROR", "cmdsvr.taskJob.ExecHandler: %v (%s)", err, common.JobManager.GetJobName(_job))
+						common.Logger.LogError("cmdsvr.taskJob.ExecHandler", "%v (%s)", err, common.JobManager.GetJobName(_job))
 					}
 					return
 				}
@@ -161,14 +161,14 @@ func (job *taskJob) ExecHandler(_job *jobctl.Job) {
 	}
 
 	if err := job.proc.Run(); err != nil {
-		redsvr.Log("ERROR", "cmdsvr.taskJob.ExecHandler: %v (%s)", err, common.JobManager.GetJobName(_job))
+		common.Logger.LogError("cmdsvr.taskJob.ExecHandler", "%v (%s)", err, common.JobManager.GetJobName(_job))
 	}
 }
 
 func (job *taskJob) ExitHandler(_job *jobctl.Job) {
 	for {
 		if err := job.proc.Signal(syscall.SIGTERM); err != nil {
-			redsvr.Log("ERROR", "cmdsvr.taskJob.ExitHandler: %v (%s)", err, common.JobManager.GetJobName(_job))
+			common.Logger.LogError("cmdsvr.taskJob.ExitHandler", "%v (%s)", err, common.JobManager.GetJobName(_job))
 			time.Sleep(time.Millisecond * 100)
 		} else {
 			break
@@ -183,7 +183,7 @@ func (job *taskJob) ExitHandler(_job *jobctl.Job) {
 	}
 	for {
 		if err := job.proc.Kill(); err != nil {
-			redsvr.Log("ERROR", "cmdsvr.taskJob.ExitHandler: %v (%s)", err, common.JobManager.GetJobName(_job))
+			common.Logger.LogError("cmdsvr.taskJob.ExitHandler", "%v (%s)", err, common.JobManager.GetJobName(_job))
 			time.Sleep(time.Millisecond * 100)
 		} else {
 			break
@@ -198,7 +198,7 @@ func (job *taskJob) ExitHandler(_job *jobctl.Job) {
 	}
 	if err := os.Remove(getTaskStatusFile(_job)); err != nil {
 		if !os.IsNotExist(err) {
-			redsvr.Log("ERROR", "cmdsvr.taskJob.ExitHandler: %v (%s)", err, common.JobManager.GetJobName(_job))
+			common.Logger.LogError("cmdsvr.taskJob.ExitHandler", "%v (%s)", err, common.JobManager.GetJobName(_job))
 		}
 	}
 	common.JobManager.DestroyJob(_job)

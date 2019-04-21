@@ -8,6 +8,7 @@ import (
 	"github.com/go-redis/redis"
 	"github.com/kimkit/config"
 	"github.com/kimkit/jobext"
+	"github.com/kimkit/logger"
 	"github.com/kimkit/redsvr"
 )
 
@@ -24,6 +25,7 @@ var (
 	JobManager = jobext.NewJobManager()
 	Cmdsvr     = redsvr.NewServer()
 	Client     *redis.Client
+	Logger     = logger.NewLogger()
 )
 
 func init() {
@@ -41,7 +43,7 @@ func init() {
 		Config.LogsDir = ".logs"
 	}
 	if err := os.MkdirAll(Config.LogsDir, 0755); err != nil {
-		redsvr.Log("ERROR", "common.init: %v (%s)", err, Config.LogsDir)
+		Logger.LogError("common.init", "%v (%s)", err, Config.LogsDir)
 	}
 	if Config.ReportInterval <= 0 {
 		Config.ReportInterval = 10

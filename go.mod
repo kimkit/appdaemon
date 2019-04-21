@@ -8,6 +8,7 @@ require (
 	github.com/kimkit/daemon v0.0.0-20190311070945-72a1e459e89d
 	github.com/kimkit/jobctl v0.0.0-20190409020851-262d222c1b93
 	github.com/kimkit/jobext v0.0.0-20190401071046-e9837a0dc011
+	github.com/kimkit/logger v0.0.0-20190421055409-d37049967e09
 	github.com/kimkit/proctl v0.0.0-20190418140359-2f0a3093bd20
 	github.com/kimkit/redsvr v0.0.0-20190409021028-880cbd6a0195
 )

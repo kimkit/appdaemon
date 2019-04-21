@@ -15,7 +15,7 @@ func authHandler(cmd *redsvr.Command, args []string, conn *redsvr.Conn) error {
 		if err := cmdlib.CheckAuth(conn); err != nil {
 			return err
 		}
-		redsvr.Log("INFO", "(%s) %s %s", cmdlib.GetAuthUser(conn), cmd.Name, strings.Join(args, " "))
+		common.Logger.LogInfo("cmdsvr.authHandler", "(%s) %s %s", cmdlib.GetAuthUser(conn), cmd.Name, strings.Join(args, " "))
 	}
 	return nil
 }
