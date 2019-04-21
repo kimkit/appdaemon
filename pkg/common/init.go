@@ -13,7 +13,7 @@ import (
 
 var (
 	Config = struct {
-		Daemon         bool     `json:daemon`
+		Daemon         bool     `json:"daemon"`
 		Addr           string   `json:"addr"`
 		Passwords      []string `json:"passwords"`
 		JobsFile       string   `json:"jobsfile"`
