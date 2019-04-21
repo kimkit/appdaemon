@@ -21,6 +21,7 @@ func authHandler(cmd *redsvr.Command, args []string, conn *redsvr.Conn) error {
 }
 
 func init() {
+	common.Cmdsvr.Register(cmdlib.NewPingCommand("ping", nil))
 	common.Cmdsvr.Register(cmdlib.NewEchoCommand("echo", nil))
 	common.Cmdsvr.Register(cmdlib.NewAuthCommand("auth", common.Config.Passwords))
 	common.Cmdsvr.Register(cmdlib.NewJobListCommand("job.list", authHandler, common.JobManager))
