@@ -39,7 +39,7 @@ func init() {
 		Config.Addr += ":6380"
 	}
 	if Config.LogsDir == "" {
-		Config.LogsDir = ".logs"
+		Config.LogsDir = "logs"
 	}
 	if err := os.MkdirAll(Config.LogsDir, 0755); err != nil {
 		Logger.LogError("common.init", "%v (%s)", err, Config.LogsDir)

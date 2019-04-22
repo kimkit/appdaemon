@@ -2,6 +2,6 @@ daemon: false
 addr: 127.0.0.1:6380
 passwords:
   - admin:abc123
-logsdir: .logs
+logsdir: logs
 reportinterval: 10
 stoptimeout: 10
