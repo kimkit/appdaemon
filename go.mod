@@ -3,7 +3,7 @@ module github.com/kimkit/appdaemon
 require (
 	github.com/go-redis/redis v6.15.2+incompatible
 	github.com/gorhill/cronexpr v0.0.0-20180427100037-88b0669f7d75
-	github.com/kimkit/cmdlib v0.0.0-20190421023603-81f395451c24
+	github.com/kimkit/cmdlib v0.0.0-20190425235311-896f1d4c64ce
 	github.com/kimkit/config v0.0.0-20190227064224-0b7a303c5664
 	github.com/kimkit/daemon v0.0.0-20190311070945-72a1e459e89d
 	github.com/kimkit/jobctl v0.0.0-20190409020851-262d222c1b93

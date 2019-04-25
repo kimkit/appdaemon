@@ -7,6 +7,8 @@ github.com/kimkit/cmdlib v0.0.0-20190420122834-d2eb25644e7c h1:I9WJhAtHUfyfCsZaS
 github.com/kimkit/cmdlib v0.0.0-20190420122834-d2eb25644e7c/go.mod h1:TgCJ+K62yWpjLWLQ4lyT0u3o07QFzS4MS2oCT2B+ILI=
 github.com/kimkit/cmdlib v0.0.0-20190421023603-81f395451c24 h1:o4yZ8rhdIYdd3ouyIe2Nvsk3V1JM1/NSTupKp5QjBAc=
 github.com/kimkit/cmdlib v0.0.0-20190421023603-81f395451c24/go.mod h1:TgCJ+K62yWpjLWLQ4lyT0u3o07QFzS4MS2oCT2B+ILI=
+github.com/kimkit/cmdlib v0.0.0-20190425235311-896f1d4c64ce h1:bxskz6gvYupsbNhZmyajaGbKkEgbXDc3riFoVsKLHCw=
+github.com/kimkit/cmdlib v0.0.0-20190425235311-896f1d4c64ce/go.mod h1:TgCJ+K62yWpjLWLQ4lyT0u3o07QFzS4MS2oCT2B+ILI=
 github.com/kimkit/config v0.0.0-20190227064224-0b7a303c5664 h1:1aml/wDA/yy34APzY7Iv87/Q9r4rrZa/CogADsmpK0E=
 github.com/kimkit/config v0.0.0-20190227064224-0b7a303c5664/go.mod h1:qgURaKTkaywRZhHfxPDjlqU6N1O8Iji9CCyROc2YkLg=
 github.com/kimkit/daemon v0.0.0-20190311070945-72a1e459e89d h1:eWkljQVOa62sWzz+srhlPoSLWjW8Px6pYjTin3htJyw=
