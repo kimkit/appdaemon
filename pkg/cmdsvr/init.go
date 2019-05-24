@@ -40,8 +40,10 @@ func Run() {
 	}
 	common.JobManager.LoadJobs(common.Config.JobsFile, func(info []interface{}) error {
 		return common.Client.Do(info...).Err()
-	})
+	}, common.GetTaskInfos()...)
 	common.Cmdsvr.ListenAndServe(common.Config.Addr)
-	common.JobManager.SaveRunningJobs(common.Config.JobsFile)
+	if common.Config.SaveJobs {
+		common.JobManager.SaveRunningJobs(common.Config.JobsFile)
+	}
 	common.JobManager.StopAllJobs()
 }

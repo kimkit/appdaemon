@@ -3,6 +3,7 @@ package common
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/go-redis/redis"
@@ -12,17 +13,25 @@ import (
 	"github.com/kimkit/redsvr"
 )
 
+type TaskConfig struct {
+	Name string   `json:"name"`
+	Rule string   `json:"rule"`
+	Args []string `json:"args"`
+}
+
 var (
 	Config = struct {
-		Daemon         bool     `json:"daemon"`
-		LogFile        string   `json:"-"`
-		PidFile        string   `json:"-"`
-		Addr           string   `json:"addr"`
-		Passwords      []string `json:"passwords"`
-		JobsFile       string   `json:"-"`
-		LogsDir        string   `json:"logsdir"`
-		ReportInterval int      `json:"reportinterval"`
-		StopTimeout    int      `json:"stoptimeout"`
+		Daemon         bool          `json:"daemon"`
+		LogFile        string        `json:"-"`
+		PidFile        string        `json:"-"`
+		Addr           string        `json:"addr"`
+		Passwords      []string      `json:"passwords"`
+		JobsFile       string        `json:"-"`
+		LogsDir        string        `json:"logsdir"`
+		ReportInterval int           `json:"reportinterval"`
+		StopTimeout    int           `json:"stoptimeout"`
+		SaveJobs       bool          `json:"savejobs"`
+		Tasks          []*TaskConfig `json:"tasks"`
 	}{}
 	JobManager = jobext.NewJobManager()
 	Cmdsvr     = redsvr.NewServer()
@@ -61,4 +70,33 @@ func init() {
 		Addr:     fmt.Sprintf("127.0.0.1:%s", strings.Split(Config.Addr, ":")[1]),
 		Password: password,
 	})
+}
+
+func GetTaskInfos() [][]interface{} {
+	var infos [][]interface{}
+	for _, task := range Config.Tasks {
+		num, err := strconv.Atoi(task.Rule)
+		if err != nil {
+			var info []interface{}
+			info = append(info, "task.add")
+			info = append(info, task.Name)
+			info = append(info, task.Rule)
+			for _, arg := range task.Args {
+				info = append(info, arg)
+			}
+			infos = append(infos, info)
+		} else {
+			for i := 0; i < num; i++ {
+				var info []interface{}
+				info = append(info, "task.add")
+				info = append(info, fmt.Sprintf("%s_%03d", task.Name, i))
+				info = append(info, "")
+				for _, arg := range task.Args {
+					info = append(info, arg)
+				}
+				infos = append(infos, info)
+			}
+		}
+	}
+	return infos
 }

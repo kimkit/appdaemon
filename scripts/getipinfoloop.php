@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('Asia/Shanghai');
+
 $signalhandler = function ($signo) {
     if ($signo == SIGINT) {
         printf("\n");

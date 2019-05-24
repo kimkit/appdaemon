@@ -5,3 +5,11 @@ passwords:
 logsdir: logs
 reportinterval: 10
 stoptimeout: 10
+savejobs: false
+tasks:
+  - name: getipinfo
+    rule: "*/10 * * * * * *"
+    args: [php, scripts/getipinfo.php]
+  - name: getipinfoloop
+    rule: 2
+    args: [php, scripts/getipinfoloop.php]
