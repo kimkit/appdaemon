@@ -14,6 +14,6 @@ redis-cli -p 6380
 task.add getipinfo "*/10 * * * * * *" php scripts/getipinfo.php # cron task
 task.add getipinfoloop "" php scripts/getipinfoloop.php # daemon task
 task.list
-task delete getipinfo
-task delete getipinfoloop
+task.delete getipinfo
+task.delete getipinfoloop
 ```
