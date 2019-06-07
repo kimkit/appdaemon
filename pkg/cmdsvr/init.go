@@ -17,7 +17,14 @@ func authHandler(cmd *redsvr.Command, args []string, conn *redsvr.Conn) error {
 		if cmd.Name == "luascript.runner" {
 			return nil
 		}
-		common.Logger.LogInfo("cmdsvr.authHandler", "(%s) %s %s", cmdlib.GetAuthUser(conn), cmd.Name, strings.Join(args, " "))
+		var _args []string
+		for _, arg := range args {
+			if arg == "" {
+				arg = "\"\""
+			}
+			_args = append(_args, arg)
+		}
+		common.Logger.LogInfo("cmdsvr.authHandler", "(%s) %s %s", cmdlib.GetAuthUser(conn), cmd.Name, strings.Join(_args, " "))
 	}
 	return nil
 }
