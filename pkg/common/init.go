@@ -1,15 +1,19 @@
 package common
 
 import (
+	"database/sql"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
 
 	"github.com/go-redis/redis"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/kimkit/config"
 	"github.com/kimkit/jobext"
+	"github.com/kimkit/lister"
 	"github.com/kimkit/logger"
+	"github.com/kimkit/luactl"
 	"github.com/kimkit/redsvr"
 )
 
@@ -30,13 +34,18 @@ var (
 		LogsDir        string        `json:"logsdir"`
 		ReportInterval int           `json:"reportinterval"`
 		StopTimeout    int           `json:"stoptimeout"`
-		SaveJobs       bool          `json:"savejobs"`
 		Tasks          []*TaskConfig `json:"tasks"`
+		Dsn            string        `json:"dsn"`
+		Sql            string        `json:"sql"`
+		IdName         string        `json:"idname"`
+		IdInit         int           `json:"idinit"`
 	}{}
-	JobManager = jobext.NewJobManager()
-	Cmdsvr     = redsvr.NewServer()
-	Client     *redis.Client
-	Logger     = logger.NewLogger()
+	JobManager     = jobext.NewJobManager()
+	Cmdsvr         = redsvr.NewServer()
+	Client         *redis.Client
+	Logger         = logger.NewLogger()
+	Lister         lister.Lister
+	LuaScriptStore = luactl.NewLuaScriptStore(luactl.LuaScriptStoreOptions{CreateStateHandler: CreateStateHandler})
 )
 
 func init() {
@@ -70,6 +79,19 @@ func init() {
 		Addr:     fmt.Sprintf("127.0.0.1:%s", strings.Split(Config.Addr, ":")[1]),
 		Password: password,
 	})
+	if Config.Dsn != "" {
+		db, err := sql.Open("mysql", Config.Dsn)
+		if err != nil {
+			Logger.LogError("common.init", "%v", err)
+		} else {
+			if Config.Sql != "" {
+				if Config.IdName == "" {
+					Config.IdName = "id"
+				}
+				Lister = lister.NewDBLister(db, Config.Sql, Config.IdName, Config.IdInit)
+			}
+		}
+	}
 }
 
 func GetTaskInfos() [][]interface{} {

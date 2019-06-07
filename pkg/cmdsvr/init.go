@@ -14,6 +14,9 @@ func authHandler(cmd *redsvr.Command, args []string, conn *redsvr.Conn) error {
 		if err := cmdlib.CheckAuth(conn); err != nil {
 			return err
 		}
+		if cmd.Name == "luascript.runner" {
+			return nil
+		}
 		common.Logger.LogInfo("cmdsvr.authHandler", "(%s) %s %s", cmdlib.GetAuthUser(conn), cmd.Name, strings.Join(args, " "))
 	}
 	return nil
@@ -32,18 +35,22 @@ func init() {
 	common.Cmdsvr.Register(newTaskListCommand("task.list", authHandler))
 	common.Cmdsvr.Register(newTaskAddCommand("task.add", authHandler))
 	common.Cmdsvr.Register(newTaskDeleteCommand("task.delete", authHandler))
+	common.Cmdsvr.Register(newLuaScriptRunnerCommand("luascript.runner", authHandler))
+	common.Cmdsvr.Register(newLuaScriptLoaderCommand("luascript.loader", "luascript.runner", authHandler))
 }
 
 func Run() {
 	if common.Config.Daemon {
 		daemon.Daemon(common.Config.LogFile, common.Config.PidFile)
 	}
+	jobInfos := common.GetTaskInfos()
+	if common.Lister != nil {
+		jobInfos = append(jobInfos, []interface{}{"luascript.loader", "start"})
+	}
 	common.JobManager.LoadJobs(common.Config.JobsFile, func(info []interface{}) error {
 		return common.Client.Do(info...).Err()
-	}, common.GetTaskInfos()...)
+	}, jobInfos...)
 	common.Cmdsvr.ListenAndServe(common.Config.Addr)
-	if common.Config.SaveJobs {
-		common.JobManager.SaveRunningJobs(common.Config.JobsFile)
-	}
+	common.JobManager.SaveRunningJobs(common.Config.JobsFile)
 	common.JobManager.StopAllJobs()
 }

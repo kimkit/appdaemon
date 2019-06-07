@@ -18,7 +18,8 @@ import (
 )
 
 var (
-	taskNameRegexp = regexp.MustCompile(`^\w+$`)
+	taskNameRegexp   = regexp.MustCompile(`^\w+$`)
+	taskSuffixRegexp = regexp.MustCompile(`_\d{3}$`)
 )
 
 type taskAddCommand struct {
@@ -75,7 +76,22 @@ func (cmd *taskAddCommand) S1Handler(_cmd *redsvr.Command, args []string, conn *
 	job.Map.LoadOrStore("rule", taskRule)
 	job.Map.LoadOrStore("args", taskArgs)
 	job.Map.LoadOrStore("expr", taskExpr)
-	common.JobManager.SetJobInfo(job, cmd.getJobInfo(args)...)
+
+	got := false
+	for _, task := range common.Config.Tasks {
+		if task.Name == taskName {
+			got = true
+			break
+		}
+		if taskSuffixRegexp.MatchString(taskName) && task.Name == taskName[0:len(taskName)-4] {
+			got = true
+			break
+		}
+	}
+	if !got {
+		common.JobManager.SetJobInfo(job, cmd.getJobInfo(args)...)
+	}
+
 	if err := job.Start(); err != nil {
 		return fmt.Errorf("start job `%s` failed", key)
 	}
