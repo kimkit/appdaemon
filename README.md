@@ -1,7 +1,7 @@
 # appdaemon
 
 ```
-# build (go >= 1.11)
+# build (go >= 1.12)
 make
 
 # start
