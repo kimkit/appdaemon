@@ -1,6 +1,7 @@
 package cmdsvr
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/kimkit/appdaemon/pkg/common"
@@ -21,6 +22,8 @@ func authHandler(cmd *redsvr.Command, args []string, conn *redsvr.Conn) error {
 		for _, arg := range args {
 			if arg == "" {
 				arg = "\"\""
+			} else if strings.Contains(arg, " ") {
+				arg = fmt.Sprintf("\"%s\"", arg)
 			}
 			_args = append(_args, arg)
 		}
