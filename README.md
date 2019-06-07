@@ -16,4 +16,7 @@ task.add getipinfoloop "" php scripts/getipinfoloop.php # daemon task
 task.list
 task.delete getipinfo
 task.delete getipinfoloop
+
+# luascript
+./scripts/initdb.sh
 ```
