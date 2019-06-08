@@ -18,5 +18,7 @@ task.delete getipinfo
 task.delete getipinfoloop
 
 # luascript
+# create table
 ./scripts/initdb.sh
+# add your lua lib in pkg/common/lualib.go
 ```
