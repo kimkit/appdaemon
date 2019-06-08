@@ -19,7 +19,7 @@ import (
 
 var (
 	taskNameRegexp   = regexp.MustCompile(`^\w+$`)
-	taskSuffixRegexp = regexp.MustCompile(`_\d{3}$`)
+	taskSuffixRegexp = regexp.MustCompile(`_\d{3,}$`)
 )
 
 type taskAddCommand struct {
