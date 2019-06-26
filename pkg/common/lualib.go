@@ -58,6 +58,28 @@ func GoToLua(ls *lua.LState, gv interface{}) lua.LValue {
 		return lua.LBool(v)
 	case float64:
 		return lua.LNumber(v)
+	case float32:
+		return lua.LNumber(float64(v))
+	case int:
+		return lua.LNumber(float64(v))
+	case int8:
+		return lua.LNumber(float64(v))
+	case int16:
+		return lua.LNumber(float64(v))
+	case int32:
+		return lua.LNumber(float64(v))
+	case int64:
+		return lua.LNumber(float64(v))
+	case uint:
+		return lua.LNumber(float64(v))
+	case uint8:
+		return lua.LNumber(float64(v))
+	case uint16:
+		return lua.LNumber(float64(v))
+	case uint32:
+		return lua.LNumber(float64(v))
+	case uint64:
+		return lua.LNumber(float64(v))
 	case string:
 		return lua.LString(v)
 	case json.Number:
