@@ -12,6 +12,8 @@ github.com/kimkit/cmdlib v0.0.0-20190517023525-4ca4d619162e h1:Aqtl69m45YYX3dVRJ
 github.com/kimkit/cmdlib v0.0.0-20190517023525-4ca4d619162e/go.mod h1:TgCJ+K62yWpjLWLQ4lyT0u3o07QFzS4MS2oCT2B+ILI=
 github.com/kimkit/config v0.0.0-20190227064224-0b7a303c5664 h1:1aml/wDA/yy34APzY7Iv87/Q9r4rrZa/CogADsmpK0E=
 github.com/kimkit/config v0.0.0-20190227064224-0b7a303c5664/go.mod h1:qgURaKTkaywRZhHfxPDjlqU6N1O8Iji9CCyROc2YkLg=
+github.com/kimkit/config v0.0.0-20190627054101-56a7c3655458 h1:XYwXy/xTC0hSwSTpbcGjuqpYBJcM0Cjud818xeAA834=
+github.com/kimkit/config v0.0.0-20190627054101-56a7c3655458/go.mod h1:qgURaKTkaywRZhHfxPDjlqU6N1O8Iji9CCyROc2YkLg=
 github.com/kimkit/daemon v0.0.0-20190311070945-72a1e459e89d h1:eWkljQVOa62sWzz+srhlPoSLWjW8Px6pYjTin3htJyw=
 github.com/kimkit/daemon v0.0.0-20190311070945-72a1e459e89d/go.mod h1:9Sf6hp8GTNjAnqrU9BXjYAspYjsQMj/6vdHmRbfM8p8=
 github.com/kimkit/jobctl v0.0.0-20190327070424-db1f05fd1b1b/go.mod h1:Fm/8FZYTlOCqiXAt//lxi8Fg8CZis8+aKz0yhz7PjGM=
@@ -26,6 +28,8 @@ github.com/kimkit/logger v0.0.0-20190421055409-d37049967e09 h1:eF6DWjsejeJlKiQ4T
 github.com/kimkit/logger v0.0.0-20190421055409-d37049967e09/go.mod h1:qXlcMTBomo44LOfgpk7beqY5RFvjQO/MKwpU+tRsiKg=
 github.com/kimkit/luactl v0.0.0-20190607033858-9ae0dd7485da h1:uXPyMpcahZytiTwJ13YpnJOwvtrbch5y8UkPPT17utE=
 github.com/kimkit/luactl v0.0.0-20190607033858-9ae0dd7485da/go.mod h1:dbWcTm5WYxFzAvp4SXWl7SgLAm8cTr8HX6Zc7Aqusqc=
+github.com/kimkit/luactl v0.0.0-20190621104429-0fa18f4fbbee h1:Mz/Fr3ptC9CyXNt8PCUVPj1vzbhNrIhn8OS7cMCmbY8=
+github.com/kimkit/luactl v0.0.0-20190621104429-0fa18f4fbbee/go.mod h1:dbWcTm5WYxFzAvp4SXWl7SgLAm8cTr8HX6Zc7Aqusqc=
 github.com/kimkit/proctl v0.0.0-20190421063323-f7d3ecf97d21 h1:c9nbidxDnJADmgT46T2qD1AfAEmTDCoO/F8naqGjoUM=
 github.com/kimkit/proctl v0.0.0-20190421063323-f7d3ecf97d21/go.mod h1:u0lPj6IrMcBD8KTTl6L2Lx2/G2nSjRrkvHlj/OBsdV8=
 github.com/kimkit/redsvr v0.0.0-20190327070501-e1cdea9134f0/go.mod h1:MO6vIkHBYjqf9aEXct+EBuSrP6R9pb5W2xBM4tt0Gns=
