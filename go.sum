@@ -5,7 +5,9 @@ github.com/go-redis/redis v6.15.2+incompatible h1:9SpNVG76gr6InJGxoZ6IuuxaCOQwDA
 github.com/go-redis/redis v6.15.2+incompatible/go.mod h1:NAIEuMOZ/fxfXJIrKDQDz8wamY7mA7PouImQ2Jvg6kA=
 github.com/go-sql-driver/mysql v1.4.1 h1:g24URVg0OFbNUTx9qqY1IRZ9D9z3iPyi5zKhQZpNwpA=
 github.com/go-sql-driver/mysql v1.4.1/go.mod h1:zAC/RDZ24gD3HViQzih4MyKcchzm+sOG5ZlKdlhCg5w=
+github.com/go-yaml/yaml v2.1.0+incompatible h1:RYi2hDdss1u4YE7GwixGzWwVo47T8UQwnTLB6vQiq+o=
 github.com/go-yaml/yaml v2.1.0+incompatible/go.mod h1:w2MrLa16VYP0jy6N7M5kHaCkaLENm+P+Tv+MfurjSw0=
+github.com/golang/sys v0.0.0-20190204203706-41f3e6584952/go.mod h1:5JyrLPvD/ZdaYkT7IqKhsP5xt7aLjA99KXRtk4EIYDk=
 github.com/gorhill/cronexpr v0.0.0-20180427100037-88b0669f7d75 h1:f0n1xnMSmBLzVfsMMvriDyA75NB/oBgILX2GcHXIQzY=
 github.com/gorhill/cronexpr v0.0.0-20180427100037-88b0669f7d75/go.mod h1:g2644b03hfBX9Ov0ZBDgXXens4rxSxmqFBbhvKv2yVA=
 github.com/kimkit/cmdlib v0.0.0-20190517023525-4ca4d619162e h1:Aqtl69m45YYX3dVRJVe0tY1XsQaaqrVO3cREA9wexk4=
@@ -14,6 +16,8 @@ github.com/kimkit/config v0.0.0-20190227064224-0b7a303c5664 h1:1aml/wDA/yy34APzY
 github.com/kimkit/config v0.0.0-20190227064224-0b7a303c5664/go.mod h1:qgURaKTkaywRZhHfxPDjlqU6N1O8Iji9CCyROc2YkLg=
 github.com/kimkit/config v0.0.0-20190627054101-56a7c3655458 h1:XYwXy/xTC0hSwSTpbcGjuqpYBJcM0Cjud818xeAA834=
 github.com/kimkit/config v0.0.0-20190627054101-56a7c3655458/go.mod h1:qgURaKTkaywRZhHfxPDjlqU6N1O8Iji9CCyROc2YkLg=
+github.com/kimkit/config v0.0.0-20190710213055-dab728751fdf h1:LJKt8aCZteHObgjyWWBeO6/r/GZu6ggBPIgW7th/LA4=
+github.com/kimkit/config v0.0.0-20190710213055-dab728751fdf/go.mod h1:1ObwBNvadY1kox4t9ZRJdOSVez1HqEmAj0N5vpjxmJo=
 github.com/kimkit/daemon v0.0.0-20190311070945-72a1e459e89d h1:eWkljQVOa62sWzz+srhlPoSLWjW8Px6pYjTin3htJyw=
 github.com/kimkit/daemon v0.0.0-20190311070945-72a1e459e89d/go.mod h1:9Sf6hp8GTNjAnqrU9BXjYAspYjsQMj/6vdHmRbfM8p8=
 github.com/kimkit/jobctl v0.0.0-20190327070424-db1f05fd1b1b/go.mod h1:Fm/8FZYTlOCqiXAt//lxi8Fg8CZis8+aKz0yhz7PjGM=
@@ -39,7 +43,3 @@ github.com/rokumoe/redisgo v0.0.0-20180602193945-55321cfdb027 h1:jx+Wp/PZRue6KUD
 github.com/rokumoe/redisgo v0.0.0-20180602193945-55321cfdb027/go.mod h1:SrS+mftfPaVNT0GKkHHJZgqCRaXlC9c3VtpNNkv+rEk=
 github.com/yuin/gopher-lua v0.0.0-20190514113301-1cd887cd7036 h1:1b6PAtenNyhsmo/NKXVe34h7JEZKva1YB/ne7K7mqKM=
 github.com/yuin/gopher-lua v0.0.0-20190514113301-1cd887cd7036/go.mod h1:gqRgreBUhTSL0GeU64rtZ3Uq3wtjOa/TB2YfrtkCbVQ=
-golang.org/x/sys v0.0.0-20190204203706-41f3e6584952/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
-gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
-gopkg.in/yaml.v2 v2.2.2 h1:ZCJp+EgiOT7lHqUV2J862kp8Qj64Jo6az82+3Td9dZw=
-gopkg.in/yaml.v2 v2.2.2/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=

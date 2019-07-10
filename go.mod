@@ -7,7 +7,7 @@ require (
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gorhill/cronexpr v0.0.0-20180427100037-88b0669f7d75
 	github.com/kimkit/cmdlib v0.0.0-20190517023525-4ca4d619162e
-	github.com/kimkit/config v0.0.0-20190627054101-56a7c3655458
+	github.com/kimkit/config v0.0.0-20190710213055-dab728751fdf
 	github.com/kimkit/daemon v0.0.0-20190311070945-72a1e459e89d
 	github.com/kimkit/jobctl v0.0.0-20190409020851-262d222c1b93
 	github.com/kimkit/jobext v0.0.0-20190524000718-705bf59952ad
@@ -18,3 +18,5 @@ require (
 	github.com/kimkit/redsvr v0.0.0-20190409021028-880cbd6a0195
 	github.com/yuin/gopher-lua v0.0.0-20190514113301-1cd887cd7036
 )
+
+replace golang.org/x/sys => github.com/golang/sys v0.0.0-20190204203706-41f3e6584952
