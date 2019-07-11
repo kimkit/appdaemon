@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"sync"
+	"time"
 )
 
 func GetMapValueString(ptr *sync.Map, key string) string {
@@ -15,6 +16,12 @@ func GetMapValueString(ptr *sync.Map, key string) string {
 func GetMapValueStringArr(ptr *sync.Map, key string) []string {
 	valueRaw, _ := ptr.Load(key)
 	value, _ := valueRaw.([]string)
+	return value
+}
+
+func GetMapValueInt(ptr *sync.Map, key string) int {
+	valueRaw, _ := ptr.Load(key)
+	value, _ := valueRaw.(int)
 	return value
 }
 
@@ -44,4 +51,11 @@ func BuildTable(list [][]string) []string {
 		res = append(res, fmt.Sprintf(format, fields...))
 	}
 	return res
+}
+
+func Time2str(t int) string {
+	if t <= 0 {
+		return "0000-00-00 00:00:00"
+	}
+	return time.Unix(int64(t), 0).Format("2006-01-02 15:04:05")
 }

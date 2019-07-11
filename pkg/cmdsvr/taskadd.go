@@ -76,6 +76,7 @@ func (cmd *taskAddCommand) S1Handler(_cmd *redsvr.Command, args []string, conn *
 	job.Map.LoadOrStore("rule", taskRule)
 	job.Map.LoadOrStore("args", taskArgs)
 	job.Map.LoadOrStore("expr", taskExpr)
+	job.Map.LoadOrStore("last", 0)
 
 	got := false
 	for _, task := range common.Config.Tasks {
@@ -149,6 +150,7 @@ func (job *taskJob) ExecHandler(_job *jobctl.Job) {
 	if job.expr != nil {
 		if now.Unix() >= job.next.Unix() {
 			job.next = job.expr.Next(now)
+			_job.Map.Store("last", int(now.Unix()))
 			if err := job.proc.Run(); err != nil {
 				common.Logger.LogError("cmdsvr.taskJob.ExecHandler", "%v (%s)", err, common.JobManager.GetJobName(_job))
 			}
@@ -166,6 +168,7 @@ func (job *taskJob) ExecHandler(_job *jobctl.Job) {
 			if err != nil {
 				// pass
 			} else {
+				_job.Map.Store("last", status)
 				if int(now.Unix())-status > common.Config.ReportInterval {
 					if err := job.proc.Kill(); err != nil {
 						common.Logger.LogError("cmdsvr.taskJob.ExecHandler", "%v (%s)", err, common.JobManager.GetJobName(_job))
