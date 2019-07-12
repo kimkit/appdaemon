@@ -2,6 +2,7 @@ package common
 
 import (
 	"database/sql"
+	"flag"
 	"fmt"
 	"os"
 	"strconv"
@@ -49,7 +50,21 @@ var (
 )
 
 func init() {
+	disableDaemon := flag.Bool("disable-daemon", false, "Disable daemon")
+	disablePredefinedTasks := flag.Bool("disable-predefined-tasks", false, "Disable Predefined tasks")
+	disableLuaScript := flag.Bool("disable-lua-script", false, "Disable lua script")
+
 	config.Load(&Config)
+	if *disableDaemon {
+		Config.Daemon = false
+	}
+	if *disablePredefinedTasks {
+		Config.Tasks = nil
+	}
+	if *disableLuaScript {
+		Config.Dsn = ""
+	}
+
 	if Config.Addr == "" {
 		Config.Addr = ":6380"
 	}
