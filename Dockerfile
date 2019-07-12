@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM ubuntu:bionic
 
 COPY bin/appdaemon.linux /appdaemon
 
