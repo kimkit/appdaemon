@@ -1,18 +1,7 @@
 daemon: false
-addr: 127.0.0.1:6380
+addr: 0.0.0.0:6380
 passwords:
   - admin:abc123
 logsdir: logs
 reportinterval: 10
 stoptimeout: 10
-tasks:
-  - name: getipinfo
-    rule: "*/10 * * * * * *"
-    args: [php, scripts/getipinfo.php]
-  - name: getipinfoloop
-    rule: 2
-    args: [php, scripts/getipinfoloop.php]
-dsn: "root@tcp(localhost)/base"
-sql: "select id,name,script from luascripts where status = 1 and id > %d order by id asc limit 64"
-idname: id
-idinit: 0
