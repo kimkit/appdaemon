@@ -1,0 +1,16 @@
+version: "3"
+services:
+  mysql:
+    network_mode: "service:appdaemon"
+    image: mysql
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - ./scripts/db.sql:/docker-entrypoint-initdb.d/db.sql
+  appdaemon:
+    image: appdaemon
+    ports:
+      - 6380:6380
+    volumes:
+      - ./config.yaml:/config.yaml
+      - ./config.yaml.inc.luascript.yaml:/config.yaml.inc.luascript.yaml
