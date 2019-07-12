@@ -51,7 +51,7 @@ var (
 
 func init() {
 	disableDaemon := flag.Bool("disable-daemon", false, "Disable daemon")
-	disablePredefinedTasks := flag.Bool("disable-predefined-tasks", false, "Disable Predefined tasks")
+	disablePredefinedTasks := flag.Bool("disable-predefined-tasks", false, "Disable predefined tasks")
 	disableLuaScript := flag.Bool("disable-lua-script", false, "Disable lua script")
 
 	config.Load(&Config)
