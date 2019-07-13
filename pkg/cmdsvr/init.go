@@ -61,6 +61,9 @@ func Run() {
 		return common.Client.Do(info...).Err()
 	}, jobInfos...)
 	common.Cmdsvr.ListenAndServe(common.Config.Addr)
+	common.Logger.LogInfo("cmdsvr.Run", "save running jobs ...")
 	common.JobManager.SaveRunningJobs(common.Config.JobsFile)
+	common.Logger.LogInfo("cmdsvr.Run", "stop running jobs ...")
 	common.JobManager.StopAllJobs()
+	common.Logger.LogInfo("cmdsvr.Run", "exit")
 }
