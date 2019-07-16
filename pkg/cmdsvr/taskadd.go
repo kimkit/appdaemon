@@ -150,7 +150,9 @@ func (job *taskJob) ExecHandler(_job *jobctl.Job) {
 	if job.expr != nil {
 		if now.Unix() >= job.next.Unix() {
 			job.next = job.expr.Next(now)
-			_job.Map.Store("last", int(now.Unix()))
+			if !job.proc.IsRunning() {
+				_job.Map.Store("last", int(now.Unix()))
+			}
 			if err := job.proc.Run(); err != nil {
 				common.Logger.LogError("cmdsvr.taskJob.ExecHandler", "%v (%s)", err, common.JobManager.GetJobName(_job))
 			}
