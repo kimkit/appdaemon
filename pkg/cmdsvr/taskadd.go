@@ -61,7 +61,31 @@ func (cmd *taskAddCommand) S1Handler(_cmd *redsvr.Command, args []string, conn *
 	}
 	taskExpr, err := cronexpr.Parse(taskRule)
 	if err != nil && taskRule != "" {
-		return fmt.Errorf("task rule `%s` invalid", taskRule)
+		num, err := strconv.Atoi(taskRule)
+		if err != nil || num < 1 {
+			return fmt.Errorf("task rule `%s` invalid", taskRule)
+		} else {
+			var errs []string
+			for i := 0; i < num; i++ {
+				var params []interface{}
+				params = append(params, cmd.Name)
+				params = append(params, fmt.Sprintf("%s_%03d", taskName, i))
+				params = append(params, "")
+				for j := 2; j < len(args); j++ {
+					params = append(params, args[j])
+				}
+				if err := common.Client.Do(params...).Err(); err != nil {
+					if err.Error() != fmt.Sprintf("job `%s_%03d` exist", taskName, i) {
+						errs = append(errs, err.Error())
+					}
+				}
+			}
+			if len(errs) > 0 {
+				return fmt.Errorf("%s", strings.Join(errs, "\n"))
+			}
+			redsvr.WriteSimpleString(conn, "OK")
+			return nil
+		}
 	}
 	key := getTaskKey(taskName)
 	job := common.JobManager.GetJob(key, nil)
