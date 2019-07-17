@@ -51,17 +51,17 @@ var (
 
 func init() {
 	disableDaemon := flag.Bool("disable-daemon", false, "Disable daemon")
-	disablePredefinedTasks := flag.Bool("disable-predefined-tasks", false, "Disable predefined tasks")
-	disableLuaScript := flag.Bool("disable-lua-script", false, "Disable lua script")
+	enablePredefinedTasks := flag.Bool("enable-predefined-tasks", false, "Enable predefined tasks")
+	enableLuaScript := flag.Bool("enable-lua-script", false, "Enable lua script")
 
 	config.Load(&Config)
 	if *disableDaemon {
 		Config.Daemon = false
 	}
-	if *disablePredefinedTasks {
+	if !*enablePredefinedTasks {
 		Config.Tasks = nil
 	}
-	if *disableLuaScript {
+	if !*enableLuaScript {
 		Config.Dsn = ""
 	}
 
