@@ -1,3 +1,3 @@
 # appdaemon
 
-Please read wiki page for more details.
+Please read [Wiki](https://github.com/kimkit/appdaemon/wiki) page for more details.
