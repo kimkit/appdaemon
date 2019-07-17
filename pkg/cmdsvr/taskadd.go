@@ -18,7 +18,7 @@ import (
 )
 
 var (
-	taskNameRegexp   = regexp.MustCompile(`^\w+$`)
+	taskNameRegexp   = regexp.MustCompile(`^[\w\.\-:]+$`)
 	taskSuffixRegexp = regexp.MustCompile(`_\d{3,}$`)
 )
 
