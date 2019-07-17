@@ -1,3 +1,3 @@
 # appdaemon
 
-> please read wiki page for more detail.
+Please read wiki page for more details.
