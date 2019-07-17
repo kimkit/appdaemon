@@ -11,6 +11,11 @@ services:
     image: appdaemon
     ports:
       - 6380:6380
+    command:
+      - /appdaemon
+      - -c
+      - /config.yaml
+      - -enable-lua-script
     volumes:
       - ./config.yaml:/config.yaml
       - ./config.yaml.inc.luascript.yaml:/config.yaml.inc.luascript.yaml
