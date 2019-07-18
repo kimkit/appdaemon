@@ -3,7 +3,7 @@ use base;
 drop table if exists luascripts;
 create table if not exists luascripts (
     id int unsigned auto_increment primary key,
-    description varchar(256) not null default '' unique key,
+    description varchar(256) not null default '',
     name varchar(256) not null default '' unique key,
     script text,
     status tinyint not null default 0,
