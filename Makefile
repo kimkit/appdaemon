@@ -4,6 +4,8 @@ all:
 	find . -name '*.go' | grep -v '^\./vendor/' | xargs -i go fmt {}
 	rm -rf bin
 	go build -o bin/appdaemon cmd/cmdsvr/main.go
+	GOOS=linux GOARCH=amd64 go build -o bin/appdaemon.linux cmd/cmdsvr/main.go
+	GOOS=darwin GOARCH=amd64 go build -o bin/appdaemon.darwin cmd/cmdsvr/main.go
 	GOOS=linux GOARCH=amd64 go build -o bin/appdaemon.linux.$(VERSION_TAG) cmd/cmdsvr/main.go
 	GOOS=darwin GOARCH=amd64 go build -o bin/appdaemon.darwin.$(VERSION_TAG) cmd/cmdsvr/main.go
 
