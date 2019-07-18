@@ -66,7 +66,7 @@ func (job *luaScriptLoaderJob) ExecHandler(_job *jobctl.Job) {
 					common.Logger.LogError("cmdsvr.luaScriptLoaderJob.ExecHandler", "%v (%s)", err, row["name"])
 				} else {
 					// common.Logger.LogDebug("cmdsvr.luaScriptLoaderJob.ExecHandler", "script `%v` loaded", row["name"])
-					if err := common.RedisClient.Do(job.runnerName, row["name"], "start").Err(); err != nil {
+					if err := common.RedisClient.Do(job.runnerName, row["name"]).Err(); err != nil {
 						common.Logger.LogError("cmdsvr.luaScriptLoaderJob.ExecHandler", "%v (%s)", err, row["name"])
 					}
 				}

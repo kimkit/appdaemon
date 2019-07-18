@@ -43,6 +43,8 @@ github.com/kimkit/luactl v0.0.0-20190621104429-0fa18f4fbbee h1:Mz/Fr3ptC9CyXNt8P
 github.com/kimkit/luactl v0.0.0-20190621104429-0fa18f4fbbee/go.mod h1:dbWcTm5WYxFzAvp4SXWl7SgLAm8cTr8HX6Zc7Aqusqc=
 github.com/kimkit/lualib v0.0.0-20190714012921-b8dc8ce4eb50 h1:5yaQGQEiVWgwRVqoifk3ZBtYtzj4/6wM7Tn4RTksXaM=
 github.com/kimkit/lualib v0.0.0-20190714012921-b8dc8ce4eb50/go.mod h1:0ue+f+MfEeRJiuqvnEbMC94ayM1T/34yZx3DUMXnN4Y=
+github.com/kimkit/lualib v0.0.0-20190718080008-75fb8f781b9a h1:FktSV5la1BCXNOqeyEBzJLT/2JuHBElkNjQ5F8TVrlA=
+github.com/kimkit/lualib v0.0.0-20190718080008-75fb8f781b9a/go.mod h1:0ue+f+MfEeRJiuqvnEbMC94ayM1T/34yZx3DUMXnN4Y=
 github.com/kimkit/proctl v0.0.0-20190421063323-f7d3ecf97d21 h1:c9nbidxDnJADmgT46T2qD1AfAEmTDCoO/F8naqGjoUM=
 github.com/kimkit/proctl v0.0.0-20190421063323-f7d3ecf97d21/go.mod h1:u0lPj6IrMcBD8KTTl6L2Lx2/G2nSjRrkvHlj/OBsdV8=
 github.com/kimkit/redsvr v0.0.0-20190327070501-e1cdea9134f0/go.mod h1:MO6vIkHBYjqf9aEXct+EBuSrP6R9pb5W2xBM4tt0Gns=

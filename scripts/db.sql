@@ -14,18 +14,33 @@ create table if not exists luascripts (
 ) engine=innodb default charset utf8mb4;
 
 insert into luascripts (name,script,status) values ('cron_example', '
+if scripttag == "" then
+    err = runtags(jobname, {
+        t1 = {"arg1"},
+        t2 = {"arg2"},
+    })
+    if err ~= nil then
+        log.error("%v: %v", jobname, err)
+    end
+    sleep(500)
+    return
+end
+
 if cron == nil then cron = newcron("*/10 * * * * * *") end
 if nexttime == nil then nexttime = cron:next() end
 
 now = os.time()
 if now >= nexttime then
     printf("%v\\n", scriptname)
+    printf("%v\\n", scriptmd5sum)
+    printf("%v\\n", scripttag)
+    printf("%v\\n", scriptargs)
     res, err = http.get("#", "http://myip.ipip.net")
-    log.debug("%v: %v %v", scriptname, res, err)
+    log.debug("%v: %v %v", jobname, res, err)
     res, err = redis.call("#", "job.list")
-    log.debug("%v: %v %v", scriptname, res, err)
+    log.debug("%v: %v %v", jobname, res, err)
     res, err = db.query("#", "select * from luascripts")
-    log.debug("%v: %v %v", scriptname, res, err)
+    log.debug("%v: %v %v", jobname, res, err)
     nexttime = cron:next()
 else
     sleep(200)

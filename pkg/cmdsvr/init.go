@@ -15,7 +15,7 @@ func authHandler(cmd *redsvr.Command, args []string, conn *redsvr.Conn) error {
 		if err := cmdlib.CheckAuth(conn); err != nil {
 			return err
 		}
-		if cmd.Name == "luascript.runner" {
+		if cmd.Name == "luascript.runner" || cmd.Name == "job.list" {
 			return nil
 		}
 		var _args []string

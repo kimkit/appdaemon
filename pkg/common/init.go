@@ -43,6 +43,7 @@ var (
 		Sql            string                  `json:"sql"`
 		IdName         string                  `json:"idname"`
 		IdInit         int                     `json:"idinit"`
+		Libs           map[string]string       `json:"libs"`
 		Http           map[string]*HttpConfig  `json:"http"`
 		Redis          map[string]*RedisConfig `json:"redis"`
 		DB             map[string]*DBConfig    `json:"db"`
