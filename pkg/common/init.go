@@ -109,6 +109,7 @@ func init() {
 			}
 		}
 	}
+	initLuaLib()
 }
 
 func GetTaskInfos() [][]interface{} {

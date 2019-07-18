@@ -12,6 +12,18 @@ import (
 	"github.com/yuin/gopher-lua"
 )
 
+var (
+	logLib   *LogLib
+	httpLib  *lualib.HttpLib
+	redisLib *lualib.RedisLib
+)
+
+func initLuaLib() {
+	logLib = NewLogLib()
+	httpLib = lualib.NewHttpLib(map[string]*http.Client{"#": HttpClient})
+	redisLib = lualib.NewRedisLib(map[string]*redis.Client{"#": RedisClient})
+}
+
 func CreateStateHandler() *lua.LState {
 	ls := luactl.DefaultCreateStateHandler()
 	ls.SetGlobal("printf", ls.NewFunction(Printf))
@@ -20,9 +32,9 @@ func CreateStateHandler() *lua.LState {
 	ls.SetGlobal("uuid", ls.NewFunction(lualib.UUID))
 	ls.SetGlobal("md5", ls.NewFunction(lualib.MD5))
 	ls.SetGlobal("trim", ls.NewFunction(lualib.Trim))
-	NewLogLib().RegisterGlobal(ls, "log")
-	lualib.NewHttpLib(map[string]*http.Client{"#": HttpClient}).RegisterGlobal(ls, "http")
-	lualib.NewRedisLib(map[string]*redis.Client{"#": RedisClient}).RegisterGlobal(ls, "redis")
+	logLib.RegisterGlobal(ls, "log")
+	httpLib.RegisterGlobal(ls, "http")
+	redisLib.RegisterGlobal(ls, "redis")
 	return ls
 }
 
