@@ -58,7 +58,7 @@ func Run() {
 		jobInfos = append(jobInfos, []interface{}{"luascript.loader", "start"})
 	}
 	common.JobManager.LoadJobs(common.Config.JobsFile, func(info []interface{}) error {
-		return common.Client.Do(info...).Err()
+		return common.RedisClient.Do(info...).Err()
 	}, jobInfos...)
 	common.Cmdsvr.ListenAndServe(common.Config.Addr)
 	common.Logger.LogInfo("cmdsvr.Run", "save running jobs ...")

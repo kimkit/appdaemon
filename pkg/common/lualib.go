@@ -1,118 +1,32 @@
 package common
 
 import (
-	"encoding/json"
 	"fmt"
+	"net/http"
 	"os"
 	"time"
 
-	"github.com/gorhill/cronexpr"
+	"github.com/go-redis/redis"
 	"github.com/kimkit/luactl"
+	"github.com/kimkit/lualib"
 	"github.com/yuin/gopher-lua"
 )
 
 func CreateStateHandler() *lua.LState {
 	ls := luactl.DefaultCreateStateHandler()
-	ls.SetGlobal("sleep", ls.NewFunction(LuaLibSleep))
-	ls.SetGlobal("printf", ls.NewFunction(LuaLibPrintf))
-	ls.SetGlobal("newcron", ls.NewFunction(LuaLibNewCron))
+	ls.SetGlobal("printf", ls.NewFunction(Printf))
+	ls.SetGlobal("sleep", ls.NewFunction(lualib.Sleep))
+	ls.SetGlobal("newcron", ls.NewFunction(lualib.NewCron))
+	ls.SetGlobal("uuid", ls.NewFunction(lualib.UUID))
+	ls.SetGlobal("md5", ls.NewFunction(lualib.MD5))
+	ls.SetGlobal("trim", ls.NewFunction(lualib.Trim))
+	NewLogLib().RegisterGlobal(ls, "log")
+	lualib.NewHttpLib(map[string]*http.Client{"#": HttpClient}).RegisterGlobal(ls, "http")
+	lualib.NewRedisLib(map[string]*redis.Client{"#": RedisClient}).RegisterGlobal(ls, "redis")
 	return ls
 }
 
-func LuaToGo(lv lua.LValue) interface{} {
-	switch v := lv.(type) {
-	case *lua.LNilType:
-		return nil
-	case lua.LBool:
-		return bool(v)
-	case lua.LString:
-		return string(v)
-	case lua.LNumber:
-		return float64(v)
-	case *lua.LTable:
-		if v == nil {
-			return nil
-		}
-		maxn := v.MaxN()
-		if maxn == 0 { // table
-			ret := make(map[string]interface{})
-			v.ForEach(func(key, value lua.LValue) {
-				ret[fmt.Sprint(LuaToGo(key))] = LuaToGo(value)
-			})
-			return ret
-		} else { // array
-			ret := make([]interface{}, 0, maxn)
-			for i := 1; i <= maxn; i++ {
-				ret = append(ret, LuaToGo(v.RawGetInt(i)))
-			}
-			return ret
-		}
-	default:
-		return v
-	}
-}
-
-func GoToLua(ls *lua.LState, gv interface{}) lua.LValue {
-	switch v := gv.(type) {
-	case bool:
-		return lua.LBool(v)
-	case float64:
-		return lua.LNumber(v)
-	case float32:
-		return lua.LNumber(float64(v))
-	case int:
-		return lua.LNumber(float64(v))
-	case int8:
-		return lua.LNumber(float64(v))
-	case int16:
-		return lua.LNumber(float64(v))
-	case int32:
-		return lua.LNumber(float64(v))
-	case int64:
-		return lua.LNumber(float64(v))
-	case uint:
-		return lua.LNumber(float64(v))
-	case uint8:
-		return lua.LNumber(float64(v))
-	case uint16:
-		return lua.LNumber(float64(v))
-	case uint32:
-		return lua.LNumber(float64(v))
-	case uint64:
-		return lua.LNumber(float64(v))
-	case string:
-		return lua.LString(v)
-	case json.Number:
-		return lua.LString(v)
-	case []interface{}:
-		t := ls.NewTable()
-		for _, vv := range v {
-			t.Append(GoToLua(ls, vv))
-		}
-		return t
-	case map[string]interface{}:
-		t := ls.NewTable()
-		for vk, vv := range v {
-			t.RawSetString(vk, GoToLua(ls, vv))
-		}
-		return t
-	case nil:
-		return lua.LNil
-	default:
-		return lua.LNil
-	}
-}
-
-func LuaLibSleep(ls *lua.LState) int {
-	t := ls.ToInt(1)
-	if t < 0 {
-		t = 0
-	}
-	time.Sleep(time.Millisecond * time.Duration(t))
-	return 0
-}
-
-func LuaLibPrintf(ls *lua.LState) int {
+func output(ls *lua.LState, prefix, suffix string) {
 	filename := fmt.Sprintf(
 		"%s%c%s.output",
 		Config.LogsDir,
@@ -123,43 +37,57 @@ func LuaLibPrintf(ls *lua.LState) int {
 	top := ls.GetTop()
 	v := make([]interface{}, top-1)
 	for i := 2; i <= top; i++ {
-		v[i-2] = LuaToGo(ls.Get(i))
+		v[i-2] = lualib.LuaToGo(ls.Get(i))
 	}
-	str := fmt.Sprintf(format, v...)
+	str := prefix + fmt.Sprintf(format, v...) + suffix
 	fp, err := os.OpenFile(filename, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0644)
 	if err != nil {
-		Logger.LogError("common.LuaLibPrintf", "%v", err)
-		return 0
+		Logger.LogError("common.output", "%v", err)
+		return
 	}
 	defer fp.Close()
 	if _, err := fp.Write([]byte(str)); err != nil {
-		Logger.LogError("common.LuaLibPrintf", "%v", err)
-		return 0
+		Logger.LogError("common.output", "%v", err)
+		return
 	}
+}
+
+func Printf(ls *lua.LState) int {
+	output(ls, "", "")
 	return 0
 }
 
-func LuaLibNewCron(ls *lua.LState) int {
-	expr, err := cronexpr.Parse(ls.ToString(1))
-	if err != nil {
-		ls.Push(lua.LNil)
-		ls.Push(lua.LString(err.Error()))
-		return 2
-	}
-	ud := ls.NewUserData()
-	ud.Value = expr
-	index := ls.NewTable()
-	index.RawSetString("next", ls.NewFunction(luaLibCronNext))
-	meta := ls.NewTable()
-	meta.RawSetString("__index", index)
-	ud.Metatable = meta
-	ls.Push(ud)
-	ls.Push(lua.LNil)
-	return 2
+type LogLib struct{}
+
+func NewLogLib() *LogLib {
+	return &LogLib{}
 }
 
-func luaLibCronNext(ls *lua.LState) int {
-	ud := ls.CheckUserData(1)
-	ls.Push(lua.LNumber(float64(ud.Value.(*cronexpr.Expression).Next(time.Now()).Unix())))
-	return 1
+func (ll *LogLib) RegisterGlobal(ls *lua.LState, name string) {
+	t := ls.NewTable()
+	t.RawSetString("info", ls.NewFunction(ll.Info))
+	t.RawSetString("error", ls.NewFunction(ll.Error))
+	t.RawSetString("warning", ls.NewFunction(ll.Warning))
+	t.RawSetString("debug", ls.NewFunction(ll.Debug))
+	ls.SetGlobal(name, t)
+}
+
+func (ll *LogLib) Info(ls *lua.LState) int {
+	output(ls, fmt.Sprintf("%s INFO ", time.Now().Format("2006/01/02 15:04:05")), "\n")
+	return 0
+}
+
+func (ll *LogLib) Error(ls *lua.LState) int {
+	output(ls, fmt.Sprintf("%s ERROR ", time.Now().Format("2006/01/02 15:04:05")), "\n")
+	return 0
+}
+
+func (ll *LogLib) Warning(ls *lua.LState) int {
+	output(ls, fmt.Sprintf("%s WARNING ", time.Now().Format("2006/01/02 15:04:05")), "\n")
+	return 0
+}
+
+func (ll *LogLib) Debug(ls *lua.LState) int {
+	output(ls, fmt.Sprintf("%s DEBUG ", time.Now().Format("2006/01/02 15:04:05")), "\n")
+	return 0
 }

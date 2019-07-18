@@ -14,8 +14,10 @@ require (
 	github.com/kimkit/lister v0.0.0-20190605222412-4d3c2d38ae7a
 	github.com/kimkit/logger v0.0.0-20190421055409-d37049967e09
 	github.com/kimkit/luactl v0.0.0-20190621104429-0fa18f4fbbee
+	github.com/kimkit/lualib v0.0.0-20190714012921-b8dc8ce4eb50
 	github.com/kimkit/proctl v0.0.0-20190421063323-f7d3ecf97d21
 	github.com/kimkit/redsvr v0.0.0-20190409021028-880cbd6a0195
+	github.com/kimkit/reqctl v0.0.0-20190627004744-233a41c8c0b9
 	github.com/yuin/gopher-lua v0.0.0-20190514113301-1cd887cd7036
 )
 

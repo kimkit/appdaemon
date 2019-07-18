@@ -19,7 +19,11 @@ if nexttime == nil then nexttime = cron:next() end
 
 now = os.time()
 if now >= nexttime then
-    printf("[%s] %s: %s\\n", os.date("%Y-%m-%d %H:%M:%S", now), scriptname, scriptmd5sum)
+    printf("%v\\n", scriptname)
+    res, err = http.get("#", "http://myip.ipip.net")
+    log.debug("%v: %v %v", scriptname, res, err)
+    res, err = redis.call("#", "job.list")
+    log.debug("%v: %v %v", scriptname, res, err)
     nexttime = cron:next()
 else
     sleep(200)

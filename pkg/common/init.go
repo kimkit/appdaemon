@@ -16,6 +16,7 @@ import (
 	"github.com/kimkit/logger"
 	"github.com/kimkit/luactl"
 	"github.com/kimkit/redsvr"
+	"github.com/kimkit/reqctl"
 )
 
 type TaskConfig struct {
@@ -43,10 +44,11 @@ var (
 	}{}
 	JobManager     = jobext.NewJobManager()
 	Cmdsvr         = redsvr.NewServer()
-	Client         *redis.Client
+	RedisClient    *redis.Client
 	Logger         = logger.NewLogger()
 	Lister         lister.Lister
 	LuaScriptStore = luactl.NewLuaScriptStore(luactl.LuaScriptStoreOptions{CreateStateHandler: CreateStateHandler})
+	HttpClient     = reqctl.NewClient(10)
 )
 
 func init() {
@@ -90,7 +92,7 @@ func init() {
 	Config.LogFile = fmt.Sprintf("%s%c%s", Config.LogsDir, os.PathSeparator, "appdaemon.log")
 	Config.PidFile = fmt.Sprintf("%s%c%s", Config.LogsDir, os.PathSeparator, "appdaemon.pid")
 	Config.JobsFile = fmt.Sprintf("%s%c%s", Config.LogsDir, os.PathSeparator, "jobs.json")
-	Client = redis.NewClient(&redis.Options{
+	RedisClient = redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("127.0.0.1:%s", strings.Split(Config.Addr, ":")[1]),
 		Password: password,
 	})

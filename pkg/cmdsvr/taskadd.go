@@ -74,7 +74,7 @@ func (cmd *taskAddCommand) S1Handler(_cmd *redsvr.Command, args []string, conn *
 				for j := 2; j < len(args); j++ {
 					params = append(params, args[j])
 				}
-				if err := common.Client.Do(params...).Err(); err != nil {
+				if err := common.RedisClient.Do(params...).Err(); err != nil {
 					if err.Error() != fmt.Sprintf("job `%s_%03d` exist", taskName, i) {
 						errs = append(errs, err.Error())
 					}
