@@ -1,0 +1,3 @@
+db:
+  base:
+    dsn: "root@tcp(localhost)/base"

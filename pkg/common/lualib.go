@@ -2,12 +2,9 @@ package common
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 	"time"
 
-	"github.com/go-redis/redis"
-	"github.com/kimkit/dbutil"
 	"github.com/kimkit/luactl"
 	"github.com/kimkit/lualib"
 	"github.com/yuin/gopher-lua"
@@ -22,9 +19,9 @@ var (
 
 func initLuaLib() {
 	logLib = NewLogLib()
-	httpLib = lualib.NewHttpLib(map[string]*http.Client{"#": HttpClient})
-	redisLib = lualib.NewRedisLib(map[string]*redis.Client{"#": RedisClient})
-	dbLib = lualib.NewDBLib(map[string]*dbutil.DBWrapper{"#": DBClient})
+	httpLib = lualib.NewHttpLib(Http)
+	redisLib = lualib.NewRedisLib(Redis)
+	dbLib = lualib.NewDBLib(DB)
 }
 
 func CreateStateHandler() *lua.LState {

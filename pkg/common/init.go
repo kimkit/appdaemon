@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
+	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -28,20 +29,23 @@ type TaskConfig struct {
 
 var (
 	Config = struct {
-		Daemon         bool          `json:"daemon"`
-		LogFile        string        `json:"-"`
-		PidFile        string        `json:"-"`
-		Addr           string        `json:"addr"`
-		Passwords      []string      `json:"passwords"`
-		JobsFile       string        `json:"-"`
-		LogsDir        string        `json:"logsdir"`
-		ReportInterval int           `json:"reportinterval"`
-		StopTimeout    int           `json:"stoptimeout"`
-		Tasks          []*TaskConfig `json:"tasks"`
-		Dsn            string        `json:"dsn"`
-		Sql            string        `json:"sql"`
-		IdName         string        `json:"idname"`
-		IdInit         int           `json:"idinit"`
+		Daemon         bool                    `json:"daemon"`
+		LogFile        string                  `json:"-"`
+		PidFile        string                  `json:"-"`
+		Addr           string                  `json:"addr"`
+		Passwords      []string                `json:"passwords"`
+		JobsFile       string                  `json:"-"`
+		LogsDir        string                  `json:"logsdir"`
+		ReportInterval int                     `json:"reportinterval"`
+		StopTimeout    int                     `json:"stoptimeout"`
+		Tasks          []*TaskConfig           `json:"tasks"`
+		Dsn            string                  `json:"dsn"`
+		Sql            string                  `json:"sql"`
+		IdName         string                  `json:"idname"`
+		IdInit         int                     `json:"idinit"`
+		Http           map[string]*HttpConfig  `json:"http"`
+		Redis          map[string]*RedisConfig `json:"redis"`
+		DB             map[string]*DBConfig    `json:"db"`
 	}{}
 	JobManager     = jobext.NewJobManager()
 	Cmdsvr         = redsvr.NewServer()
@@ -49,8 +53,11 @@ var (
 	Logger         = logger.NewLogger()
 	Lister         lister.Lister
 	LuaScriptStore = luactl.NewLuaScriptStore(luactl.LuaScriptStoreOptions{CreateStateHandler: CreateStateHandler})
-	HttpClient     = reqctl.NewClient(10)
+	HttpClient     = reqctl.NewClient(3)
 	DBClient       *dbutil.DBWrapper
+	Http           = make(map[string]*http.Client)
+	Redis          = make(map[string]*redis.Client)
+	DB             = make(map[string]*dbutil.DBWrapper)
 )
 
 func init() {
@@ -112,6 +119,9 @@ func init() {
 			}
 		}
 	}
+	initHttp()
+	initRedis()
+	initDB()
 	initLuaLib()
 }
 
@@ -142,4 +152,102 @@ func GetTaskInfos() [][]interface{} {
 		}
 	}
 	return infos
+}
+
+func initHttp() {
+	for name, config := range Config.Http {
+		if config.Alias == "" {
+			Http[name] = NewHttp(config)
+		}
+	}
+	for name, config := range Config.Http {
+		if config.Alias != "" {
+			if client, ok := Http[config.Alias]; ok {
+				Http[name] = client
+			}
+		}
+	}
+	Http["#"] = HttpClient
+}
+
+func initRedis() {
+	for name, config := range Config.Redis {
+		if config.Alias == "" {
+			Redis[name] = NewRedis(config)
+		}
+	}
+	for name, config := range Config.Redis {
+		if config.Alias != "" {
+			if client, ok := Redis[config.Alias]; ok {
+				Redis[name] = client
+			}
+		}
+	}
+	Redis["#"] = RedisClient
+}
+
+func initDB() {
+	for name, config := range Config.DB {
+		if config.Alias == "" {
+			DB[name] = NewDB(config)
+		}
+	}
+	for name, config := range Config.DB {
+		if config.Alias != "" {
+			if dbw, ok := DB[config.Alias]; ok {
+				DB[name] = dbw
+			}
+		}
+	}
+	DB["#"] = DBClient
+}
+
+type HttpConfig struct {
+	Alias   string `json:"alias"`
+	Timeout int    `json:"timeout"`
+}
+
+func NewHttp(config *HttpConfig) *http.Client {
+	return reqctl.NewClient(config.Timeout)
+}
+
+type RedisConfig struct {
+	Alias        string `json:"alias"`
+	Addr         string `json:"addr"`
+	Password     string `json:"password"`
+	DB           int    `json:"db"`
+	PoolSize     int    `json:"poolsize"`
+	MinIdleConns int    `json:"minidleconns"`
+}
+
+func NewRedis(config *RedisConfig) *redis.Client {
+	return redis.NewClient(&redis.Options{
+		Addr:         config.Addr,
+		Password:     config.Password,
+		DB:           config.DB,
+		PoolSize:     config.PoolSize,
+		MinIdleConns: config.MinIdleConns,
+	})
+}
+
+type DBConfig struct {
+	Alias           string `json:"alias"`
+	Driver          string `json:"driver"`
+	DSN             string `json:"dsn"`
+	MaxOpenConns    int    `json:"maxopenconns"`
+	MaxIdleConns    int    `json:"maxidleconns"`
+	ConnMaxLifetime int    `json:"connmaxlifetime"`
+}
+
+func NewDB(config *DBConfig) *dbutil.DBWrapper {
+	if config.Driver == "" {
+		config.Driver = "mysql"
+	}
+	return dbutil.NewDB(
+		config.Driver,
+		config.DSN,
+		config.MaxOpenConns,
+		config.MaxIdleConns,
+		config.ConnMaxLifetime,
+	)
 }
