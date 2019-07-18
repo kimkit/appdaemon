@@ -4,22 +4,12 @@ idname: id
 idinit: 0
 libs:
   runtags: |
-    function runtags(jobname, args)
+    function runtags(scriptname, args)
         -- args = {}
         -- args["t1"] = {"arg1"}
         -- args["t2"] = {"arg2"}
-        local res, err = redis.call("#", "job.list", jobname .. "_")
-        if err ~= nil then
-            return err
-        end
-        for k, v in ipairs(res) do
-            tag = string.sub(v, string.len(jobname) + 4)
-            if args[tag] == nil then
-                redis.call("#", "job.stop", string.sub(v, 3))
-            end
-        end
         for k, v in pairs(args) do
-            ret, err = redis.call("#", "luascript.runner", scriptname, k, unpack(v))
+            local ret, err = redis.call("#", "luascript.runner", scriptname, k, unpack(v))
             if err ~= nil then
                 return err
             end

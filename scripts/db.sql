@@ -15,12 +15,12 @@ create table if not exists luascripts (
 
 insert into luascripts (name,script,status) values ('cron_example', '
 if scripttag == "" then
-    err = runtags(jobname, {
+    err = runtags(scriptname, {
         t1 = {"arg1"},
         t2 = {"arg2"},
     })
     if err ~= nil then
-        log.error("%v: %v", jobname, err)
+        log.error("%v: %v", scriptname, err)
     end
     sleep(500)
     return
