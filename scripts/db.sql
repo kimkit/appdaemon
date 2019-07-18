@@ -24,6 +24,8 @@ if now >= nexttime then
     log.debug("%v: %v %v", scriptname, res, err)
     res, err = redis.call("#", "job.list")
     log.debug("%v: %v %v", scriptname, res, err)
+    res, err = db.query("#", "select * from luascripts")
+    log.debug("%v: %v %v", scriptname, res, err)
     nexttime = cron:next()
 else
     sleep(200)

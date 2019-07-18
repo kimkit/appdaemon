@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis"
+	"github.com/kimkit/dbutil"
 	"github.com/kimkit/luactl"
 	"github.com/kimkit/lualib"
 	"github.com/yuin/gopher-lua"
@@ -16,12 +17,14 @@ var (
 	logLib   *LogLib
 	httpLib  *lualib.HttpLib
 	redisLib *lualib.RedisLib
+	dbLib    *lualib.DBLib
 )
 
 func initLuaLib() {
 	logLib = NewLogLib()
 	httpLib = lualib.NewHttpLib(map[string]*http.Client{"#": HttpClient})
 	redisLib = lualib.NewRedisLib(map[string]*redis.Client{"#": RedisClient})
+	dbLib = lualib.NewDBLib(map[string]*dbutil.DBWrapper{"#": DBClient})
 }
 
 func CreateStateHandler() *lua.LState {
@@ -32,9 +35,14 @@ func CreateStateHandler() *lua.LState {
 	ls.SetGlobal("uuid", ls.NewFunction(lualib.UUID))
 	ls.SetGlobal("md5", ls.NewFunction(lualib.MD5))
 	ls.SetGlobal("trim", ls.NewFunction(lualib.Trim))
+	ls.SetGlobal("querybuild", ls.NewFunction(lualib.QueryBuild))
+	ls.SetGlobal("queryparse", ls.NewFunction(lualib.QueryParse))
+	ls.SetGlobal("jsonencode", ls.NewFunction(lualib.JsonEncode))
+	ls.SetGlobal("jsondecode", ls.NewFunction(lualib.JsonDecode))
 	logLib.RegisterGlobal(ls, "log")
 	httpLib.RegisterGlobal(ls, "http")
 	redisLib.RegisterGlobal(ls, "redis")
+	dbLib.RegisterGlobal(ls, "db")
 	return ls
 }
 

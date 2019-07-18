@@ -11,6 +11,7 @@ import (
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/kimkit/config"
+	"github.com/kimkit/dbutil"
 	"github.com/kimkit/jobext"
 	"github.com/kimkit/lister"
 	"github.com/kimkit/logger"
@@ -49,6 +50,7 @@ var (
 	Lister         lister.Lister
 	LuaScriptStore = luactl.NewLuaScriptStore(luactl.LuaScriptStoreOptions{CreateStateHandler: CreateStateHandler})
 	HttpClient     = reqctl.NewClient(10)
+	DBClient       *dbutil.DBWrapper
 )
 
 func init() {
@@ -101,6 +103,7 @@ func init() {
 		if err != nil {
 			Logger.LogError("common.init", "%v", err)
 		} else {
+			DBClient = dbutil.NewDBRaw(db)
 			if Config.Sql != "" {
 				if Config.IdName == "" {
 					Config.IdName = "id"

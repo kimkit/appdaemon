@@ -9,6 +9,7 @@ require (
 	github.com/kimkit/cmdlib v0.0.0-20190517023525-4ca4d619162e
 	github.com/kimkit/config v0.0.0-20190710213055-dab728751fdf
 	github.com/kimkit/daemon v0.0.0-20190311070945-72a1e459e89d
+	github.com/kimkit/dbutil v0.0.0-20190718005856-fa8a1609bb8e
 	github.com/kimkit/jobctl v0.0.0-20190409020851-262d222c1b93
 	github.com/kimkit/jobext v0.0.0-20190524000718-705bf59952ad
 	github.com/kimkit/lister v0.0.0-20190605222412-4d3c2d38ae7a
