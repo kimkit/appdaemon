@@ -4,6 +4,7 @@ luascript:
   sql: "select id,name,script from luascript where status = 1 and id > %d order by id asc limit 64"
   idname: id
   idinit: 0
+  filterprefix: cron_
   libs:
     runtags: |
       function runtags(scriptname, args)

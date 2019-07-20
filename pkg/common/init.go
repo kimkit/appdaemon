@@ -42,12 +42,13 @@ var (
 		Redis          map[string]*RedisConfig `json:"redis"`
 		DB             map[string]*DBConfig    `json:"db"`
 		LuaScript      struct {
-			Enable   bool              `json:"-"`
-			DBConfig *DBConfig         `json:"dbconfig"`
-			Sql      string            `json:"sql"`
-			IdName   string            `json:"idname"`
-			IdInit   int               `json:"idinit"`
-			Libs     map[string]string `json:"libs"`
+			Enable       bool              `json:"-"`
+			DBConfig     *DBConfig         `json:"dbconfig"`
+			Sql          string            `json:"sql"`
+			IdName       string            `json:"idname"`
+			IdInit       int               `json:"idinit"`
+			FilterPrefix string            `json:"filterprefix"`
+			Libs         map[string]string `json:"libs"`
 		} `json:"luascript"`
 		UI struct {
 			Run     bool              `json:"-"`

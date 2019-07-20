@@ -2,6 +2,7 @@ package cmdsvr
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/kimkit/appdaemon/pkg/common"
@@ -81,9 +82,11 @@ func (job *luaScriptLoaderJob) ExecHandler(_job *jobctl.Job) {
 				if err := common.LuaScriptStore.Add(row["name"], row["script"]); err != nil {
 					common.Logger.LogError("cmdsvr.luaScriptLoaderJob.ExecHandler", "%v (%s)", err, row["name"])
 				} else {
-					// common.Logger.LogDebug("cmdsvr.luaScriptLoaderJob.ExecHandler", "script `%v` loaded", row["name"])
-					if err := common.RedisClient.Do(job.runnerName, row["name"]).Err(); err != nil {
-						common.Logger.LogError("cmdsvr.luaScriptLoaderJob.ExecHandler", "%v (%s)", err, row["name"])
+					if strings.HasPrefix(row["name"], common.Config.LuaScript.FilterPrefix) {
+						// common.Logger.LogDebug("cmdsvr.luaScriptLoaderJob.ExecHandler", "script `%v` loaded", row["name"])
+						if err := common.RedisClient.Do(job.runnerName, row["name"]).Err(); err != nil {
+							common.Logger.LogError("cmdsvr.luaScriptLoaderJob.ExecHandler", "%v (%s)", err, row["name"])
+						}
 					}
 				}
 			}
