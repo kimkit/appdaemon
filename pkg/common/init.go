@@ -1,7 +1,6 @@
 package common
 
 import (
-	"database/sql"
 	"flag"
 	"fmt"
 	"net/http"
@@ -13,8 +12,8 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/kimkit/config"
 	"github.com/kimkit/dbutil"
+	"github.com/kimkit/ginsvr"
 	"github.com/kimkit/jobext"
-	"github.com/kimkit/lister"
 	"github.com/kimkit/logger"
 	"github.com/kimkit/luactl"
 	"github.com/kimkit/redsvr"
@@ -39,20 +38,31 @@ var (
 		ReportInterval int                     `json:"reportinterval"`
 		StopTimeout    int                     `json:"stoptimeout"`
 		Tasks          []*TaskConfig           `json:"tasks"`
-		Dsn            string                  `json:"dsn"`
-		Sql            string                  `json:"sql"`
-		IdName         string                  `json:"idname"`
-		IdInit         int                     `json:"idinit"`
-		Libs           map[string]string       `json:"libs"`
 		Http           map[string]*HttpConfig  `json:"http"`
 		Redis          map[string]*RedisConfig `json:"redis"`
 		DB             map[string]*DBConfig    `json:"db"`
+		LuaScript      struct {
+			Enable   bool              `json:"-"`
+			DBConfig *DBConfig         `json:"dbconfig"`
+			Sql      string            `json:"sql"`
+			IdName   string            `json:"idname"`
+			IdInit   int               `json:"idinit"`
+			Libs     map[string]string `json:"libs"`
+		} `json:"luascript"`
+		UI struct {
+			Run     bool              `json:"-"`
+			LogFile string            `json:"-"`
+			PidFile string            `json:"-"`
+			Addr    string            `json:"addr"`
+			Salt    string            `json:"salt"`
+			User    map[string]string `json:"user"`
+		} `json:"ui"`
 	}{}
 	JobManager     = jobext.NewJobManager()
-	Cmdsvr         = redsvr.NewServer()
+	ApiSvr         = ginsvr.NewServer()
+	CmdSvr         = redsvr.NewServer()
 	RedisClient    *redis.Client
 	Logger         = logger.NewLogger()
-	Lister         lister.Lister
 	LuaScriptStore = luactl.NewLuaScriptStore(luactl.LuaScriptStoreOptions{CreateStateHandler: CreateStateHandler})
 	HttpClient     = reqctl.NewClient(3)
 	DBClient       *dbutil.DBWrapper
@@ -65,6 +75,7 @@ func init() {
 	disableDaemon := flag.Bool("disable-daemon", false, "Disable daemon")
 	enablePredefinedTasks := flag.Bool("enable-predefined-tasks", false, "Enable predefined tasks")
 	enableLuaScript := flag.Bool("enable-lua-script", false, "Enable lua script")
+	ui := flag.Bool("ui", false, "Run UI server")
 
 	config.Load(&Config)
 	if *disableDaemon {
@@ -73,9 +84,8 @@ func init() {
 	if !*enablePredefinedTasks {
 		Config.Tasks = nil
 	}
-	if !*enableLuaScript {
-		Config.Dsn = ""
-	}
+	Config.LuaScript.Enable = *enableLuaScript
+	Config.UI.Run = *ui
 
 	if Config.Addr == "" {
 		Config.Addr = ":6380"
@@ -102,24 +112,15 @@ func init() {
 	Config.LogFile = fmt.Sprintf("%s%c%s", Config.LogsDir, os.PathSeparator, "appdaemon.log")
 	Config.PidFile = fmt.Sprintf("%s%c%s", Config.LogsDir, os.PathSeparator, "appdaemon.pid")
 	Config.JobsFile = fmt.Sprintf("%s%c%s", Config.LogsDir, os.PathSeparator, "jobs.json")
+	Config.UI.LogFile = fmt.Sprintf("%s%c%s", Config.LogsDir, os.PathSeparator, "appdaemon-ui.log")
+	Config.UI.PidFile = fmt.Sprintf("%s%c%s", Config.LogsDir, os.PathSeparator, "appdaemon-ui.pid")
+	if Config.UI.Addr == "" {
+		Config.UI.Addr = ":7982"
+	}
 	RedisClient = redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("127.0.0.1:%s", strings.Split(Config.Addr, ":")[1]),
 		Password: password,
 	})
-	if Config.Dsn != "" {
-		db, err := sql.Open("mysql", Config.Dsn)
-		if err != nil {
-			Logger.LogError("common.init", "%v", err)
-		} else {
-			DBClient = dbutil.NewDBRaw(db)
-			if Config.Sql != "" {
-				if Config.IdName == "" {
-					Config.IdName = "id"
-				}
-				Lister = lister.NewDBLister(db, Config.Sql, Config.IdName, Config.IdInit)
-			}
-		}
-	}
 	initHttp()
 	initRedis()
 	initDB()
@@ -200,7 +201,18 @@ func initDB() {
 			}
 		}
 	}
-	DB["#"] = DBClient
+	if Config.LuaScript.DBConfig != nil {
+		alias := Config.LuaScript.DBConfig.Alias
+		if alias == "" {
+			DBClient = NewDB(Config.LuaScript.DBConfig)
+			DB["#"] = DBClient
+		} else {
+			if dbw, ok := DB[alias]; ok {
+				DBClient = dbw
+				DB["#"] = dbw
+			}
+		}
+	}
 }
 
 type HttpConfig struct {
@@ -251,4 +263,34 @@ func NewDB(config *DBConfig) *dbutil.DBWrapper {
 		config.MaxIdleConns,
 		config.ConnMaxLifetime,
 	)
+}
+
+var (
+	ErrHttpNotFound  = fmt.Errorf("ErrHttpNotFound")
+	ErrRedisNotFound = fmt.Errorf("ErrRedisNotFound")
+	ErrDBNotFound    = fmt.Errorf("ErrDBNotFound")
+)
+
+func GetHttp(name string) (*http.Client, error) {
+	client, ok := Http[name]
+	if !ok {
+		return nil, ErrHttpNotFound
+	}
+	return client, nil
+}
+
+func GetRedis(name string) (*redis.Client, error) {
+	client, ok := Redis[name]
+	if !ok {
+		return nil, ErrRedisNotFound
+	}
+	return client, nil
+}
+
+func GetDB(name string) (*dbutil.DBWrapper, error) {
+	dbw, ok := DB[name]
+	if !ok {
+		return nil, ErrDBNotFound
+	}
+	return dbw, nil
 }

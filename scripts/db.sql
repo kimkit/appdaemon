@@ -1,10 +1,9 @@
 create database if not exists base default charset utf8mb4;
 use base;
-drop table if exists luascripts;
-create table if not exists luascripts (
+drop table if exists luascript;
+create table if not exists luascript (
     id int unsigned auto_increment primary key,
-    description varchar(256) not null default '',
-    name varchar(256) not null default '' unique key,
+    name varchar(128) not null default '' unique key,
     script text,
     status tinyint not null default 0,
     createtime datetime,
@@ -13,7 +12,7 @@ create table if not exists luascripts (
     updateuser varchar(64) not null default ''
 ) engine=innodb default charset utf8mb4;
 
-insert into luascripts (name,script,status) values ('cron_example', '
+insert into luascript (name,script,status) values ('cron_example', '
 if scripttag == "" then
     err = runtags(scriptname, {
         t1 = {"arg1"},
@@ -39,7 +38,7 @@ if now >= nexttime then
     log.debug("%v: %v %v", jobname, res, err)
     res, err = redis.call("#", "job.list")
     log.debug("%v: %v %v", jobname, res, err)
-    res, err = db.query("#", "select * from luascripts")
+    res, err = db.query("#", "select * from luascript")
     log.debug("%v: %v %v", jobname, res, err)
     nexttime = cron:next()
 else

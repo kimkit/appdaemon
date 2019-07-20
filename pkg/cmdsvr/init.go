@@ -33,20 +33,20 @@ func authHandler(cmd *redsvr.Command, args []string, conn *redsvr.Conn) error {
 }
 
 func init() {
-	common.Cmdsvr.Register(cmdlib.NewPingCommand("ping", nil))
-	common.Cmdsvr.Register(cmdlib.NewEchoCommand("echo", nil))
-	common.Cmdsvr.Register(cmdlib.NewAuthCommand("auth", common.Config.Passwords))
-	common.Cmdsvr.Register(cmdlib.NewJobListCommand("job.list", authHandler, common.JobManager))
-	common.Cmdsvr.Register(cmdlib.NewJobCountCommand("job.count", authHandler, common.JobManager))
-	common.Cmdsvr.Register(cmdlib.NewJobStartCommand("job.start", authHandler, common.JobManager))
-	common.Cmdsvr.Register(cmdlib.NewJobStopCommand("job.stop", authHandler, common.JobManager))
-	common.Cmdsvr.Register(cmdlib.NewJobStopAllCommand("job.stopAll", authHandler, common.JobManager))
-	common.Cmdsvr.Register(cmdlib.NewJobCleanCommand("job.clean", authHandler, common.JobManager))
-	common.Cmdsvr.Register(newTaskListCommand("task.list", authHandler))
-	common.Cmdsvr.Register(newTaskAddCommand("task.add", authHandler))
-	common.Cmdsvr.Register(newTaskDeleteCommand("task.delete", authHandler))
-	common.Cmdsvr.Register(newLuaScriptRunnerCommand("luascript.runner", authHandler))
-	common.Cmdsvr.Register(newLuaScriptLoaderCommand("luascript.loader", "luascript.runner", authHandler))
+	common.CmdSvr.Register(cmdlib.NewPingCommand("ping", nil))
+	common.CmdSvr.Register(cmdlib.NewEchoCommand("echo", nil))
+	common.CmdSvr.Register(cmdlib.NewAuthCommand("auth", common.Config.Passwords))
+	common.CmdSvr.Register(cmdlib.NewJobListCommand("job.list", authHandler, common.JobManager))
+	common.CmdSvr.Register(cmdlib.NewJobCountCommand("job.count", authHandler, common.JobManager))
+	common.CmdSvr.Register(cmdlib.NewJobStartCommand("job.start", authHandler, common.JobManager))
+	common.CmdSvr.Register(cmdlib.NewJobStopCommand("job.stop", authHandler, common.JobManager))
+	common.CmdSvr.Register(cmdlib.NewJobStopAllCommand("job.stopAll", authHandler, common.JobManager))
+	common.CmdSvr.Register(cmdlib.NewJobCleanCommand("job.clean", authHandler, common.JobManager))
+	common.CmdSvr.Register(newTaskListCommand("task.list", authHandler))
+	common.CmdSvr.Register(newTaskAddCommand("task.add", authHandler))
+	common.CmdSvr.Register(newTaskDeleteCommand("task.delete", authHandler))
+	common.CmdSvr.Register(newLuaScriptRunnerCommand("luascript.runner", authHandler))
+	common.CmdSvr.Register(newLuaScriptLoaderCommand("luascript.loader", "luascript.runner", authHandler))
 }
 
 func Run() {
@@ -54,13 +54,13 @@ func Run() {
 		daemon.Daemon(common.Config.LogFile, common.Config.PidFile)
 	}
 	jobInfos := common.GetTaskInfos()
-	if common.Lister != nil {
+	if common.Config.LuaScript.Enable {
 		jobInfos = append(jobInfos, []interface{}{"luascript.loader", "start"})
 	}
 	common.JobManager.LoadJobs(common.Config.JobsFile, func(info []interface{}) error {
 		return common.RedisClient.Do(info...).Err()
 	}, jobInfos...)
-	common.Cmdsvr.ListenAndServe(common.Config.Addr)
+	common.CmdSvr.ListenAndServe(common.Config.Addr)
 	common.Logger.LogInfo("cmdsvr.Run", "save running jobs ...")
 	common.JobManager.SaveRunningJobs(common.Config.JobsFile)
 	common.Logger.LogInfo("cmdsvr.Run", "stop running jobs ...")

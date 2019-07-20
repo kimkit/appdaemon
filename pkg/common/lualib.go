@@ -41,7 +41,7 @@ func CreateStateHandler() *lua.LState {
 	httpLib.RegisterGlobal(ls, "http")
 	redisLib.RegisterGlobal(ls, "redis")
 	dbLib.RegisterGlobal(ls, "db")
-	for name, script := range Config.Libs {
+	for name, script := range Config.LuaScript.Libs {
 		if err := ls.DoString(script); err != nil {
 			Logger.LogError("common.CreateStateHandler", "load lua script failed: %v (%s)", err, name)
 		}

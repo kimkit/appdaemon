@@ -6,6 +6,7 @@ import (
 
 	"github.com/kimkit/appdaemon/pkg/common"
 	"github.com/kimkit/jobctl"
+	"github.com/kimkit/lister"
 	"github.com/kimkit/redsvr"
 )
 
@@ -39,6 +40,7 @@ type luaScriptLoaderJob struct {
 	step       int
 	lastTime   int64
 	runnerName string
+	ls         lister.Lister
 }
 
 func (job *luaScriptLoaderJob) InitHandler(_job *jobctl.Job) {
@@ -49,12 +51,26 @@ func (job *luaScriptLoaderJob) InitHandler(_job *jobctl.Job) {
 
 func (job *luaScriptLoaderJob) ExecHandler(_job *jobctl.Job) {
 	if job.step == 0 {
-		if common.Lister == nil {
-			common.Logger.LogError("cmdsvr.luaScriptLoaderJob.ExecHandler", "lister should not be nil")
+		if common.DBClient == nil {
+			common.Logger.LogError("cmdsvr.luaScriptLoaderJob.ExecHandler", "db client should not be nil")
 			_job.Stop(0)
 			return
 		}
-		rows, err := common.Lister.FetchRows()
+		if job.ls == nil {
+			db, err := common.DBClient.Open()
+			if err != nil {
+				common.Logger.LogError("cmdsvr.luaScriptLoaderJob.ExecHandler", "%v", err)
+				time.Sleep(time.Millisecond * 500)
+				return
+			}
+			job.ls = lister.NewDBLister(
+				db,
+				common.Config.LuaScript.Sql,
+				common.Config.LuaScript.IdName,
+				common.Config.LuaScript.IdInit,
+			)
+		}
+		rows, err := job.ls.FetchRows()
 		if err != nil {
 			common.Logger.LogError("cmdsvr.luaScriptLoaderJob.ExecHandler", "%v", err)
 			time.Sleep(time.Millisecond * 500)
