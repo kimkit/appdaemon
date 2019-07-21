@@ -14,6 +14,7 @@ require (
 	github.com/kimkit/daemon v0.0.0-20190311070945-72a1e459e89d
 	github.com/kimkit/dbutil v0.0.0-20190718005856-fa8a1609bb8e
 	github.com/kimkit/ginsvr v0.0.0-20190422062603-59ab961f4e48
+	github.com/kimkit/iputil v0.0.0-20190721080944-abe76cf5c995
 	github.com/kimkit/jobctl v0.0.0-20190409020851-262d222c1b93
 	github.com/kimkit/jobext v0.0.0-20190524000718-705bf59952ad
 	github.com/kimkit/lister v0.0.0-20190605222412-4d3c2d38ae7a

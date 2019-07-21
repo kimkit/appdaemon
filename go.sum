@@ -53,6 +53,8 @@ github.com/kimkit/dbutil v0.0.0-20190718005856-fa8a1609bb8e/go.mod h1:E7dk82QKqz
 github.com/kimkit/ginsvr v0.0.0-20190422062603-59ab961f4e48 h1:qtc3eKTm/0k9YBhIuWowQ1w+lGY5F5Q/QdL7LfqKKD4=
 github.com/kimkit/ginsvr v0.0.0-20190422062603-59ab961f4e48/go.mod h1:uZLNm28PPgZVjgDce8a4gm9WejpdplLTmusQs0HNR+8=
 github.com/kimkit/hooker v0.0.0-20190625005221-cec8202f0efb/go.mod h1:PTASPc5lFUNRT6POJLghXlKhKHExj0+W3SDa8hYTmKk=
+github.com/kimkit/iputil v0.0.0-20190721080944-abe76cf5c995 h1:brfi2ARLgmeMgbSdFqOe0VcSMVoe1kz14SETkHl5KXY=
+github.com/kimkit/iputil v0.0.0-20190721080944-abe76cf5c995/go.mod h1:caDthX5YcygMd+A7fsKjruxcq5eiACrAjvIEjg6AtZI=
 github.com/kimkit/jobctl v0.0.0-20190327070424-db1f05fd1b1b/go.mod h1:Fm/8FZYTlOCqiXAt//lxi8Fg8CZis8+aKz0yhz7PjGM=
 github.com/kimkit/jobctl v0.0.0-20190409020851-262d222c1b93 h1:T4QuJUOZzyC4odg7U6MDUQ7kEFN/fkTYyrldGgJTlAU=
 github.com/kimkit/jobctl v0.0.0-20190409020851-262d222c1b93/go.mod h1:Fm/8FZYTlOCqiXAt//lxi8Fg8CZis8+aKz0yhz7PjGM=

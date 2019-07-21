@@ -5,6 +5,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/kimkit/iputil"
 	"github.com/kimkit/luactl"
 	"github.com/kimkit/lualib"
 	"github.com/yuin/gopher-lua"
@@ -37,6 +38,8 @@ func CreateStateHandler() *lua.LState {
 	ls.SetGlobal("queryparse", ls.NewFunction(lualib.QueryParse))
 	ls.SetGlobal("jsonencode", ls.NewFunction(lualib.JsonEncode))
 	ls.SetGlobal("jsondecode", ls.NewFunction(lualib.JsonDecode))
+	ls.SetGlobal("getserveriplist", ls.NewFunction(GetServerIpList))
+	ls.SetGlobal("getserveriplistbyname", ls.NewFunction(GetServerIpListByName))
 	logLib.RegisterGlobal(ls, "log")
 	httpLib.RegisterGlobal(ls, "http")
 	redisLib.RegisterGlobal(ls, "redis")
@@ -113,4 +116,24 @@ func (ll *LogLib) Warning(ls *lua.LState) int {
 func (ll *LogLib) Debug(ls *lua.LState) int {
 	output(ls, fmt.Sprintf("%s DEBUG ", time.Now().Format("2006/01/02 15:04:05")), "\n")
 	return 0
+}
+
+func GetServerIpList(ls *lua.LState) int {
+	ips := iputil.GetServerIpList()
+	var res []interface{}
+	for _, ip := range ips {
+		res = append(res, ip.String())
+	}
+	ls.Push(lualib.GoToLua(ls, res))
+	return 1
+}
+
+func GetServerIpListByName(ls *lua.LState) int {
+	ips := iputil.GetServerIpListByName(ls.ToString(1))
+	var res []interface{}
+	for _, ip := range ips {
+		res = append(res, ip.String())
+	}
+	ls.Push(lualib.GoToLua(ls, res))
+	return 1
 }
