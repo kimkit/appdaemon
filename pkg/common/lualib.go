@@ -41,7 +41,7 @@ func CreateStateHandler() *lua.LState {
 	ls.SetGlobal("jsondecode", ls.NewFunction(lualib.JsonDecode))
 	ls.SetGlobal("getserveriplist", ls.NewFunction(GetServerIpList))
 	ls.SetGlobal("getserveriplistbyname", ls.NewFunction(GetServerIpListByName))
-	ls.SetGlobal("newredisclient", ls.NewFunction(NewRedisClient))
+	ls.SetGlobal("newredisproxy", ls.NewFunction(NewRedisProxy))
 	logLib.RegisterGlobal(ls, "log")
 	httpLib.RegisterGlobal(ls, "http")
 	redisLib.RegisterGlobal(ls, "redis")
@@ -140,13 +140,14 @@ func GetServerIpListByName(ls *lua.LState) int {
 	return 1
 }
 
-func NewRedisClient(ls *lua.LState) int {
+func NewRedisProxy(ls *lua.LState) int {
+	password := ""
+	if len(Config.Passwords) > 0 {
+		password = Config.Passwords[0]
+	}
 	client := NewRedis(&RedisConfig{
-		Addr:         ls.ToString(1),
-		Password:     ls.ToString(2),
-		DB:           ls.ToInt(3),
-		PoolSize:     ls.ToInt(4),
-		MinIdleConns: ls.ToInt(5),
+		Addr:     ls.ToString(1),
+		Password: password,
 	})
 	redisLib := lualib.NewRedisLib(map[string]*redis.Client{"#": client})
 	ud := ls.NewUserData()
