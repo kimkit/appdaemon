@@ -5,6 +5,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/go-redis/redis"
 	"github.com/kimkit/iputil"
 	"github.com/kimkit/luactl"
 	"github.com/kimkit/lualib"
@@ -40,6 +41,7 @@ func CreateStateHandler() *lua.LState {
 	ls.SetGlobal("jsondecode", ls.NewFunction(lualib.JsonDecode))
 	ls.SetGlobal("getserveriplist", ls.NewFunction(GetServerIpList))
 	ls.SetGlobal("getserveriplistbyname", ls.NewFunction(GetServerIpListByName))
+	ls.SetGlobal("newredisclient", ls.NewFunction(NewRedisClient))
 	logLib.RegisterGlobal(ls, "log")
 	httpLib.RegisterGlobal(ls, "http")
 	redisLib.RegisterGlobal(ls, "redis")
@@ -136,4 +138,57 @@ func GetServerIpListByName(ls *lua.LState) int {
 	}
 	ls.Push(lualib.GoToLua(ls, res))
 	return 1
+}
+
+func NewRedisClient(ls *lua.LState) int {
+	client := NewRedis(&RedisConfig{
+		Addr:         ls.ToString(1),
+		Password:     ls.ToString(2),
+		DB:           ls.ToInt(3),
+		PoolSize:     ls.ToInt(4),
+		MinIdleConns: ls.ToInt(5),
+	})
+	redisLib := lualib.NewRedisLib(map[string]*redis.Client{"#": client})
+	ud := ls.NewUserData()
+	ud.Value = redisLib
+	index := ls.NewTable()
+	index.RawSetString("call", ls.NewFunction(redisCall))
+	index.RawSetString("pipeline", ls.NewFunction(redisPipeline))
+	meta := ls.NewTable()
+	meta.RawSetString("__index", index)
+	ud.Metatable = meta
+	ls.Push(ud)
+	return 1
+}
+
+func redisCall(ls *lua.LState) int {
+	ud := ls.CheckUserData(1)
+	redisLib := ud.Value.(*lualib.RedisLib)
+	var args []lua.LValue
+	for i := 2; i <= ls.GetTop(); i++ {
+		args = append(args, ls.Get(i))
+	}
+	ls.Push(ls.NewFunction(redisLib.Call))
+	ls.Push(lua.LString("#"))
+	for _, arg := range args {
+		ls.Push(arg)
+	}
+	ls.Call(len(args)+1, 2)
+	return 2
+}
+
+func redisPipeline(ls *lua.LState) int {
+	ud := ls.CheckUserData(1)
+	redisLib := ud.Value.(*lualib.RedisLib)
+	var args []lua.LValue
+	for i := 2; i <= ls.GetTop(); i++ {
+		args = append(args, ls.Get(i))
+	}
+	ls.Push(ls.NewFunction(redisLib.Pipeline))
+	ls.Push(lua.LString("#"))
+	for _, arg := range args {
+		ls.Push(arg)
+	}
+	ls.Call(len(args)+1, 2)
+	return 2
 }

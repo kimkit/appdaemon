@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
@@ -68,6 +69,7 @@ var (
 	HttpClient     = reqctl.NewClient(3)
 	DBClient       *dbutil.DBWrapper
 	Http           = make(map[string]*http.Client)
+	RedisStore     sync.Map
 	Redis          = make(map[string]*redis.Client)
 	DB             = make(map[string]*dbutil.DBWrapper)
 )
@@ -235,13 +237,25 @@ type RedisConfig struct {
 }
 
 func NewRedis(config *RedisConfig) *redis.Client {
-	return redis.NewClient(&redis.Options{
-		Addr:         config.Addr,
-		Password:     config.Password,
-		DB:           config.DB,
-		PoolSize:     config.PoolSize,
-		MinIdleConns: config.MinIdleConns,
-	})
+	key := fmt.Sprintf(
+		"%s|%s|%d|%d|%d",
+		config.Addr,
+		config.Password,
+		config.DB,
+		config.PoolSize,
+		config.MinIdleConns,
+	)
+	client, ok := RedisStore.Load(key)
+	if !ok {
+		client, _ = RedisStore.LoadOrStore(key, redis.NewClient(&redis.Options{
+			Addr:         config.Addr,
+			Password:     config.Password,
+			DB:           config.DB,
+			PoolSize:     config.PoolSize,
+			MinIdleConns: config.MinIdleConns,
+		}))
+	}
+	return client.(*redis.Client)
 }
 
 type DBConfig struct {
