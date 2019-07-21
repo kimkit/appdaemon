@@ -1,9 +1,6 @@
 package apisvr
 
 import (
-	stdurl "net/url"
-	"strings"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/kimkit/appdaemon/pkg/common"
@@ -14,11 +11,7 @@ import (
 func init() {
 	config := cors.DefaultConfig()
 	config.AllowOriginFunc = func(origin string) bool {
-		url, err := stdurl.Parse(origin)
-		if err == nil && strings.Split(url.Host, ":")[0] == "localhost" {
-			return true
-		}
-		return false
+		return true
 	}
 	common.ApiSvr.Engine.Use(cors.New(config))
 
