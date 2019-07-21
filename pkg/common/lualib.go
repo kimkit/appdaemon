@@ -41,6 +41,7 @@ func CreateStateHandler() *lua.LState {
 	ls.SetGlobal("jsondecode", ls.NewFunction(lualib.JsonDecode))
 	ls.SetGlobal("getserveriplist", ls.NewFunction(GetServerIpList))
 	ls.SetGlobal("getserveriplistbyname", ls.NewFunction(GetServerIpListByName))
+	ls.SetGlobal("getserverport", ls.NewFunction(GetServerPort))
 	ls.SetGlobal("newredisproxy", ls.NewFunction(NewRedisProxy))
 	logLib.RegisterGlobal(ls, "log")
 	httpLib.RegisterGlobal(ls, "http")
@@ -137,6 +138,11 @@ func GetServerIpListByName(ls *lua.LState) int {
 		res = append(res, ip.String())
 	}
 	ls.Push(lualib.GoToLua(ls, res))
+	return 1
+}
+
+func GetServerPort(ls *lua.LState) int {
+	ls.Push(lua.LNumber(Config.Port))
 	return 1
 }
 

@@ -33,6 +33,7 @@ var (
 		LogFile        string                  `json:"-"`
 		PidFile        string                  `json:"-"`
 		Addr           string                  `json:"addr"`
+		Port           int                     `json:"-"`
 		Passwords      []string                `json:"passwords"`
 		JobsFile       string                  `json:"-"`
 		LogsDir        string                  `json:"logsdir"`
@@ -96,6 +97,9 @@ func init() {
 	if !strings.Contains(Config.Addr, ":") {
 		Config.Addr += ":6380"
 	}
+	arr := strings.Split(Config.Addr, ":")
+	port, _ := strconv.Atoi(arr[len(arr)-1])
+	Config.Port = port
 	if Config.LogsDir == "" {
 		Config.LogsDir = "logs"
 	}
