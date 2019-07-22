@@ -19,3 +19,11 @@ luascript:
           end
           return nil
       end
+    outputhook: |
+      function outputhook(line)
+        local ips = getserveriplist()
+        local addr = ips[1] .. ":" .. getserverport()
+        local createtime = os.date("%Y-%m-%d %H:%M:%S")
+        local sql = "insert into output (name,addr,line,createtime) values (?, ?, ?, ?)"
+        db.insert("#", sql, scriptname, addr, line, createtime)
+      end
