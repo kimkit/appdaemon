@@ -23,6 +23,7 @@ func init() {
 	common.ApiSvr.Register(&UpdateLuaScriptController{Path: "/UpdateLuaScript"})
 	common.ApiSvr.Register(&UpdateLuaScriptStatusController{Path: "/UpdateLuaScriptStatus"})
 	common.ApiSvr.Register(&DeleteLuaScriptController{Path: "/DeleteLuaScript"})
+	common.ApiSvr.Register(&GetOutputListController{Path: "/GetOutputList"})
 
 	if handler, err := static.NewHandler("/"); err != nil {
 		common.Logger.LogError("apisvr.init", "%v", err)

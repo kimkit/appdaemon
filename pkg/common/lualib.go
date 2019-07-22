@@ -79,6 +79,12 @@ func output(ls *lua.LState, prefix, suffix string) {
 		Logger.LogError("common.output", "%v", err)
 		return
 	}
+	outputHook := ls.GetGlobal("outputhook")
+	if _, ok := outputHook.(*lua.LFunction); ok {
+		ls.Push(outputHook)
+		ls.Push(lua.LString(str))
+		ls.Call(1, 0)
+	}
 }
 
 func Printf(ls *lua.LState) int {

@@ -2,7 +2,7 @@ create database if not exists base default charset utf8mb4;
 use base;
 drop table if exists luascript;
 create table if not exists luascript (
-    id int unsigned auto_increment primary key,
+    id bigint unsigned auto_increment primary key,
     name varchar(128) not null default '' unique key,
     script text,
     status tinyint not null default 0,
@@ -46,9 +46,19 @@ else
 end
 ', 1);
 
+drop table if exists output;
+create table if not exists output (
+    id bigint unsigned auto_increment primary key,
+    name varchar(128) not null default '',
+    addr varchar(128) not null default '',
+    line text,
+    createtime datetime,
+    index name_id (name, id)
+) engine=innodb default charset utf8mb4;
+
 drop table if exists server;
 create table if not exists server (
-    id int unsigned auto_increment primary key,
+    id bigint unsigned auto_increment primary key,
     addr varchar(128) not null default '' unique key,
     status tinyint not null default 0,
     updatetime datetime
@@ -56,7 +66,7 @@ create table if not exists server (
 
 drop table if exists task;
 create table if not exists task (
-    id int unsigned auto_increment primary key,
+    id bigint unsigned auto_increment primary key,
     name varchar(128) not null default '' unique key,
     addr varchar(128) not null default '',
     status tinyint not null default 0,

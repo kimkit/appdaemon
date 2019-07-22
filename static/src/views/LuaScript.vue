@@ -60,6 +60,13 @@
             circle
             @click="deleteluascript(scope.row.id, scope.row.name)"
           ></el-button>
+          <el-button
+            class="el-button-action"
+            icon="el-icon-toilet-paper"
+            size="mini"
+            circle
+            @click="getoutputlist(scope.row.name)"
+          ></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -130,6 +137,20 @@
         <el-button size="medium" type="primary" @click="updateluascript">确定</el-button>
       </div>
     </el-dialog>
+    <el-dialog title="日志" :visible.sync="outputshow" width="750px" @close="outputhide">
+      <div class="output">
+        <p>
+          <i class="el-icon-loading"></i>
+        </p>
+      </div>
+      <div class="output" v-for="line in outputlines" v-bind:key="line.id">
+        <p v-if="line.title">
+          <i class="el-icon-arrow-right"></i>
+          <strong>{{ line.title }}</strong>
+        </p>
+        <p v-if="line.data">{{ line.data }}</p>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -154,7 +175,9 @@ export default {
       updateid: 0,
       updatename: '',
       updatestatus: false,
-      updatescript: ''
+      updatescript: '',
+      outputshow: false,
+      outputlines: []
     }
   },
   async mounted () {
@@ -295,6 +318,79 @@ end`
           this.getluascriptlist()
         }
       }
+    },
+    getoutputlist (name) {
+      if (this.ws) {
+        this.ws.close()
+      }
+      let url = api
+        .geturl('GetOutputList', { token: api.gettoken(), name })
+        .replace(/^http/i, 'ws')
+      if (!url.match(/^ws/i)) {
+        url =
+          document.location.protocol.replace(/^http/i, 'ws') +
+          '//' +
+          document.location.host +
+          url
+      }
+      this.$data.outputshow = true
+      this.$data.outputlines = []
+      this.ws = new WebSocket(url)
+      this.ws.onopen = e => {
+        console.log(e)
+        this.$data.outputlines.unshift({
+          id: Math.random()
+            .toString(36)
+            .slice(-8),
+          data: 'Connected'
+        })
+        this.$data.outputlines = this.$data.outputlines.slice(0, 100)
+      }
+      this.ws.onclose = e => {
+        this.$data.outputlines.unshift({
+          id: Math.random()
+            .toString(36)
+            .slice(-8),
+          data: 'Connection closed'
+        })
+        this.$data.outputlines = this.$data.outputlines.slice(0, 100)
+      }
+      this.ws.onerror = e => {
+        this.$data.outputlines.unshift({
+          id: Math.random()
+            .toString(36)
+            .slice(-8),
+          data: 'Error occur'
+        })
+        this.$data.outputlines = this.$data.outputlines.slice(0, 100)
+      }
+      this.ws.onmessage = e => {
+        let r = JSON.parse(e.data)
+        if (r.code === 1) {
+          this.$data.outputlines.unshift({
+            id: r.data.id,
+            title: r.data.addr,
+            data: r.data.line
+          })
+        } else if (r.code === -2) {
+          // ignore
+        } else {
+          this.$data.outputlines.unshift({
+            id: Math.random()
+              .toString(36)
+              .slice(-8),
+            title: 'Error',
+            data: 'code = ' + r.code + ' message = ' + r.message
+          })
+        }
+        this.$data.outputlines = this.$data.outputlines.slice(0, 100)
+      }
+    },
+    outputhide () {
+      if (this.ws) {
+        this.ws.close()
+        this.ws = null
+      }
     }
   }
 }
@@ -326,5 +422,16 @@ code {
 }
 .scripteditor {
   border: 1px solid #dcdfe6;
+}
+.output {
+  word-wrap: break-word;
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+.output p {
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", "Consolas", "source-code-pro",
+    monospace;
+  border-bottom: 1px solid #eeeeee;
+  font-size: 12px;
 }
 </style>

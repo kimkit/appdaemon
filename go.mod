@@ -8,6 +8,7 @@ require (
 	github.com/go-redis/redis v6.15.2+incompatible
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gorhill/cronexpr v0.0.0-20180427100037-88b0669f7d75
+	github.com/gorilla/websocket v1.4.0
 	github.com/kimkit/apires v0.0.0-20190328022601-89d5831bc037
 	github.com/kimkit/cmdlib v0.0.0-20190517023525-4ca4d619162e
 	github.com/kimkit/config v0.0.0-20190710213055-dab728751fdf
