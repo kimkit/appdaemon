@@ -45,3 +45,20 @@ else
     sleep(200)
 end
 ', 1);
+
+drop table if exists server;
+create table if not exists server (
+    id int unsigned auto_increment primary key,
+    addr varchar(128) not null default '' unique key,
+    status tinyint not null default 0,
+    updatetime datetime
+) engine=innodb default charset utf8mb4;
+
+drop table if exists task;
+create table if not exists task (
+    id int unsigned auto_increment primary key,
+    name varchar(128) not null default '' unique key,
+    addr varchar(128) not null default '',
+    status tinyint not null default 0,
+    createtime datetime
+) engine=innodb default charset utf8mb4;

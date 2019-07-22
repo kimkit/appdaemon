@@ -1,0 +1,71 @@
+version: "3"
+services:
+  mysql:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - ./scripts/db.sql:/docker-entrypoint-initdb.d/db.sql
+    networks:
+      appnet:
+        ipv4_address: 172.16.238.100
+  appdaemon_node1:
+    image: appdaemon
+    command:
+      - /appdaemon
+      - -c
+      - /config.yaml
+      - -enable-lua-script
+    volumes:
+      - ./config.yaml:/config.yaml
+      - ./config.yaml.cluster.luascript.yaml:/config.yaml.inc.luascript.yaml
+    networks:
+      appnet:
+        ipv4_address: 172.16.238.101
+  appdaemon_node2:
+    image: appdaemon
+    command:
+      - /appdaemon
+      - -c
+      - /config.yaml
+      - -enable-lua-script
+    volumes:
+      - ./config.yaml:/config.yaml
+      - ./config.yaml.cluster.luascript.yaml:/config.yaml.inc.luascript.yaml
+    networks:
+      appnet:
+        ipv4_address: 172.16.238.102
+  appdaemon_node3:
+    image: appdaemon
+    command:
+      - /appdaemon
+      - -c
+      - /config.yaml
+      - -enable-lua-script
+    volumes:
+      - ./config.yaml:/config.yaml
+      - ./config.yaml.cluster.luascript.yaml:/config.yaml.inc.luascript.yaml
+    networks:
+      appnet:
+        ipv4_address: 172.16.238.103
+  appdaemon-ui:
+    image: appdaemon
+    ports:
+      - 7983:7983
+    command:
+      - /appdaemon
+      - -c
+      - /config.yaml
+      - -ui
+    volumes:
+      - ./config.yaml:/config.yaml
+      - ./config.yaml.cluster.luascript.yaml:/config.yaml.inc.luascript.yaml
+      - ./config.yaml.cluster.ui.yaml:/config.yaml.inc.ui.yaml
+    networks:
+      - appnet
+networks:
+  appnet:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.238.0/24"
