@@ -337,7 +337,6 @@ end`
       this.$data.outputlines = []
       this.ws = new WebSocket(url)
       this.ws.onopen = e => {
-        console.log(e)
         this.$data.outputlines.unshift({
           id: Math.random()
             .toString(36)
