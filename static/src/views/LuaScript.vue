@@ -337,6 +337,7 @@ end`
       this.$data.outputlines = []
       this.ws = new WebSocket(url)
       this.ws.onopen = e => {
+        console.log(new Date(), e)
         this.$data.outputlines.unshift({
           id: Math.random()
             .toString(36)
@@ -346,6 +347,7 @@ end`
         this.$data.outputlines = this.$data.outputlines.slice(0, 100)
       }
       this.ws.onclose = e => {
+        console.log(new Date(), e)
         this.$data.outputlines.unshift({
           id: Math.random()
             .toString(36)
@@ -355,6 +357,7 @@ end`
         this.$data.outputlines = this.$data.outputlines.slice(0, 100)
       }
       this.ws.onerror = e => {
+        console.log(new Date(), e)
         this.$data.outputlines.unshift({
           id: Math.random()
             .toString(36)
@@ -364,6 +367,7 @@ end`
         this.$data.outputlines = this.$data.outputlines.slice(0, 100)
       }
       this.ws.onmessage = e => {
+        console.log(new Date(), e)
         let r = JSON.parse(e.data)
         if (r.code === 1) {
           this.$data.outputlines.unshift({

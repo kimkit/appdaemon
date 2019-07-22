@@ -47,7 +47,31 @@ func (c *GetOutputListController) GET(ctx *gin.Context) {
 		c.Failure(ctx, err)
 	}
 
-	defer ws.Close()
+	defer func() {
+		if err := ws.Close(); err != nil {
+			common.Logger.LogDebug("apisvr.GetOutputListController.GET", "%v", err)
+		}
+		common.Logger.LogDebug("apisvr.GetOutputListController.GET", "exit")
+	}()
+
+	go func() {
+		defer func() {
+			common.Logger.LogDebug("apisvr.GetOutputListController.GET", "exit reading")
+		}()
+		for {
+			typ, msg, err := ws.ReadMessage()
+			if err != nil {
+				common.Logger.LogDebug("apisvr.GetOutputListController.GET", "%v", err)
+				return
+			}
+			common.Logger.LogDebug("apisvr.GetOutputListController.GET", "%v %v", typ, string(msg))
+			if typ == websocket.PingMessage {
+				if err := ws.WriteMessage(websocket.PongMessage, []byte("pong")); err != nil {
+					common.Logger.LogDebug("apisvr.GetOutputListController.GET", "%v", err)
+				}
+			}
+		}
+	}()
 
 	id := "0"
 	limit := 100
@@ -65,6 +89,7 @@ func (c *GetOutputListController) GET(ctx *gin.Context) {
 		rows, err := dbutil.FetchAll(db.Query(sql, name))
 		if err != nil {
 			if err := ws.WriteJSON(gin.H{"code": -1, "message": err.Error()}); err != nil {
+				common.Logger.LogDebug("apisvr.GetOutputListController.GET", "%v", err)
 				return
 			}
 			time.Sleep(time.Millisecond * 500)
@@ -72,6 +97,7 @@ func (c *GetOutputListController) GET(ctx *gin.Context) {
 		}
 		if len(rows) == 0 {
 			if err := ws.WriteJSON(gin.H{"code": -2, "message": "empty"}); err != nil {
+				common.Logger.LogDebug("apisvr.GetOutputListController.GET", "%v", err)
 				return
 			}
 			time.Sleep(time.Millisecond * 500)
@@ -87,6 +113,7 @@ func (c *GetOutputListController) GET(ctx *gin.Context) {
 		for _, row := range rows {
 			id = row["id"]
 			if err := ws.WriteJSON(gin.H{"code": 1, "message": "OK", "data": row}); err != nil {
+				common.Logger.LogDebug("apisvr.GetOutputListController.GET", "%v", err)
 				return
 			}
 		}
