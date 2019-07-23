@@ -64,8 +64,8 @@ create table if not exists server (
     updatetime datetime
 ) engine=innodb default charset utf8mb4;
 
-drop table if exists task;
-create table if not exists task (
+drop table if exists job;
+create table if not exists job (
     id bigint unsigned auto_increment primary key,
     name varchar(128) not null default '' unique key,
     addr varchar(128) not null default '',
