@@ -3,6 +3,7 @@ package apisvr
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -75,7 +76,24 @@ func (c *GetOutputListController) GET(ctx *gin.Context) {
 	}()
 
 	id := "0"
-	limit := 100
+	limitStr := ctx.Query("limit")
+	limit := 0
+	if limitStr == "" {
+		limit = 100
+	} else {
+		_limit, err := strconv.Atoi(limitStr)
+		if err != nil {
+			limit = 100
+		} else {
+			if _limit <= 0 {
+				limit = 100
+			} else if _limit > 500 {
+				limit = 500
+			} else {
+				limit = _limit
+			}
+		}
+	}
 
 	for {
 		var sql string
