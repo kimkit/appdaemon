@@ -45,6 +45,7 @@ func (c *GetOutputListController) GET(ctx *gin.Context) {
 	ws, err := upgrader.Upgrade(ctx.Writer, ctx.Request, nil)
 	if err != nil {
 		c.Failure(ctx, err)
+		return
 	}
 
 	defer func() {
