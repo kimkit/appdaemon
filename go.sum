@@ -75,6 +75,8 @@ github.com/kimkit/lualib v0.0.0-20190714012921-b8dc8ce4eb50 h1:5yaQGQEiVWgwRVqoi
 github.com/kimkit/lualib v0.0.0-20190714012921-b8dc8ce4eb50/go.mod h1:0ue+f+MfEeRJiuqvnEbMC94ayM1T/34yZx3DUMXnN4Y=
 github.com/kimkit/lualib v0.0.0-20190718080008-75fb8f781b9a h1:FktSV5la1BCXNOqeyEBzJLT/2JuHBElkNjQ5F8TVrlA=
 github.com/kimkit/lualib v0.0.0-20190718080008-75fb8f781b9a/go.mod h1:0ue+f+MfEeRJiuqvnEbMC94ayM1T/34yZx3DUMXnN4Y=
+github.com/kimkit/lualib v0.0.0-20190723071335-9ccf967a423f h1:PH42QzPPfAp8r7WZD3mt2u3S9RjBvNkjx+8sm9/q2R8=
+github.com/kimkit/lualib v0.0.0-20190723071335-9ccf967a423f/go.mod h1:0ue+f+MfEeRJiuqvnEbMC94ayM1T/34yZx3DUMXnN4Y=
 github.com/kimkit/proctl v0.0.0-20190421063323-f7d3ecf97d21 h1:c9nbidxDnJADmgT46T2qD1AfAEmTDCoO/F8naqGjoUM=
 github.com/kimkit/proctl v0.0.0-20190421063323-f7d3ecf97d21/go.mod h1:u0lPj6IrMcBD8KTTl6L2Lx2/G2nSjRrkvHlj/OBsdV8=
 github.com/kimkit/redsvr v0.0.0-20190327070501-e1cdea9134f0/go.mod h1:MO6vIkHBYjqf9aEXct+EBuSrP6R9pb5W2xBM4tt0Gns=

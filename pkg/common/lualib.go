@@ -35,6 +35,7 @@ func CreateStateHandler() *lua.LState {
 	ls.SetGlobal("md5", ls.NewFunction(lualib.MD5))
 	ls.SetGlobal("trim", ls.NewFunction(lualib.Trim))
 	ls.SetGlobal("split", ls.NewFunction(lualib.Split))
+	ls.SetGlobal("random", ls.NewFunction(lualib.Random))
 	ls.SetGlobal("querybuild", ls.NewFunction(lualib.QueryBuild))
 	ls.SetGlobal("queryparse", ls.NewFunction(lualib.QueryParse))
 	ls.SetGlobal("jsonencode", ls.NewFunction(lualib.JsonEncode))
