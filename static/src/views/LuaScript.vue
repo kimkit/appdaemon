@@ -144,11 +144,11 @@
         </p>
       </div>
       <div class="output" v-for="line in outputlines" v-bind:key="line.id">
-        <p class="outputtitle" v-if="line.title" @click="line.full = line.full ? false : true">
-          <i :class="line.full ? 'el-icon-arrow-down' : 'el-icon-arrow-right'"></i>
+        <p class="outputtitle" v-if="line.title" @click="line.hide = line.hide ? false : true">
+          <i :class="line.hide ? 'el-icon-arrow-up' : 'el-icon-arrow-right'"></i>
           <strong>{{ line.title }}</strong>
         </p>
-        <p v-if="line.data" :class="line.full ? '' : 'outputfold'">{{ line.data }}</p>
+        <p v-if="line.data" :class="line.hide ? 'outputfold' : ''">{{ line.data }}</p>
       </div>
     </el-dialog>
   </el-card>
@@ -441,7 +441,6 @@ code {
   cursor: pointer;
 }
 .outputfold {
-  max-height: 34px;
-  overflow: hidden;
+  display: none;
 }
 </style>
