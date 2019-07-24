@@ -3,6 +3,7 @@ use base;
 drop table if exists luascript;
 create table if not exists luascript (
     id bigint unsigned auto_increment primary key,
+    addr varchar(128) not null default '',
     name varchar(128) not null default '' unique key,
     script text,
     status tinyint not null default 0,
@@ -62,13 +63,4 @@ create table if not exists server (
     addr varchar(128) not null default '' unique key,
     status tinyint not null default 0,
     updatetime datetime
-) engine=innodb default charset utf8mb4;
-
-drop table if exists job;
-create table if not exists job (
-    id bigint unsigned auto_increment primary key,
-    name varchar(128) not null default '' unique key,
-    addr varchar(128) not null default '',
-    status tinyint not null default 0,
-    createtime datetime
 ) engine=innodb default charset utf8mb4;

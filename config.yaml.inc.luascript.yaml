@@ -1,7 +1,7 @@
 luascript:
   dbconfig:
     dsn: "root@tcp(localhost)/base"
-  sql: "select id,name,script from luascript where status = 1 and id > %d order by id asc limit 64"
+  sql: "select id,addr,name,script from luascript where status = 1 and id > %d order by id asc limit 64"
   idname: id
   idinit: 0
   filterprefix: cron_
@@ -54,33 +54,16 @@ luascript:
             end
         end
       end
-    getrandomserveraddr: |
+    getserverlist: |
       function getrandomserveraddr()
-        local sql = "select addr from server where status = 1 and unix_timestamp() - unix_timestamp(updatetime) < 60 * 5 order by rand() desc limit 1"
+        local sql = "select addr from server where status = 1 and unix_timestamp() - unix_timestamp(updatetime) < 60 * 5 order by addr asc"
         local res, err = db.query("#", sql)
         if err ~= nil then
             return nil, err
         end
-        if #res == 0 then
-            return nil, "no available server"
+        local list = {}
+        for k, v in ipairs(res) do
+            table.insert(list, v["addr"])
         end
-        return res[1].addr, nil
-      end
-    contendjobaddr: |
-      function contendjobaddr(name, addr)
-        local createtime = os.date("%Y-%m-%d %H:%M:%S")
-        local sql = "insert ignore into job (name,addr,status,createtime) values (?,?,1,?)"
-        local ret, err = db.insert("#", sql, name, addr, createtime)
-        if err ~= nil then
-            return false, err
-        end
-        local sql = "select id from job where name = ? and addr = ?"
-        local res, err = db.query("#", sql, name, addr)
-        if err ~= nil then
-            return false, err
-        end
-        if #res == 0 then
-            return false, nil
-        end
-        return true, nil
+        return list, nil
       end

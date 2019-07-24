@@ -9,6 +9,7 @@ import (
 	"github.com/kimkit/jobctl"
 	"github.com/kimkit/lister"
 	"github.com/kimkit/redsvr"
+	"github.com/yuin/gopher-lua"
 )
 
 type luaScriptLoaderCommand struct {
@@ -42,12 +43,26 @@ type luaScriptLoaderJob struct {
 	lastTime   int64
 	runnerName string
 	ls         lister.Lister
+	addr       string
 }
 
 func (job *luaScriptLoaderJob) InitHandler(_job *jobctl.Job) {
 	job.step = 1
 	job.lastTime = 0
 	job.runnerName = common.GetMapValueString(&_job.Map, "runnerName")
+	ls := common.CreateStateHandler()
+	lv := ls.GetGlobal("getserveraddr")
+	if _, ok := lv.(*lua.LFunction); ok {
+		ls.Push(lv)
+		if err := ls.PCall(0, 1, nil); err != nil {
+			common.Logger.LogError("cmdsvr.luaScriptLoaderJob.InitHandler", "%v", err)
+		} else {
+			job.addr = ls.ToString(1)
+		}
+	}
+	if job.addr == "" {
+		common.Logger.LogWarning("cmdsvr.luaScriptLoaderJob.InitHandler", "cannot get server addr")
+	}
 }
 
 func (job *luaScriptLoaderJob) ExecHandler(_job *jobctl.Job) {
@@ -82,10 +97,12 @@ func (job *luaScriptLoaderJob) ExecHandler(_job *jobctl.Job) {
 				if err := common.LuaScriptStore.Add(row["name"], row["script"]); err != nil {
 					common.Logger.LogError("cmdsvr.luaScriptLoaderJob.ExecHandler", "%v (%s)", err, row["name"])
 				} else {
-					if strings.HasPrefix(row["name"], common.Config.LuaScript.FilterPrefix) {
-						// common.Logger.LogDebug("cmdsvr.luaScriptLoaderJob.ExecHandler", "script `%v` loaded", row["name"])
-						if err := common.RedisClient.Do(job.runnerName, row["name"]).Err(); err != nil {
-							common.Logger.LogError("cmdsvr.luaScriptLoaderJob.ExecHandler", "%v (%s)", err, row["name"])
+					if row["addr"] == "" || row["addr"] == job.addr {
+						if strings.HasPrefix(row["name"], common.Config.LuaScript.FilterPrefix) {
+							// common.Logger.LogDebug("cmdsvr.luaScriptLoaderJob.ExecHandler", "script `%v` loaded", row["name"])
+							if err := common.RedisClient.Do(job.runnerName, row["name"]).Err(); err != nil {
+								common.Logger.LogError("cmdsvr.luaScriptLoaderJob.ExecHandler", "%v (%s)", err, row["name"])
+							}
 						}
 					}
 				}
