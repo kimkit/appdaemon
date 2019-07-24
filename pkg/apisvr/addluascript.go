@@ -73,17 +73,19 @@ func (c *AddLuaScriptController) POST(ctx *gin.Context) {
 		return
 	}
 
-	rows, err = dbutil.FetchAll(db.Query(
-		"select id from server where addr = ? and status = 1",
-		addr,
-	))
-	if err != nil {
-		c.Failure(ctx, err)
-		return
-	}
-	if len(rows) == 0 {
-		c.Failure(ctx, ErrServerAddrNotExist)
-		return
+	if addr != "" {
+		rows, err = dbutil.FetchAll(db.Query(
+			"select id from server where addr = ? and status = 1",
+			addr,
+		))
+		if err != nil {
+			c.Failure(ctx, err)
+			return
+		}
+		if len(rows) == 0 {
+			c.Failure(ctx, ErrServerAddrNotExist)
+			return
+		}
 	}
 
 	_, err = db.Exec(
