@@ -9,6 +9,7 @@ import (
 	"github.com/kimkit/iputil"
 	"github.com/kimkit/luactl"
 	"github.com/kimkit/lualib"
+	"github.com/mattn/go-shellwords"
 	"github.com/yuin/gopher-lua"
 )
 
@@ -44,6 +45,7 @@ func CreateStateHandler() *lua.LState {
 	ls.SetGlobal("getserveriplistbyname", ls.NewFunction(GetServerIpListByName))
 	ls.SetGlobal("getserverport", ls.NewFunction(GetServerPort))
 	ls.SetGlobal("newredisproxy", ls.NewFunction(NewRedisProxy))
+	ls.SetGlobal("shellparse", ls.NewFunction(ShellParse))
 	logLib.RegisterGlobal(ls, "log")
 	httpLib.RegisterGlobal(ls, "http")
 	redisLib.RegisterGlobal(ls, "redis")
@@ -204,5 +206,22 @@ func redisPipeline(ls *lua.LState) int {
 		ls.Push(arg)
 	}
 	ls.Call(len(args)+1, 2)
+	return 2
+}
+
+func ShellParse(ls *lua.LState) int {
+	p := shellwords.NewParser()
+	args, err := p.Parse(ls.ToString(1))
+	if err != nil {
+		ls.Push(lua.LNil)
+		ls.Push(lua.LString(err.Error()))
+		return 2
+	}
+	var res []interface{}
+	for _, arg := range args {
+		res = append(res, arg)
+	}
+	ls.Push(lualib.GoToLua(ls, res))
+	ls.Push(lua.LNil)
 	return 2
 }
