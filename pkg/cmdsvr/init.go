@@ -45,6 +45,7 @@ func init() {
 	common.CmdSvr.Register(cmdlib.NewJobStopCommand("job.stop", authHandler, common.JobManager))
 	common.CmdSvr.Register(cmdlib.NewJobStopAllCommand("job.stopAll", authHandler, common.JobManager))
 	common.CmdSvr.Register(cmdlib.NewJobCleanCommand("job.clean", authHandler, common.JobManager))
+	common.CmdSvr.Register(cmdlib.NewJobStatusCommand("job.status", authHandler, common.JobManager))
 	common.CmdSvr.Register(newTaskListCommand("task.list", authHandler))
 	common.CmdSvr.Register(newTaskAddCommand("task.add", authHandler))
 	common.CmdSvr.Register(newTaskDeleteCommand("task.delete", authHandler))

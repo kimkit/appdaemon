@@ -17,12 +17,12 @@ type luaScriptRunnerCommand struct {
 	AuthHandler redsvr.CommandHandler
 }
 
-func getLuaScriptPrefix() string {
+func GetLuaScriptPrefix() string {
 	return "luascript_"
 }
 
-func getLuaScriptKey(name string) string {
-	return fmt.Sprintf("%s%s", getLuaScriptPrefix(), name)
+func GetLuaScriptKey(name string) string {
+	return fmt.Sprintf("%s%s", GetLuaScriptPrefix(), name)
 }
 
 func (cmd *luaScriptRunnerCommand) S1Handler(_cmd *redsvr.Command, args []string, conn *redsvr.Conn) error {
@@ -41,9 +41,9 @@ func (cmd *luaScriptRunnerCommand) S1Handler(_cmd *redsvr.Command, args []string
 	}
 	key := ""
 	if len(args) > 1 {
-		key = getLuaScriptKey(args[0] + "_" + args[1])
+		key = GetLuaScriptKey(args[0] + "_" + args[1])
 	} else {
-		key = getLuaScriptKey(args[0])
+		key = GetLuaScriptKey(args[0])
 	}
 	job := common.JobManager.GetJob(key, &luaScriptRunnerJob{})
 	if job == nil {

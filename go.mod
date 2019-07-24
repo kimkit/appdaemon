@@ -10,7 +10,7 @@ require (
 	github.com/gorhill/cronexpr v0.0.0-20180427100037-88b0669f7d75
 	github.com/gorilla/websocket v1.4.0
 	github.com/kimkit/apires v0.0.0-20190328022601-89d5831bc037
-	github.com/kimkit/cmdlib v0.0.0-20190517023525-4ca4d619162e
+	github.com/kimkit/cmdlib v0.0.0-20190724140923-167d0c8a76ef
 	github.com/kimkit/config v0.0.0-20190710213055-dab728751fdf
 	github.com/kimkit/daemon v0.0.0-20190311070945-72a1e459e89d
 	github.com/kimkit/dbutil v0.0.0-20190718005856-fa8a1609bb8e

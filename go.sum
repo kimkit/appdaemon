@@ -40,6 +40,8 @@ github.com/kimkit/apires v0.0.0-20190328022601-89d5831bc037/go.mod h1:z2ZrjE0o2M
 github.com/kimkit/appserver v0.0.0-20190717004422-2ba7095e2cf3 h1:rBNRZ+fmdjuadNlXBB3NeNuOHM5eXofnRC0z7xGREN0=
 github.com/kimkit/cmdlib v0.0.0-20190517023525-4ca4d619162e h1:Aqtl69m45YYX3dVRJVe0tY1XsQaaqrVO3cREA9wexk4=
 github.com/kimkit/cmdlib v0.0.0-20190517023525-4ca4d619162e/go.mod h1:TgCJ+K62yWpjLWLQ4lyT0u3o07QFzS4MS2oCT2B+ILI=
+github.com/kimkit/cmdlib v0.0.0-20190724140923-167d0c8a76ef h1:BclC6223Dh8E0Ibmz5xQoNTx9DrCQl/V/ezcZEq9mkM=
+github.com/kimkit/cmdlib v0.0.0-20190724140923-167d0c8a76ef/go.mod h1:TgCJ+K62yWpjLWLQ4lyT0u3o07QFzS4MS2oCT2B+ILI=
 github.com/kimkit/config v0.0.0-20190227064224-0b7a303c5664 h1:1aml/wDA/yy34APzY7Iv87/Q9r4rrZa/CogADsmpK0E=
 github.com/kimkit/config v0.0.0-20190227064224-0b7a303c5664/go.mod h1:qgURaKTkaywRZhHfxPDjlqU6N1O8Iji9CCyROc2YkLg=
 github.com/kimkit/config v0.0.0-20190627054101-56a7c3655458 h1:XYwXy/xTC0hSwSTpbcGjuqpYBJcM0Cjud818xeAA834=
