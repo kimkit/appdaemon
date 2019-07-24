@@ -94,7 +94,7 @@ func (job *luaScriptLoaderJob) ExecHandler(_job *jobctl.Job) {
 		}
 		for _, _row := range rows {
 			if row, ok := _row.(map[string]string); ok {
-				if err := common.LuaScriptStore.Add(row["name"], row["script"]); err != nil {
+				if err := common.LuaScriptStore.Add(row["name"], "-- "+row["addr"]+"\n"+row["script"]); err != nil {
 					common.Logger.LogError("cmdsvr.luaScriptLoaderJob.ExecHandler", "%v (%s)", err, row["name"])
 				} else {
 					if row["addr"] == "" || row["addr"] == job.addr {

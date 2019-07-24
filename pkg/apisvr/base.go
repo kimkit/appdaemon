@@ -29,6 +29,7 @@ var (
 	ErrLuaScriptSyntaxError       = apires.NewError(-1014, "ErrLuaScriptSyntaxError", nil)
 	ErrLuaScriptExist             = apires.NewError(-1015, "ErrLuaScriptExist", nil)
 	ErrLuaScriptNameDuplicate     = apires.NewError(-1016, "ErrLuaScriptNameDuplicate", nil)
+	ErrServerAddrNotExist         = apires.NewError(-1017, "ErrServerAddrNotExist", nil)
 )
 
 type BaseController struct{}

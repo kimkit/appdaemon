@@ -26,6 +26,7 @@ func (c *UpdateLuaScriptController) POST(ctx *gin.Context) {
 
 	idStr := ctx.PostForm("id")
 	id, _ := strconv.Atoi(idStr)
+	addr := strings.TrimSpace(ctx.PostForm("addr"))
 	name := strings.TrimSpace(ctx.PostForm("name"))
 	script := strings.TrimSpace(ctx.PostForm("script"))
 	statusStr := ctx.PostForm("status")
@@ -75,8 +76,22 @@ func (c *UpdateLuaScriptController) POST(ctx *gin.Context) {
 		return
 	}
 
+	rows, err = dbutil.FetchAll(db.Query(
+		"select id from server where addr = ? and status = 1",
+		addr,
+	))
+	if err != nil {
+		c.Failure(ctx, err)
+		return
+	}
+	if len(rows) == 0 {
+		c.Failure(ctx, ErrServerAddrNotExist)
+		return
+	}
+
 	_, err = db.Exec(
-		"update luascript set name = ?, script = ?, status = ?, updatetime = ?, updateuser = ? where id = ?",
+		"update luascript set addr = ?, name = ?, script = ?, status = ?, updatetime = ?, updateuser = ? where id = ?",
+		addr,
 		name,
 		script,
 		status,

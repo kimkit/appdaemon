@@ -24,6 +24,7 @@ func (c *AddLuaScriptController) POST(ctx *gin.Context) {
 		return
 	}
 
+	addr := strings.TrimSpace(ctx.PostForm("addr"))
 	name := strings.TrimSpace(ctx.PostForm("name"))
 	script := strings.TrimSpace(ctx.PostForm("script"))
 	statusStr := ctx.PostForm("status")
@@ -72,8 +73,22 @@ func (c *AddLuaScriptController) POST(ctx *gin.Context) {
 		return
 	}
 
+	rows, err = dbutil.FetchAll(db.Query(
+		"select id from server where addr = ? and status = 1",
+		addr,
+	))
+	if err != nil {
+		c.Failure(ctx, err)
+		return
+	}
+	if len(rows) == 0 {
+		c.Failure(ctx, ErrServerAddrNotExist)
+		return
+	}
+
 	_, err = db.Exec(
-		"insert into luascript (name,script,status,createtime,createuser) values (?, ?, ?, ?, ?)",
+		"insert into luascript (addr,name,script,status,createtime,createuser) values (?, ?, ?, ?, ?, ?)",
+		addr,
 		name,
 		script,
 		status,

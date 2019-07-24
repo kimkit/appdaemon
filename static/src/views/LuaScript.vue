@@ -1,9 +1,25 @@
 <template>
   <el-card class="box-card">
-    <el-form :inline="true" @submit.native.prevent>
+    <el-form :inline="true" @submit.native.prevent size="small">
+      <el-form-item>
+        <el-select
+          class="addrlist"
+          v-model="addr"
+          filterable
+          clearable
+          placeholder="留空查找所有服务器"
+          @change="searchluascriptlist"
+        >
+          <el-option
+            v-for="item in addrlist"
+            :key="item.addr"
+            :label="item.addr"
+            :value="item.addr"
+          ></el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-input
-          size="medium"
           v-model="keyword"
           type="text"
           placeholder="请输入查找脚本名称"
@@ -14,16 +30,23 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button
-          type="primary"
-          size="medium"
-          icon="el-icon-document-add"
-          @click="addluascriptshow"
-        >添加</el-button>
+        <el-button type="primary" icon="el-icon-document-add" @click="addluascriptshow">添加</el-button>
       </el-form-item>
     </el-form>
     <el-table v-loading="loading" :data="list" stripe>
-      <el-table-column prop="name" label="名称" width="400">
+      <el-table-column prop="name" label="服务器" width="220">
+        <template slot-scope="scope">
+          <span class="addr" v-if="scope.row.addr">
+            <i class="el-icon-arrow-right"></i>
+            {{scope.row.addr}}
+          </span>
+          <span class="addr" v-else>
+            <i class="el-icon-check"></i>
+            all
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="name" label="脚本名称" width="410">
         <template slot-scope="scope">
           <code>{{scope.row.name}}</code>
         </template>
@@ -79,8 +102,24 @@
       @current-change="getluascriptlist"
       style="margin-top: 20px;"
     />
-    <el-dialog title="添加" :visible.sync="addshow" width="750px">
+    <el-dialog title="添加" :visible.sync="addshow" width="800px">
       <el-form :inline="true" size="small">
+        <el-form-item>
+          <el-select
+            class="addrlist"
+            v-model="addaddr"
+            filterable
+            clearable
+            placeholder="留空所有服务器执行"
+          >
+            <el-option
+              v-for="item in addrlist"
+              :key="item.addr"
+              :label="item.addr"
+              :value="item.addr"
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-input
             v-model="addname"
@@ -108,8 +147,24 @@
         <el-button size="medium" type="primary" @click="addluascript">确定</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="编辑" :visible.sync="updateshow" width="750px">
+    <el-dialog title="编辑" :visible.sync="updateshow" width="800px">
       <el-form :inline="true" size="small">
+        <el-form-item>
+          <el-select
+            class="addrlist"
+            v-model="updateaddr"
+            filterable
+            clearable
+            placeholder="留空所有服务器执行"
+          >
+            <el-option
+              v-for="item in addrlist"
+              :key="item.addr"
+              :label="item.addr"
+              :value="item.addr"
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-input
             v-model="updatename"
@@ -137,7 +192,7 @@
         <el-button size="medium" type="primary" @click="updateluascript">确定</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="日志" :visible.sync="outputshow" width="750px" @close="outputhide">
+    <el-dialog title="日志" :visible.sync="outputshow" width="800px" @close="outputhide">
       <div class="output">
         <p>
           <i class="el-icon-loading"></i>
@@ -167,11 +222,15 @@ export default {
       keyword: '',
       loading: false,
       editoroptions: { wrap: 'free' },
+      addrlist: [],
+      addr: '',
       addshow: false,
+      addaddr: '',
       addname: '',
       addstatus: false,
       addscript: '',
       updateshow: false,
+      updateaddr: '',
       updateid: 0,
       updatename: '',
       updatestatus: false,
@@ -182,6 +241,10 @@ export default {
   },
   async mounted () {
     await this.getluascriptlist()
+    let r = await api.getserverlist()
+    if (r.code === 1) {
+      this.$data.addrlist = r.data.list
+    }
   },
   methods: {
     async getluascriptlist (page) {
@@ -191,7 +254,8 @@ export default {
       let r = await api.getluascriptlist(
         this.$data.page,
         this.$data.pagesize,
-        this.$data.keyword
+        this.$data.keyword,
+        this.$data.addr
       )
       if (r.code === 1) {
         this.$data.list = r.data.list
@@ -225,7 +289,8 @@ end`
       let r = await api.addluascript(
         this.$data.addname,
         this.$refs.addeditor.editor.getValue(),
-        this.$data.addstatus ? 1 : 0
+        this.$data.addstatus ? 1 : 0,
+        this.$data.addaddr
       )
       if (r.code === 1) {
         this.$message({
@@ -242,6 +307,7 @@ end`
           this.$refs.addeditor.editor.setValue('')
           this.$data.addshow = false
           this.$data.keyword = ''
+          this.$data.addr = ''
           this.getluascriptlist(1)
         }, 500)
       } else {
@@ -267,6 +333,7 @@ end`
         this.$data.updatename = r.data.name
         this.$data.updatestatus = r.data.status === '1'
         this.$data.updatescript = r.data.script
+        this.$data.updateaddr = r.data.addr
         this.$data.updateshow = true
       }
     },
@@ -275,7 +342,8 @@ end`
         this.$data.updateid,
         this.$data.updatename,
         this.$refs.updateeditor.editor.getValue(),
-        this.$data.updatestatus ? 1 : 0
+        this.$data.updatestatus ? 1 : 0,
+        this.$data.updateaddr
       )
       if (r.code === 1) {
         this.$message({
@@ -419,9 +487,16 @@ code {
 .scriptname-input {
   width: 400px !important;
 }
-.scriptname-input .el-input__inner {
+.scriptname-input .el-input__inner,
+.addrlist input,
+.el-select-dropdown__item,
+.addr {
   font-family: "Monaco", "Menlo", "Ubuntu Mono", "Consolas", "source-code-pro",
-    monospace;
+    monospace !important;
+  font-size: 13px !important;
+}
+.addrlist {
+  width: 220px;
 }
 .scripteditor {
   border: 1px solid #dcdfe6;
@@ -435,7 +510,7 @@ code {
   font-family: "Monaco", "Menlo", "Ubuntu Mono", "Consolas", "source-code-pro",
     monospace;
   border-bottom: 1px solid #eeeeee;
-  font-size: 12px;
+  font-size: 13px;
 }
 .outputtitle {
   cursor: pointer;

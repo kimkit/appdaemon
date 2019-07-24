@@ -37,8 +37,8 @@ async function getloginuser () {
   return r.data
 }
 
-async function getluascriptlist (page, pagesize, keyword) {
-  let r = await axios.get(geturl('GetLuaScriptList', { token: gettoken(), page, pagesize, keyword }))
+async function getluascriptlist (page, pagesize, keyword, addr) {
+  let r = await axios.get(geturl('GetLuaScriptList', { token: gettoken(), page, pagesize, keyword, addr }))
   return r.data
 }
 
@@ -47,13 +47,13 @@ async function getluascript (id) {
   return r.data
 }
 
-async function addluascript (name, script, status) {
-  let r = await axios.post(geturl('AddLuaScript', { token: gettoken() }), qs.stringify({ name, script, status }))
+async function addluascript (name, script, status, addr) {
+  let r = await axios.post(geturl('AddLuaScript', { token: gettoken() }), qs.stringify({ name, script, status, addr }))
   return r.data
 }
 
-async function updateluascript (id, name, script, status) {
-  let r = await axios.post(geturl('UpdateLuaScript', { token: gettoken() }), qs.stringify({ id, name, script, status }))
+async function updateluascript (id, name, script, status, addr) {
+  let r = await axios.post(geturl('UpdateLuaScript', { token: gettoken() }), qs.stringify({ id, name, script, status, addr }))
   return r.data
 }
 
@@ -64,6 +64,11 @@ async function updateluascriptstatus (id, status) {
 
 async function deleteluascript (id) {
   let r = await axios.post(geturl('DeleteLuaScript', { token: gettoken() }), qs.stringify({ id }))
+  return r.data
+}
+
+async function getserverlist () {
+  let r = await axios.get(geturl('GetServerList', { token: gettoken() }))
   return r.data
 }
 
@@ -79,5 +84,6 @@ export default {
   addluascript,
   updateluascript,
   updateluascriptstatus,
-  deleteluascript
+  deleteluascript,
+  getserverlist
 }

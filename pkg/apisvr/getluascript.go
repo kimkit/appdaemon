@@ -29,7 +29,7 @@ func (c *GetLuaScriptController) GET(ctx *gin.Context) {
 	}
 
 	rows, err := dbutil.FetchAll(db.Query(
-		"select id,name,script,status from luascript where id = ?",
+		"select id,addr,name,script,status from luascript where id = ?",
 		id,
 	))
 	if err != nil {
@@ -43,6 +43,7 @@ func (c *GetLuaScriptController) GET(ctx *gin.Context) {
 
 	c.Success(ctx, gin.H{
 		"id":     rows[0]["id"],
+		"addr":   rows[0]["addr"],
 		"name":   rows[0]["name"],
 		"script": rows[0]["script"],
 		"status": rows[0]["status"],

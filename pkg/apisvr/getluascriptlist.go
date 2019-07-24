@@ -2,6 +2,7 @@ package apisvr
 
 import (
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/kimkit/appdaemon/pkg/common"
@@ -35,7 +36,8 @@ func (c *GetLuaScriptListController) GET(ctx *gin.Context) {
 	if pagesize < 1 {
 		pagesize = 1
 	}
-	keyword := ctx.Query("keyword")
+	keyword := strings.TrimSpace(ctx.Query("keyword"))
+	addr := strings.TrimSpace(ctx.Query("addr"))
 
 	db, err := common.GetDB("#")
 	if err != nil {
@@ -44,8 +46,10 @@ func (c *GetLuaScriptListController) GET(ctx *gin.Context) {
 	}
 
 	list, err := dbutil.FetchAll(db.Query(
-		"select id,name,script,status from luascript where name like ? order by id desc limit ?,?",
+		"select id,addr,name,script,status from luascript where name like ? and addr = if(?='',addr,?) order by id desc limit ?,?",
 		"%"+keyword+"%",
+		addr,
+		addr,
 		(page-1)*pagesize,
 		pagesize,
 	))
@@ -55,8 +59,10 @@ func (c *GetLuaScriptListController) GET(ctx *gin.Context) {
 	}
 
 	rows, err := dbutil.FetchAll(db.Query(
-		"select count(*) as total from luascript where name like ?",
+		"select count(*) as total from luascript where name like ? and addr = if(?='',addr,?)",
 		"%"+keyword+"%",
+		addr,
+		addr,
 	))
 	if err != nil {
 		c.Failure(ctx, err)
