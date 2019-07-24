@@ -2,6 +2,7 @@ package common
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -58,4 +59,30 @@ func Time2str(t int) string {
 		return "0000-00-00 00:00:00"
 	}
 	return time.Unix(int64(t), 0).Format("2006-01-02 15:04:05")
+}
+
+type MapSlice struct {
+	Array []map[string]string
+	Key   string
+}
+
+func (p *MapSlice) Len() int {
+	return len(p.Array)
+}
+
+func (p *MapSlice) Less(i, j int) bool {
+	if strings.Compare(p.Array[i][p.Key], p.Array[j][p.Key]) < 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (p *MapSlice) Swap(i, j int) {
+	p.Array[i], p.Array[j] = p.Array[j], p.Array[i]
+}
+
+func SortMaps(maps []map[string]string, key string) {
+	p := &MapSlice{maps, key}
+	sort.Sort(p)
 }
