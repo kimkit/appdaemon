@@ -26,7 +26,7 @@ func (cmd *taskListCommand) S1Handler(_cmd *redsvr.Command, args []string, conn 
 		name, _ := k.(string)
 		job, _ := v.(*jobctl.Job)
 		if job != nil {
-			if strings.HasPrefix(name, getTaskKeyPrefix()) {
+			if strings.HasPrefix(name, GetTaskKeyPrefix()) {
 				list = append(list, []string{
 					common.Time2str(common.GetMapValueInt(&job.Map, "last")),
 					"|",

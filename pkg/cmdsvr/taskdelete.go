@@ -23,7 +23,7 @@ func (cmd *taskDeleteCommand) S1Handler(_cmd *redsvr.Command, args []string, con
 			return err
 		}
 	}
-	key := getTaskKey(args[0])
+	key := GetTaskKey(args[0])
 	var jobs []*jobctl.Job
 	common.JobManager.Map.Range(func(k, v interface{}) bool {
 		name, _ := k.(string)

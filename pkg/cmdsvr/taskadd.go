@@ -28,12 +28,16 @@ type taskAddCommand struct {
 	AuthHandler redsvr.CommandHandler
 }
 
-func getTaskKeyPrefix() string {
+func GetTaskKeyPrefix() string {
 	return "task_"
 }
 
-func getTaskKey(name string) string {
-	return fmt.Sprintf("%s%s", getTaskKeyPrefix(), name)
+func GetTaskKey(name string) string {
+	return fmt.Sprintf("%s%s", GetTaskKeyPrefix(), name)
+}
+
+func CheckTaskName(name string) bool {
+	return taskNameRegexp.MatchString(name)
 }
 
 func (cmd *taskAddCommand) getJobInfo(args []string) []interface{} {
@@ -87,7 +91,7 @@ func (cmd *taskAddCommand) S1Handler(_cmd *redsvr.Command, args []string, conn *
 			return nil
 		}
 	}
-	key := getTaskKey(taskName)
+	key := GetTaskKey(taskName)
 	job := common.JobManager.GetJob(key, nil)
 	if job != nil {
 		return fmt.Errorf("job `%s` exist", key)

@@ -11,13 +11,15 @@ import (
 )
 
 func authHandler(cmd *redsvr.Command, args []string, conn *redsvr.Conn) error {
+	user := "/"
 	if len(common.Config.Passwords) > 0 {
 		if err := cmdlib.CheckAuth(conn); err != nil {
 			return err
 		}
-		if cmd.Name == "luascript.runner" || cmd.Name == "job.list" {
-			return nil
-		}
+		user = cmdlib.GetAuthUser(conn)
+	}
+
+	if cmd.Name != "luascript.runner" {
 		var _args []string
 		for _, arg := range args {
 			if arg == "" {
@@ -27,8 +29,9 @@ func authHandler(cmd *redsvr.Command, args []string, conn *redsvr.Conn) error {
 			}
 			_args = append(_args, arg)
 		}
-		common.Logger.LogInfo("cmdsvr.authHandler", "(%s) %s %s", cmdlib.GetAuthUser(conn), cmd.Name, strings.Join(_args, " "))
+		common.Logger.LogInfo("cmdsvr.authHandler", "(%s) %s %s", user, cmd.Name, strings.Join(_args, " "))
 	}
+
 	return nil
 }
 
@@ -45,6 +48,7 @@ func init() {
 	common.CmdSvr.Register(newTaskListCommand("task.list", authHandler))
 	common.CmdSvr.Register(newTaskAddCommand("task.add", authHandler))
 	common.CmdSvr.Register(newTaskDeleteCommand("task.delete", authHandler))
+	common.CmdSvr.Register(newTaskInfoCommand("task.info", authHandler))
 	common.CmdSvr.Register(newLuaScriptRunnerCommand("luascript.runner", authHandler))
 	common.CmdSvr.Register(newLuaScriptLoaderCommand("luascript.loader", "luascript.runner", authHandler))
 }

@@ -24,7 +24,7 @@ func (c *AddLuaScriptController) POST(ctx *gin.Context) {
 		return
 	}
 
-	name := ctx.PostForm("name")
+	name := strings.TrimSpace(ctx.PostForm("name"))
 	script := strings.TrimSpace(ctx.PostForm("script"))
 	statusStr := ctx.PostForm("status")
 	status, _ := strconv.Atoi(statusStr)

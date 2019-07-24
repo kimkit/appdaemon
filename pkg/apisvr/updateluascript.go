@@ -26,7 +26,7 @@ func (c *UpdateLuaScriptController) POST(ctx *gin.Context) {
 
 	idStr := ctx.PostForm("id")
 	id, _ := strconv.Atoi(idStr)
-	name := ctx.PostForm("name")
+	name := strings.TrimSpace(ctx.PostForm("name"))
 	script := strings.TrimSpace(ctx.PostForm("script"))
 	statusStr := ctx.PostForm("status")
 	status, _ := strconv.Atoi(statusStr)
