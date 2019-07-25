@@ -56,7 +56,7 @@ luascript:
       end
     getserverlist: |
       function getrandomserveraddr()
-        local sql = "select addr from server where status = 1 and unix_timestamp() - unix_timestamp(updatetime) < 60 * 5 order by addr asc"
+        local sql = "select addr from server where status = 1 and unix_timestamp() - unix_timestamp(updatetime) < 60 order by addr asc"
         local res, err = db.query("#", sql)
         if err ~= nil then
             return nil, err
@@ -66,4 +66,54 @@ luascript:
             table.insert(list, v["addr"])
         end
         return list, nil
+      end
+    synctasklist: |
+      function synctasklist(ctx)
+        if ctx.id == nil then ctx.id = 0 end
+        if ctx.tasklist == nil then ctx.tasklist = {} end
+        if ctx.step == nil then ctx.step = 0 end
+        if ctx.step == 0 then
+            local sql = "select id,name,rule,command from task where status = 1 and (addr = '' or addr = ?) and name like 'cron_%' and id > ? order by id asc limit 100"
+            local res, err = db.query("#", sql, getserveraddr(), ctx.id)
+            if err ~= nil then
+                return err
+            end
+            for k, v in ipairs(res) do
+                ctx.tasklist[v["name"]] = true
+                ctx.id = v["id"]
+                local args, err = shellparse(v["command"])
+                if err ~= nil then
+                    log.error("%v: %v", jobname, err)
+                else
+                    local ret, err = redis.call("#", "task.add", v["name"], v["rule"], unpack(args))
+                    if err ~= nil then
+                        log.error("%v: %v", jobname, err)
+                    end
+                end
+            end
+            if #res == 0 then
+                ctx.step = 1
+            end
+        end
+        if ctx.step == 1 then
+            local res, err = redis.call("#", "task.list", "cron")
+            if err ~= nil then
+                return err
+            end
+            for k, v in ipairs(res) do
+                local arr = split(v, "|")
+                local name = trim(arr[2])
+                if string.sub(name, 1, 5) == "cron_" then
+                    if ctx.tasklist[name] == nil then
+                        local ret, err = redis.call("#", "task.delete", name)
+                        if err ~= nil then
+                            log.error("%v: %v", jobname, err)
+                        end
+                    end
+                end
+            end
+            ctx.id = nil
+            ctx.tasklist = nil
+            ctx.step = nil
+        end
       end
