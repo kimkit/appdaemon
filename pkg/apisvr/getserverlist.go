@@ -23,7 +23,7 @@ func (c *GetServerListController) GET(ctx *gin.Context) {
 		return
 	}
 
-	list, err := dbutil.FetchAll(db.Query("select addr,updatetime from server where status = 1"))
+	list, err := dbutil.FetchAll(db.Query("select addr from server where status = 1 order by updatetime desc"))
 	if err != nil {
 		c.Failure(ctx, err)
 		return

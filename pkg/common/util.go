@@ -86,3 +86,10 @@ func SortMaps(maps []map[string]string, key string) {
 	p := &MapSlice{maps, key}
 	sort.Sort(p)
 }
+
+func Addslashes(str string) string {
+	str = strings.Replace(str, "\\", "\\\\", -1)
+	str = strings.Replace(str, "\"", "\\\"", -1)
+	str = strings.Replace(str, "'", "\\'", -1)
+	return str
+}
