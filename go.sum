@@ -11,6 +11,8 @@ github.com/facebookgo/httpdown v0.0.0-20180706035922-5979d39b15c2 h1:nXeeRHmgNgj
 github.com/facebookgo/httpdown v0.0.0-20180706035922-5979d39b15c2/go.mod h1:TUV/fX3XrTtBQb5+ttSUJzcFgLNpILONFTKmBuk5RSw=
 github.com/facebookgo/stats v0.0.0-20151006221625-1b76add642e4 h1:0YtRCqIZs2+Tz49QuH6cJVw/IFqzo39gEqZ0iYLxD2M=
 github.com/facebookgo/stats v0.0.0-20151006221625-1b76add642e4/go.mod h1:vsJz7uE339KUCpBXx3JAJzSRH7Uk4iGGyJzR529qDIA=
+github.com/fsnotify/fsnotify v1.4.7 h1:IXs+QLmnXW2CcXuY+8Mzv/fWEsPGWxqefPtCP5CnV9I=
+github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
 github.com/gin-contrib/cors v1.3.0 h1:PolezCc89peu+NgkIWt9OB01Kbzt6IP0J/JvkG6xxlg=
 github.com/gin-contrib/cors v1.3.0/go.mod h1:artPvLlhkF7oG06nK8v3U8TNz6IeX+w1uzCSEId5/Vc=
 github.com/gin-contrib/sse v0.0.0-20190301062529-5545eab6dad3 h1:t8FVkw33L+wilf2QiWkw0UV77qRpcH/JHPKGpKa2E8g=
@@ -22,6 +24,8 @@ github.com/go-redis/redis v6.15.2+incompatible h1:9SpNVG76gr6InJGxoZ6IuuxaCOQwDA
 github.com/go-redis/redis v6.15.2+incompatible/go.mod h1:NAIEuMOZ/fxfXJIrKDQDz8wamY7mA7PouImQ2Jvg6kA=
 github.com/go-sql-driver/mysql v1.4.1 h1:g24URVg0OFbNUTx9qqY1IRZ9D9z3iPyi5zKhQZpNwpA=
 github.com/go-sql-driver/mysql v1.4.1/go.mod h1:zAC/RDZ24gD3HViQzih4MyKcchzm+sOG5ZlKdlhCg5w=
+github.com/go-tomb/tomb v1.0.0-20141024135613-dd632973f1e7 h1:aZAooRzlS5qyUfVEXEvDfkmrwutUsaG4aqGsCG0+ddM=
+github.com/go-tomb/tomb v1.0.0-20141024135613-dd632973f1e7/go.mod h1:RBAwp+uBhymHG7YL5Wjwy9uKPyOHOwbtWOZucxDDSl8=
 github.com/go-yaml/yaml v2.1.0+incompatible h1:RYi2hDdss1u4YE7GwixGzWwVo47T8UQwnTLB6vQiq+o=
 github.com/go-yaml/yaml v2.1.0+incompatible/go.mod h1:w2MrLa16VYP0jy6N7M5kHaCkaLENm+P+Tv+MfurjSw0=
 github.com/golang/protobuf v1.3.1 h1:YF8+flBXS5eO826T4nzqPrxfhQThhXl0YzfuUPu4SBg=
@@ -34,6 +38,8 @@ github.com/gorhill/cronexpr v0.0.0-20180427100037-88b0669f7d75 h1:f0n1xnMSmBLzVf
 github.com/gorhill/cronexpr v0.0.0-20180427100037-88b0669f7d75/go.mod h1:g2644b03hfBX9Ov0ZBDgXXens4rxSxmqFBbhvKv2yVA=
 github.com/gorilla/websocket v1.4.0 h1:WDFjx/TMzVgy9VdMMQi2K2Emtwi2QcUQsztZ/zLaH/Q=
 github.com/gorilla/websocket v1.4.0/go.mod h1:E7qHFY5m1UJ88s3WnNqhKjPHQ0heANvMoAMk2YaljkQ=
+github.com/hpcloud/tail v1.0.0 h1:nfCOvKYfkgYP8hkirhJocXT2+zOD8yUNjXaWfTlyFKI=
+github.com/hpcloud/tail v1.0.0/go.mod h1:ab1qPbhIpdTxEkNHXyeSf5vhxWSCs/tWer42PpOxQnU=
 github.com/json-iterator/go v1.1.6/go.mod h1:+SdeFBvtyEkXs7REEP0seUULqWtbJapLOCVDaaPEHmU=
 github.com/kimkit/apires v0.0.0-20190328022601-89d5831bc037 h1:CHs02fuLKLO1sSCwP57jhwIrlIvbnbA+eZCXC16BGo0=
 github.com/kimkit/apires v0.0.0-20190328022601-89d5831bc037/go.mod h1:z2ZrjE0o2MrVPUTaq0azOPhbTCcul66J9l7liaI/P54=
@@ -84,6 +90,8 @@ github.com/kimkit/proctl v0.0.0-20190421063323-f7d3ecf97d21/go.mod h1:u0lPj6IrMc
 github.com/kimkit/redsvr v0.0.0-20190327070501-e1cdea9134f0/go.mod h1:MO6vIkHBYjqf9aEXct+EBuSrP6R9pb5W2xBM4tt0Gns=
 github.com/kimkit/redsvr v0.0.0-20190409021028-880cbd6a0195 h1:5b2d0gKYbp6LqjknAhOztfm5EPK0W3IoUsfXnXKHr54=
 github.com/kimkit/redsvr v0.0.0-20190409021028-880cbd6a0195/go.mod h1:MO6vIkHBYjqf9aEXct+EBuSrP6R9pb5W2xBM4tt0Gns=
+github.com/kimkit/redsvr v0.0.0-20190725050244-6f7c5e1c2ca2 h1:aQQca6pTzBi4aCZb8KoXW96WxMqMYmYfxCQRp7EDS58=
+github.com/kimkit/redsvr v0.0.0-20190725050244-6f7c5e1c2ca2/go.mod h1:MO6vIkHBYjqf9aEXct+EBuSrP6R9pb5W2xBM4tt0Gns=
 github.com/kimkit/reqctl v0.0.0-20190627004744-233a41c8c0b9 h1:xn35sy9edsC1hn9IHRMlSXwZUDU3LgXSHnOmyeP4heg=
 github.com/kimkit/reqctl v0.0.0-20190627004744-233a41c8c0b9/go.mod h1:HQ1o+QJgUJjPBP0wHR2YcCc0yj8THARarNsEaZGO5L8=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=
@@ -111,8 +119,12 @@ golang.org/x/net v0.0.0-20190503192946-f4e77d36d62c/go.mod h1:t9HGtf8HONx5eT2rtn
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
+gopkg.in/fsnotify.v1 v1.4.7 h1:xOHLXZwVvI9hhs+cLKq5+I5onOuwQLhQwiu63xxlHs4=
+gopkg.in/fsnotify.v1 v1.4.7/go.mod h1:Tz8NjZHkW78fSQdbUxIjBTcgA1z1m8ZHf0WmKUhAMys=
 gopkg.in/go-playground/assert.v1 v1.2.1/go.mod h1:9RXL0bg/zibRAgZUYszZSwO/z8Y/a8bDuhia5mkpMnE=
 gopkg.in/go-playground/validator.v8 v8.18.2 h1:lFB4DoMU6B626w8ny76MV7VX6W2VHct2GVOI3xgiMrQ=
 gopkg.in/go-playground/validator.v8 v8.18.2/go.mod h1:RX2a/7Ha8BgOhfk7j780h4/u/RRjR0eouCJSH80/M2Y=
+gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 h1:uRGJdciOHaEIrze2W8Q3AKkepLTh2hOroT7a+7czfdQ=
+gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7/go.mod h1:dt/ZhP58zS4L8KSrWDmTeBkI65Dw0HsyUHuEVlX15mw=
 gopkg.in/yaml.v2 v2.2.2 h1:ZCJp+EgiOT7lHqUV2J862kp8Qj64Jo6az82+3Td9dZw=
 gopkg.in/yaml.v2 v2.2.2/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=

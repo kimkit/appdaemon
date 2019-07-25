@@ -52,6 +52,7 @@ func init() {
 	common.CmdSvr.Register(newTaskInfoCommand("task.info", authHandler))
 	common.CmdSvr.Register(newLuaScriptRunnerCommand("luascript.runner", authHandler))
 	common.CmdSvr.Register(newLuaScriptLoaderCommand("luascript.loader", "luascript.runner", authHandler))
+	common.CmdSvr.Register(newSubscribeCommand("subscribe", authHandler))
 }
 
 func Run() {
