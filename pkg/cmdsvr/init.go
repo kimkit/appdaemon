@@ -49,7 +49,7 @@ func init() {
 	common.CmdSvr.Register(newTaskListCommand("task.list", authHandler))
 	common.CmdSvr.Register(newTaskAddCommand("task.add", authHandler))
 	common.CmdSvr.Register(newTaskDeleteCommand("task.delete", authHandler))
-	common.CmdSvr.Register(newTaskInfoCommand("task.info", authHandler))
+	common.CmdSvr.Register(newTaskUpdateTimeCommand("task.updatetime", authHandler))
 	common.CmdSvr.Register(newLuaScriptRunnerCommand("luascript.runner", authHandler))
 	common.CmdSvr.Register(newLuaScriptLoaderCommand("luascript.loader", "luascript.runner", authHandler))
 	common.CmdSvr.Register(newSubscribeCommand("subscribe", authHandler))
