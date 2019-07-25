@@ -60,8 +60,18 @@
       </el-table-column>
       <el-table-column prop="status" label="状态" width="100">
         <template slot-scope="scope">
-          <el-tag type="success" size="mini" v-if="scope.row.status == 1">启用</el-tag>
-          <el-tag type="info" size="mini" v-if="scope.row.status == 0">停用</el-tag>
+          <el-tag
+            type="success"
+            size="mini"
+            v-if="scope.row.status == 1"
+            @click="updatetaskstatus(scope.row.id, 0)"
+          >启用</el-tag>
+          <el-tag
+            type="info"
+            size="mini"
+            v-if="scope.row.status == 0"
+            @click="updatetaskstatus(scope.row.id, 1)"
+          >停用</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="action" label="操作" min-width="150">
@@ -301,6 +311,12 @@ export default {
           duration: 1000,
           customClass: 'message'
         })
+      }
+    },
+    async updatetaskstatus (id, status) {
+      let r = await api.updatetaskstatus(id, status)
+      if (r.code === 1) {
+        await this.gettasklist()
       }
     },
     async updatetaskshow (id) {
