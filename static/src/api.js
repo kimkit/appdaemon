@@ -72,6 +72,36 @@ async function getserverlist () {
   return r.data
 }
 
+async function gettasklist (page, pagesize, keyword, addr) {
+  let r = await axios.get(geturl('GetTaskList', { token: gettoken(), page, pagesize, keyword, addr }))
+  return r.data
+}
+
+async function gettask (id) {
+  let r = await axios.get(geturl('GetTask', { token: gettoken(), id }))
+  return r.data
+}
+
+async function addtask (name, rule, command, status, addr) {
+  let r = await axios.post(geturl('AddTask', { token: gettoken() }), qs.stringify({ name, rule, command, status, addr }))
+  return r.data
+}
+
+async function updatetask (id, name, rule, command, status, addr) {
+  let r = await axios.post(geturl('UpdateTask', { token: gettoken() }), qs.stringify({ id, name, rule, command, status, addr }))
+  return r.data
+}
+
+async function updatetaskstatus (id, status) {
+  let r = await axios.post(geturl('UpdateTaskStatus', { token: gettoken() }), qs.stringify({ id, status }))
+  return r.data
+}
+
+async function deletetask (id) {
+  let r = await axios.post(geturl('DeleteTask', { token: gettoken() }), qs.stringify({ id }))
+  return r.data
+}
+
 export default {
   gettoken,
   storetoken,
@@ -85,5 +115,11 @@ export default {
   updateluascript,
   updateluascriptstatus,
   deleteluascript,
-  getserverlist
+  getserverlist,
+  gettasklist,
+  gettask,
+  addtask,
+  updatetask,
+  updatetaskstatus,
+  deletetask
 }

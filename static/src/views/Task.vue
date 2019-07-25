@@ -8,7 +8,7 @@
           filterable
           clearable
           placeholder="留空查找所有服务器"
-          @change="searchluascriptlist"
+          @change="searchtasklist"
         >
           <el-option
             v-for="item in addrlist"
@@ -22,15 +22,15 @@
         <el-input
           v-model="keyword"
           type="text"
-          placeholder="请输入查找脚本名称"
+          placeholder="请输入查找任务名称"
           prefix-icon="el-icon-search"
           suffix-icon="el-icon-right"
           class="scriptname-input"
-          @keyup.enter.native="searchluascriptlist"
+          @keyup.enter.native="searchtasklist"
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-document-add" @click="addluascriptshow">添加</el-button>
+        <el-button type="primary" icon="el-icon-document-add" @click="addtaskshow">添加</el-button>
       </el-form-item>
     </el-form>
     <el-table v-loading="loading" :data="list" stripe>
@@ -46,25 +46,22 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="name" label="脚本名称" width="320">
+      <el-table-column prop="name" label="任务名称 / 规则 / 命令" width="320">
         <template slot-scope="scope">
-          <code>{{scope.row.name}}</code>
+          <div class="task-info">{{scope.row.name}}</div>
+          <div class="task-info">{{scope.row.rule}}</div>
+          <div class="task-info task-info-command">{{scope.row.command}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="name" label="执行 / 上报时间" width="220">
+        <template slot-scope="scope">
+          <span class="addr">{{scope.row.updatetime}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="status" label="状态" width="100">
         <template slot-scope="scope">
-          <el-tag
-            type="success"
-            size="mini"
-            v-if="scope.row.status == 1"
-            @click="updateluascriptstatus(scope.row.id, 0)"
-          >启用</el-tag>
-          <el-tag
-            type="info"
-            size="mini"
-            v-if="scope.row.status == 0"
-            @click="updateluascriptstatus(scope.row.id, 1)"
-          >停用</el-tag>
+          <el-tag type="success" size="mini" v-if="scope.row.status == 1">启用</el-tag>
+          <el-tag type="info" size="mini" v-if="scope.row.status == 0">停用</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="action" label="操作" min-width="150">
@@ -74,14 +71,14 @@
             icon="el-icon-edit"
             size="mini"
             circle
-            @click="updateluascriptshow(scope.row.id)"
+            @click="updatetaskshow(scope.row.id)"
           ></el-button>
           <el-button
             class="el-button-action"
             icon="el-icon-delete"
             size="mini"
             circle
-            @click="deleteluascript(scope.row.id, scope.row.name)"
+            @click="deletetask(scope.row.id, scope.row.name)"
           ></el-button>
           <el-button
             class="el-button-action"
@@ -99,7 +96,7 @@
       :total="total"
       :page-size="pagesize"
       :current-page="page"
-      @current-change="getluascriptlist"
+      @current-change="gettasklist"
       style="margin-top: 20px;"
     />
     <el-dialog title="添加" :visible.sync="addshow" width="800px">
@@ -124,7 +121,7 @@
           <el-input
             v-model="addname"
             prefix-icon="el-icon-document"
-            placeholder="脚本名称"
+            placeholder="任务名称"
             class="scriptname-input"
           ></el-input>
         </el-form-item>
@@ -132,19 +129,23 @@
           <el-switch v-model="addstatus"></el-switch>
         </el-form-item>
       </el-form>
-      <vue-ace-editor
-        ref="addeditor"
-        :content="addscript"
-        :fontSize="12"
-        height="257px"
-        lang="lua"
-        theme="eclipse"
-        :options="editoroptions"
-        class="scripteditor"
-      ></vue-ace-editor>
+      <el-form size="small">
+        <el-form-item>
+          <el-input class="edit-input" v-model="addrule" placeholder="定时任务规则或者执行进程数量"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 4}"
+            placeholder="任务命令(不支持管道,重定向,环境变量,内嵌命令)"
+            v-model="addcommand"
+            class="edit-input"
+          ></el-input>
+        </el-form-item>
+      </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button size="medium" @click="addshow = false">取消</el-button>
-        <el-button size="medium" type="primary" @click="addluascript">确定</el-button>
+        <el-button size="medium" type="primary" @click="addtask">确定</el-button>
       </div>
     </el-dialog>
     <el-dialog title="编辑" :visible.sync="updateshow" width="800px">
@@ -169,7 +170,7 @@
           <el-input
             v-model="updatename"
             prefix-icon="el-icon-document"
-            placeholder="脚本名称"
+            placeholder="任务名称"
             class="scriptname-input"
           ></el-input>
         </el-form-item>
@@ -177,33 +178,23 @@
           <el-switch v-model="updatestatus"></el-switch>
         </el-form-item>
       </el-form>
-      <vue-ace-editor
-        ref="updateeditor"
-        :content="updatescript"
-        :fontSize="12"
-        height="257px"
-        lang="lua"
-        theme="eclipse"
-        :options="editoroptions"
-        class="scripteditor"
-      ></vue-ace-editor>
+      <el-form size="small">
+        <el-form-item>
+          <el-input class="edit-input" v-model="updaterule" placeholder="定时任务规则或者执行进程数量"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 4}"
+            placeholder="任务命令(不支持管道,重定向,环境变量,内嵌命令)"
+            v-model="updatecommand"
+            class="edit-input"
+          ></el-input>
+        </el-form-item>
+      </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="medium" @click="updateshow = false">取消</el-button>
-        <el-button size="medium" type="primary" @click="updateluascript">确定</el-button>
-      </div>
-    </el-dialog>
-    <el-dialog title="日志" :visible.sync="outputshow" width="800px" @close="outputhide">
-      <div class="output">
-        <p>
-          <i class="el-icon-loading"></i>
-        </p>
-      </div>
-      <div class="output" v-for="line in outputlines" v-bind:key="line.id">
-        <p class="outputtitle" v-if="line.title" @click="line.hide = line.hide ? false : true">
-          <i :class="line.hide ? 'el-icon-arrow-up' : 'el-icon-arrow-right'"></i>
-          <strong>{{ line.title }}</strong>
-        </p>
-        <p v-if="line.data" :class="line.hide ? 'outputfold' : ''">{{ line.data }}</p>
+        <el-button size="medium" @click="addshow = false">取消</el-button>
+        <el-button size="medium" type="primary" @click="updatetask">确定</el-button>
       </div>
     </el-dialog>
   </el-card>
@@ -212,7 +203,7 @@
 <script>
 import api from '../api'
 export default {
-  name: 'LuaScript',
+  name: 'Task',
   data () {
     return {
       list: [],
@@ -221,37 +212,36 @@ export default {
       page: 1,
       keyword: '',
       loading: false,
-      editoroptions: { wrap: 'free' },
       addrlist: [],
       addr: '',
       addshow: false,
       addaddr: '',
       addname: '',
+      addrule: '',
+      addcommand: '',
       addstatus: false,
-      addscript: '',
       updateshow: false,
       updateaddr: '',
       updateid: 0,
       updatename: '',
       updatestatus: false,
-      updatescript: '',
-      outputshow: false,
-      outputlines: []
+      updaterule: '',
+      updatecommand: ''
     }
   },
   async mounted () {
-    await this.getluascriptlist()
+    await this.gettasklist()
     let r = await api.getserverlist()
     if (r.code === 1) {
       this.$data.addrlist = r.data.list
     }
   },
   methods: {
-    async getluascriptlist (page) {
+    async gettasklist (page) {
       if (page) {
         this.$data.page = page
       }
-      let r = await api.getluascriptlist(
+      let r = await api.gettasklist(
         this.$data.page,
         this.$data.pagesize,
         this.$data.keyword,
@@ -264,38 +254,31 @@ export default {
         this.$data.pagesize = r.data.pagesize
       }
     },
-    async searchluascriptlist () {
-      await this.getluascriptlist(1)
+    async searchtasklist () {
+      await this.gettasklist(1)
     },
-    addluascriptshow () {
+    addtaskshow () {
       this.$data.addname =
         'tmp_' +
         Math.random()
           .toString(36)
           .slice(-8)
-      this.$data.addscript = `if cron == nil then cron = newcron("*/10 * * * * * *") end
-if nexttime == nil then nexttime = cron:next() end
-
-now = os.time()
-if now >= nexttime then
-    log.debug("%v: ...", jobname)
-    nexttime = cron:next()
-else
-    sleep(200)
-end`
+      this.$data.addrule = '*/10 * * * * * *'
+      this.$data.addcommand = 'echo hello'
       this.$data.addshow = true
     },
-    async addluascript () {
-      let r = await api.addluascript(
+    async addtask () {
+      let r = await api.addtask(
         this.$data.addname,
-        this.$refs.addeditor.editor.getValue(),
+        this.$data.addrule,
+        this.$data.addcommand,
         this.$data.addstatus ? 1 : 0,
         this.$data.addaddr
       )
       if (r.code === 1) {
         this.$message({
           type: 'success',
-          message: '添加任务脚本成功（*＾-＾*）',
+          message: '添加任务命令成功（*＾-＾*）',
           offset: 12,
           duration: 1000,
           customClass: 'message'
@@ -303,12 +286,12 @@ end`
         setTimeout(() => {
           this.$data.addname = ''
           this.$data.addstatus = false
-          this.$data.addscript = ''
-          this.$refs.addeditor.editor.setValue('')
+          this.$data.addrule = ''
+          this.$data.addcommand = ''
           this.$data.addshow = false
           this.$data.keyword = ''
           this.$data.addr = ''
-          this.getluascriptlist(1)
+          this.gettasklist(1)
         }, 500)
       } else {
         this.$message({
@@ -320,42 +303,38 @@ end`
         })
       }
     },
-    async updateluascriptstatus (id, status) {
-      let r = await api.updateluascriptstatus(id, status)
-      if (r.code === 1) {
-        await this.getluascriptlist()
-      }
-    },
-    async updateluascriptshow (id) {
-      let r = await api.getluascript(id)
+    async updatetaskshow (id) {
+      let r = await api.gettask(id)
       if (r.code === 1) {
         this.$data.updateid = r.data.id
         this.$data.updatename = r.data.name
         this.$data.updatestatus = r.data.status === '1'
-        this.$data.updatescript = r.data.script
+        this.$data.updaterule = r.data.rule
+        this.$data.updatecommand = r.data.command
         this.$data.updateaddr = r.data.addr
         this.$data.updateshow = true
       }
     },
-    async updateluascript () {
-      let r = await api.updateluascript(
+    async updatetask () {
+      let r = await api.updatetask(
         this.$data.updateid,
         this.$data.updatename,
-        this.$refs.updateeditor.editor.getValue(),
+        this.$data.updaterule,
+        this.$data.updatecommand,
         this.$data.updatestatus ? 1 : 0,
         this.$data.updateaddr
       )
       if (r.code === 1) {
         this.$message({
           type: 'success',
-          message: '更新任务脚本成功（*＾-＾*）',
+          message: '更新任务命令成功（*＾-＾*）',
           offset: 12,
           duration: 1000,
           customClass: 'message'
         })
         setTimeout(() => {
           this.$data.updateshow = false
-          this.getluascriptlist()
+          this.gettasklist()
         }, 500)
       } else {
         this.$message({
@@ -367,7 +346,7 @@ end`
         })
       }
     },
-    async deleteluascript (id, name) {
+    async deletetask (id, name) {
       let r = await this.$confirm(
         '确认要删除任务：<code>' + name + '</code> ？',
         '提示',
@@ -381,143 +360,28 @@ end`
         // pass
       })
       if (r === 'confirm') {
-        r = await api.deleteluascript(id)
+        r = await api.deletetask(id)
         if (r.code === 1) {
-          this.getluascriptlist()
+          this.gettasklist()
         }
       }
     },
-    getoutputlist (name) {
-      if (this.ws) {
-        this.ws.close()
-      }
-      let url = api
-        .geturl('GetOutputList', { token: api.gettoken(), name })
-        .replace(/^http/i, 'ws')
-      if (!url.match(/^ws/i)) {
-        url =
-          document.location.protocol.replace(/^http/i, 'ws') +
-          '//' +
-          document.location.host +
-          url
-      }
-      this.$data.outputshow = true
-      this.$data.outputlines = []
-      this.ws = new WebSocket(url)
-      this.ws.onopen = e => {
-        console.log(new Date(), e)
-        this.$data.outputlines.unshift({
-          id: Math.random()
-            .toString(36)
-            .slice(-8),
-          data: 'Connected'
-        })
-        this.$data.outputlines = this.$data.outputlines.slice(0, 100)
-      }
-      this.ws.onclose = e => {
-        console.log(new Date(), e)
-        this.$data.outputlines.unshift({
-          id: Math.random()
-            .toString(36)
-            .slice(-8),
-          data: 'Connection closed'
-        })
-        this.$data.outputlines = this.$data.outputlines.slice(0, 100)
-      }
-      this.ws.onerror = e => {
-        console.log(new Date(), e)
-        this.$data.outputlines.unshift({
-          id: Math.random()
-            .toString(36)
-            .slice(-8),
-          data: 'Error occur'
-        })
-        this.$data.outputlines = this.$data.outputlines.slice(0, 100)
-      }
-      this.ws.onmessage = e => {
-        console.log(new Date(), e)
-        let r = JSON.parse(e.data)
-        if (r.code === 1) {
-          this.$data.outputlines.unshift({
-            id: r.data.id,
-            title: r.data.addr,
-            data: r.data.line
-          })
-        } else if (r.code === -2) {
-          // ignore
-        } else {
-          this.$data.outputlines.unshift({
-            id: Math.random()
-              .toString(36)
-              .slice(-8),
-            title: 'Error',
-            data: 'code = ' + r.code + ' message = ' + r.message
-          })
-        }
-        this.$data.outputlines = this.$data.outputlines.slice(0, 100)
-      }
-    },
-    outputhide () {
-      if (this.ws) {
-        this.ws.close()
-        this.ws = null
-      }
-    }
+    getoutputlist (name) {}
   }
 }
 </script>
 
 <style>
-.el-tag {
-  cursor: pointer;
-}
-code {
-  font-family: "Monaco", "Menlo", "Ubuntu Mono", "Consolas", "source-code-pro",
-    monospace;
-  color: #5e6d82;
-  background-color: #e6effb;
-  margin: 0;
-  display: inline-block;
-  padding: 1px 5px;
-  font-size: 12px;
-  border-radius: 3px;
-  height: 18px;
-  line-height: 18px;
-}
-.scriptname-input {
-  width: 310px !important;
-}
-.scriptname-input .el-input__inner,
-.addrlist input,
-.el-select-dropdown__item,
-.addr,
-.edit-input .el-input__inner,
-.edit-input .el-textarea__inner {
-  font-family: "Monaco", "Menlo", "Ubuntu Mono", "Consolas", "source-code-pro",
-    monospace !important;
-  font-size: 13px !important;
-}
-.addrlist {
-  width: 220px;
-}
-.scripteditor {
-  border: 1px solid #dcdfe6;
-}
-.output {
-  word-wrap: break-word;
-  word-break: break-all;
-  white-space: pre-wrap;
-}
-.output p {
+.task-info {
   font-family: "Monaco", "Menlo", "Ubuntu Mono", "Consolas", "source-code-pro",
     monospace;
   border-bottom: 1px solid #eeeeee;
   font-size: 13px;
+  word-wrap: break-word;
+  word-break: break-all;
+  white-space: pre-wrap;
 }
-.outputtitle {
-  cursor: pointer;
-}
-.outputfold {
-  display: none;
+.task-info-command {
+  border-bottom: none;
 }
 </style>

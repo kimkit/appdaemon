@@ -30,6 +30,14 @@ var (
 	ErrLuaScriptExist             = apires.NewError(-1015, "ErrLuaScriptExist", nil)
 	ErrLuaScriptNameDuplicate     = apires.NewError(-1016, "ErrLuaScriptNameDuplicate", nil)
 	ErrServerAddrNotExist         = apires.NewError(-1017, "ErrServerAddrNotExist", nil)
+	ErrTaskNameEmpty              = apires.NewError(-1018, "ErrTaskNameEmpty", nil)
+	ErrTaskNameFormatInvalid      = apires.NewError(-1019, "ErrTaskNameFormatInvalid", nil)
+	ErrTaskRuleEmpty              = apires.NewError(-1020, "ErrTaskRuleEmpty", nil)
+	ErrTaskRuleInvalid            = apires.NewError(-1021, "ErrTaskRuleInvalid", nil)
+	ErrTaskCommandEmpty           = apires.NewError(-1022, "ErrTaskCommandEmpty", nil)
+	ErrTaskCommandInvalid         = apires.NewError(-1023, "ErrTaskCommandInvalid", nil)
+	ErrTaskExist                  = apires.NewError(-1024, "ErrTaskExist", nil)
+	ErrTaskNameDuplicate          = apires.NewError(-1025, "ErrTaskNameDuplicate", nil)
 )
 
 type BaseController struct{}
