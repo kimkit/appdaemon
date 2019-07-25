@@ -193,7 +193,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="medium" @click="addshow = false">取消</el-button>
+        <el-button size="medium" @click="updateshow = false">取消</el-button>
         <el-button size="medium" type="primary" @click="updatetask">确定</el-button>
       </div>
     </el-dialog>
