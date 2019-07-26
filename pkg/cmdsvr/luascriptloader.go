@@ -100,7 +100,6 @@ func (job *luaScriptLoaderJob) ExecHandler(_job *jobctl.Job) {
 					if row["addr"] == "" || row["addr"] == job.addr {
 						for _, prefix := range common.Config.LuaScript.FilterPrefix {
 							if strings.HasPrefix(row["name"], prefix) {
-								// common.Logger.LogDebug("cmdsvr.luaScriptLoaderJob.ExecHandler", "script `%v` loaded", row["name"])
 								if err := common.RedisClient.Do(job.runnerName, row["name"]).Err(); err != nil {
 									common.Logger.LogError("cmdsvr.luaScriptLoaderJob.ExecHandler", "%v (%s)", err, row["name"])
 								}

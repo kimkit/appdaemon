@@ -97,7 +97,7 @@ func (cmd *subscribeCommand) S1Handler(_cmd *redsvr.Command, args []string, conn
 							}
 						}
 					case <-exit:
-						common.Logger.LogError("cmdsvr.subscribeCommand.S1Handler", "tail exit (%s)", file)
+						common.Logger.LogInfo("cmdsvr.subscribeCommand.S1Handler", "tail exit (%s)", file)
 						tf.Stop()
 						tf.Cleanup()
 						return

@@ -64,9 +64,9 @@ func (c *GetOutputController) GET(ctx *gin.Context) {
 
 	defer func() {
 		if err := ws.Close(); err != nil {
-			common.Logger.LogDebug("apisvr.GetOutputController.GET", "%v", err)
+			common.Logger.LogError("apisvr.GetOutputController.GET", "%v", err)
 		}
-		common.Logger.LogDebug("apisvr.GetOutputController.GET", "exit")
+		common.Logger.LogInfo("apisvr.GetOutputController.GET", "exit")
 	}()
 
 	jobname := strings.TrimSpace(ctx.Query("jobname"))
@@ -112,20 +112,21 @@ func (c *GetOutputController) GET(ctx *gin.Context) {
 	go func() {
 		defer func() {
 			if err := pubsub.Close(); err != nil {
-				common.Logger.LogDebug("apisvr.GetOutputController.GET", "%v", err)
+				common.Logger.LogError("apisvr.GetOutputController.GET", "%v", err)
 			}
-			common.Logger.LogDebug("apisvr.GetOutputController.GET", "exit reading")
+			common.Logger.LogInfo("apisvr.GetOutputController.GET", "exit reading")
 		}()
 		for {
 			typ, msg, err := ws.ReadMessage()
 			if err != nil {
-				common.Logger.LogDebug("apisvr.GetOutputController.GET", "%v", err)
+				common.Logger.LogError("apisvr.GetOutputController.GET", "%v", err)
 				return
 			}
 			common.Logger.LogDebug("apisvr.GetOutputController.GET", "%v %s", typ, msg)
 			if typ == websocket.PingMessage {
 				if err := ws.WriteMessage(websocket.PongMessage, []byte("pong")); err != nil {
-					common.Logger.LogDebug("apisvr.GetOutputController.GET", "%v", err)
+					common.Logger.LogError("apisvr.GetOutputController.GET", "%v", err)
+					return
 				}
 			}
 		}
@@ -137,14 +138,14 @@ func (c *GetOutputController) GET(ctx *gin.Context) {
 			if !strings.Contains(err.Error(), "i/o timeout") {
 				time.Sleep(time.Second)
 				if err := c.wsSuccess(ws, err.Error()); err != nil {
-					common.Logger.LogDebug("apisvr.GetOutputController.GET", "%v", err)
+					common.Logger.LogError("apisvr.GetOutputController.GET", "%v", err)
 					return
 				}
 			}
 		} else {
 			if msg, ok := val.(*redis.Message); ok {
 				if err := c.wsSuccess(ws, msg.Payload); err != nil {
-					common.Logger.LogDebug("apisvr.GetOutputController.GET", "%v", err)
+					common.Logger.LogError("apisvr.GetOutputController.GET", "%v", err)
 					return
 				}
 			}
