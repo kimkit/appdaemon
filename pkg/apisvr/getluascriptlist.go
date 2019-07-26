@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/kimkit/appdaemon/pkg/cmdsvr"
 	"github.com/kimkit/appdaemon/pkg/common"
 	"github.com/kimkit/dbutil"
 )
@@ -71,6 +72,27 @@ func (c *GetLuaScriptListController) GET(ctx *gin.Context) {
 	total := 0
 	if len(rows) == 1 {
 		total, _ = strconv.Atoi(rows[0]["total"])
+	}
+
+	rows, err = dbutil.FetchAll(db.Query(
+		"select addr from server where status = 1 order by updatetime desc limit 1",
+	))
+	if err != nil {
+		c.Failure(ctx, err)
+		return
+	}
+	defaultAddr := ""
+	if len(rows) > 0 {
+		defaultAddr = rows[0]["addr"]
+	}
+
+	for _, row := range list {
+		row["jobname"] = cmdsvr.GetLuaScriptKey(row["name"])
+		if row["addr"] == "" {
+			row["subaddr"] = defaultAddr
+		} else {
+			row["subaddr"] = row["addr"]
+		}
 	}
 
 	c.Success(ctx, gin.H{

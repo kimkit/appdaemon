@@ -30,7 +30,6 @@ func init() {
 	common.ApiSvr.Register(&UpdateTaskController{Path: "/UpdateTask"})
 	common.ApiSvr.Register(&UpdateTaskStatusController{Path: "/UpdateTaskStatus"})
 	common.ApiSvr.Register(&DeleteTaskController{Path: "/DeleteTask"})
-	common.ApiSvr.Register(&GetOutputListController{Path: "/GetOutputList"})
 	common.ApiSvr.Register(&GetOutputController{Path: "/GetOutput"})
 
 	if handler, err := static.NewHandler("/"); err != nil {

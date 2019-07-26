@@ -207,27 +207,18 @@
         <el-button size="medium" type="primary" @click="updatetask">确定</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="日志" :visible.sync="outputshow" width="800px" @close="outputhide">
-      <div class="output">
-        <p>
-          <i class="el-icon-loading"></i>
-        </p>
-      </div>
-      <div class="output" v-for="line in outputlines" v-bind:key="line.id">
-        <p class="outputtitle" v-if="line.title" @click="line.hide = line.hide ? false : true">
-          <i :class="line.hide ? 'el-icon-arrow-up' : 'el-icon-arrow-right'"></i>
-          <strong>{{ line.title }}</strong>
-        </p>
-        <p v-if="line.data" :class="line.hide ? 'outputfold' : ''">{{ line.data }}</p>
-      </div>
-    </el-dialog>
+    <Output ref="output"></Output>
   </el-card>
 </template>
 
 <script>
 import api from '../api'
+import Output from '../components/Output.vue'
 export default {
   name: 'Task',
+  components: {
+    Output
+  },
   data () {
     return {
       list: [],
@@ -250,9 +241,7 @@ export default {
       updatename: '',
       updatestatus: false,
       updaterule: '',
-      updatecommand: '',
-      outputshow: false,
-      outputlines: []
+      updatecommand: ''
     }
   },
   async mounted () {
@@ -399,80 +388,7 @@ export default {
       }
     },
     getoutput (jobname, subaddr) {
-      if (this.ws) {
-        this.ws.close()
-      }
-      let url = api
-        .geturl('GetOutput', { token: api.gettoken(), jobname, subaddr })
-        .replace(/^http/i, 'ws')
-      if (!url.match(/^ws/i)) {
-        url =
-          document.location.protocol.replace(/^http/i, 'ws') +
-          '//' +
-          document.location.host +
-          url
-      }
-      this.$data.outputshow = true
-      this.$data.outputlines = []
-      this.ws = new WebSocket(url)
-      this.ws.onopen = e => {
-        console.log(new Date(), e)
-        this.$data.outputlines.unshift({
-          id: Math.random()
-            .toString(36)
-            .slice(-8),
-          data: 'Connected'
-        })
-        this.$data.outputlines = this.$data.outputlines.slice(0, 100)
-      }
-      this.ws.onclose = e => {
-        console.log(new Date(), e)
-        this.$data.outputlines.unshift({
-          id: Math.random()
-            .toString(36)
-            .slice(-8),
-          data: 'Connection closed'
-        })
-        this.$data.outputlines = this.$data.outputlines.slice(0, 100)
-      }
-      this.ws.onerror = e => {
-        console.log(new Date(), e)
-        this.$data.outputlines.unshift({
-          id: Math.random()
-            .toString(36)
-            .slice(-8),
-          data: 'Error occur'
-        })
-        this.$data.outputlines = this.$data.outputlines.slice(0, 100)
-      }
-      this.ws.onmessage = e => {
-        console.log(new Date(), e)
-        let r = JSON.parse(e.data)
-        if (r.code === 1) {
-          this.$data.outputlines.unshift({
-            id: Math.random()
-              .toString(36)
-              .slice(-8),
-            data: r.data
-          })
-        } else if (r.code === -2) {
-          // ignore
-        } else {
-          this.$data.outputlines.unshift({
-            id: Math.random()
-              .toString(36)
-              .slice(-8),
-            data: r.message + ' (' + r.code + ')'
-          })
-        }
-        this.$data.outputlines = this.$data.outputlines.slice(0, 100)
-      }
-    },
-    outputhide () {
-      if (this.ws) {
-        this.ws.close()
-        this.ws = null
-      }
+      this.$refs.output.getoutput(jobname, subaddr)
     }
   }
 }
