@@ -2,6 +2,7 @@ package common
 
 import (
 	"fmt"
+	"regexp"
 	"sort"
 	"strings"
 	"sync"
@@ -92,4 +93,48 @@ func Addslashes(str string) string {
 	str = strings.Replace(str, "\"", "\\\"", -1)
 	str = strings.Replace(str, "'", "\\'", -1)
 	return str
+}
+
+var (
+	shellSCRegexp = regexp.MustCompile("[ \t\r\n`$\\\";&|<>]")
+)
+
+func Args2str(args []string) string {
+	var _args []string
+	for _, arg := range args {
+		if arg == "" {
+			_args = append(_args, "\"\"")
+			continue
+		}
+		num := 0
+		str := shellSCRegexp.ReplaceAllStringFunc(arg, func(m string) string {
+			num++
+			switch m {
+			case " ":
+				return " "
+			case "\t":
+				return "\\t"
+			case "\r":
+				return "\\r"
+			case "\n":
+				return "\\n"
+			case "`":
+				return "\\`"
+			case "$":
+				return "\\$"
+			case "\\":
+				return "\\\\"
+			case "\"":
+				return "\\\""
+			default:
+				return m
+			}
+		})
+		if num == 0 {
+			_args = append(_args, str)
+		} else {
+			_args = append(_args, fmt.Sprintf("\"%s\"", str))
+		}
+	}
+	return strings.Join(_args, " ")
 }

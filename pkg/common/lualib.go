@@ -46,6 +46,7 @@ func CreateStateHandler() *lua.LState {
 	ls.SetGlobal("getserverport", ls.NewFunction(GetServerPort))
 	ls.SetGlobal("newredisproxy", ls.NewFunction(NewRedisProxy))
 	ls.SetGlobal("shellparse", ls.NewFunction(ShellParse))
+	ls.SetGlobal("shellbuild", ls.NewFunction(ShellBuild))
 	logLib.RegisterGlobal(ls, "log")
 	httpLib.RegisterGlobal(ls, "http")
 	redisLib.RegisterGlobal(ls, "redis")
@@ -224,4 +225,13 @@ func ShellParse(ls *lua.LState) int {
 	ls.Push(lualib.GoToLua(ls, res))
 	ls.Push(lua.LNil)
 	return 2
+}
+
+func ShellBuild(ls *lua.LState) int {
+	var args []string
+	for i := 1; i <= ls.GetTop(); i++ {
+		args = append(args, ls.ToString(i))
+	}
+	ls.Push(lua.LString(Args2str(args)))
+	return 1
 }

@@ -1,9 +1,6 @@
 package cmdsvr
 
 import (
-	"fmt"
-	"strings"
-
 	"github.com/kimkit/appdaemon/pkg/common"
 	"github.com/kimkit/cmdlib"
 	"github.com/kimkit/daemon"
@@ -19,16 +16,7 @@ func authHandler(cmd *redsvr.Command, args []string, conn *redsvr.Conn) error {
 		user = cmdlib.GetAuthUser(conn)
 	}
 
-	var _args []string
-	for _, arg := range args {
-		if arg == "" {
-			arg = "\"\""
-		} else if strings.Contains(arg, " ") {
-			arg = fmt.Sprintf("\"%s\"", arg)
-		}
-		_args = append(_args, arg)
-	}
-	common.Logger.LogInfo("cmdsvr.authHandler", "(%s) %s %s", user, cmd.Name, strings.Join(_args, " "))
+	common.Logger.LogInfo("cmdsvr.authHandler", "(%s) %s %s", user, cmd.Name, common.Args2str(args))
 	return nil
 }
 

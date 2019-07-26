@@ -34,7 +34,7 @@ func (cmd *taskListCommand) S1Handler(_cmd *redsvr.Command, args []string, conn 
 					"|",
 					common.GetMapValueString(&job.Map, "rule"),
 					"|",
-					strings.Join(common.GetMapValueStringArr(&job.Map, "args"), " "),
+					common.Args2str(common.GetMapValueStringArr(&job.Map, "args")),
 				})
 				return true
 			}
@@ -47,7 +47,7 @@ func (cmd *taskListCommand) S1Handler(_cmd *redsvr.Command, args []string, conn 
 						"|",
 						common.GetMapValueString(&job.Map, "rule"),
 						"|",
-						strings.Join(common.GetMapValueStringArr(&job.Map, "args"), " "),
+						common.Args2str(common.GetMapValueStringArr(&job.Map, "args")),
 					})
 				}
 			}
