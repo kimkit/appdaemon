@@ -4,7 +4,9 @@ luascript:
   sql: "select id,addr,name,script from luascript where status = 1 and id > %d order by id asc limit 64"
   idname: id
   idinit: 0
-  filterprefix: cron_
+  filterprefix:
+    - tmp_
+    - sys_
   libs:
     runtags: |
       function runtags(scriptname, args)
@@ -69,12 +71,13 @@ luascript:
       end
     synctasklist: |
       function synctasklist(ctx)
+        local prefix = "tmp_"
         if ctx.id == nil then ctx.id = 0 end
         if ctx.tasklist == nil then ctx.tasklist = {} end
         if ctx.step == nil then ctx.step = 0 end
         if ctx.step == 0 then
-            local sql = "select id,name,rule,command from task where status = 1 and (addr = '' or addr = ?) and name like 'cron_%' and id > ? order by id asc limit 100"
-            local res, err = db.query("#", sql, getserveraddr(), ctx.id)
+            local sql = "select id,name,rule,command from task where status = 1 and (addr = '' or addr = ?) and name like ? and id > ? order by id asc limit 100"
+            local res, err = db.query("#", sql, getserveraddr(), prefix .. "%", ctx.id)
             if err ~= nil then
                 return err
             end
@@ -96,14 +99,14 @@ luascript:
             end
         end
         if ctx.step == 1 then
-            local res, err = redis.call("#", "task.list", "cron")
+            local res, err = redis.call("#", "task.list", trim(prefix, "_", "r"))
             if err ~= nil then
                 return err
             end
             for k, v in ipairs(res) do
                 local arr = split(v, "|")
                 local name = trim(arr[2])
-                if string.sub(name, 1, 5) == "cron_" then
+                if string.sub(name, 1, #prefix) == prefix then
                     if ctx.tasklist[name] == nil then
                         local ret, err = redis.call("#", "task.delete", name)
                         if err ~= nil then
@@ -116,4 +119,39 @@ luascript:
             ctx.tasklist = nil
             ctx.step = nil
         end
+      end
+  bootstrap:
+    reportserverinfo: |
+      if cron == nil then cron = newcron("*/5 * * * * * *") end
+      if nexttime == nil then nexttime = cron:next() end
+      now = os.time()
+      if now >= nexttime then
+          err = reportserverinfo()
+          if err ~= nil then
+              log.error("%v: %v", jobname, err)
+          else
+              log.info("%v: done", jobname)
+          end
+          nexttime = cron:next()
+      else
+          sleep(200)
+      end
+    synctasklist: |
+      if cron == nil then cron = newcron("*/2 * * * * * *") end
+      if nexttime == nil then nexttime = cron:next() end
+      if ctx == nil then ctx = {} end
+      now = os.time()
+      if now >= nexttime then
+          err = synctasklist(ctx)
+          if err ~= nil then
+              log.error("%v: %v", jobname, err)
+              sleep(500)
+              return
+          end
+          if ctx.id == nil then
+              log.info("%v: done", jobname)
+              nexttime = cron:next()
+          end
+      else
+          sleep(200)
       end

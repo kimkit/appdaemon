@@ -98,10 +98,13 @@ func (job *luaScriptLoaderJob) ExecHandler(_job *jobctl.Job) {
 					common.Logger.LogError("cmdsvr.luaScriptLoaderJob.ExecHandler", "%v (%s)", err, row["name"])
 				} else {
 					if row["addr"] == "" || row["addr"] == job.addr {
-						if strings.HasPrefix(row["name"], common.Config.LuaScript.FilterPrefix) {
-							// common.Logger.LogDebug("cmdsvr.luaScriptLoaderJob.ExecHandler", "script `%v` loaded", row["name"])
-							if err := common.RedisClient.Do(job.runnerName, row["name"]).Err(); err != nil {
-								common.Logger.LogError("cmdsvr.luaScriptLoaderJob.ExecHandler", "%v (%s)", err, row["name"])
+						for _, prefix := range common.Config.LuaScript.FilterPrefix {
+							if strings.HasPrefix(row["name"], prefix) {
+								// common.Logger.LogDebug("cmdsvr.luaScriptLoaderJob.ExecHandler", "script `%v` loaded", row["name"])
+								if err := common.RedisClient.Do(job.runnerName, row["name"]).Err(); err != nil {
+									common.Logger.LogError("cmdsvr.luaScriptLoaderJob.ExecHandler", "%v (%s)", err, row["name"])
+								}
+								break
 							}
 						}
 					}
@@ -109,6 +112,15 @@ func (job *luaScriptLoaderJob) ExecHandler(_job *jobctl.Job) {
 			}
 		}
 		if len(rows) == 0 {
+			for name, script := range common.Config.LuaScript.Bootstrap {
+				if err := common.LuaScriptStore.Add(name, script); err != nil {
+					common.Logger.LogError("cmdsvr.luaScriptLoaderJob.ExecHandler", "%v (%s)", err, name)
+				} else {
+					if err := common.RedisClient.Do(job.runnerName, name).Err(); err != nil {
+						common.Logger.LogError("cmdsvr.luaScriptLoaderJob.ExecHandler", "%v (%s)", err, name)
+					}
+				}
+			}
 			common.LuaScriptStore.Clean()
 			job.step = 1
 		}

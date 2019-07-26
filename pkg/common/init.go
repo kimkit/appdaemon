@@ -49,8 +49,9 @@ var (
 			Sql          string            `json:"sql"`
 			IdName       string            `json:"idname"`
 			IdInit       int               `json:"idinit"`
-			FilterPrefix string            `json:"filterprefix"`
+			FilterPrefix []string          `json:"filterprefix"`
 			Libs         map[string]string `json:"libs"`
+			Bootstrap    map[string]string `json:"bootstrap"`
 		} `json:"luascript"`
 		UI struct {
 			Run     bool              `json:"-"`
@@ -89,6 +90,9 @@ func init() {
 		Config.Tasks = nil
 	}
 	Config.LuaScript.Enable = *enableLuaScript
+	if !*enableLuaScript {
+		Config.LuaScript.Bootstrap = nil
+	}
 	Config.UI.Run = *ui
 
 	if Config.Addr == "" {
