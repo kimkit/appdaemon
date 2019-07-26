@@ -135,6 +135,7 @@ func (c *GetOutputController) GET(ctx *gin.Context) {
 		val, err := pubsub.ReceiveTimeout(time.Second)
 		if err != nil {
 			if !strings.Contains(err.Error(), "i/o timeout") {
+				time.Sleep(time.Second)
 				if err := c.wsSuccess(ws, err.Error()); err != nil {
 					common.Logger.LogDebug("apisvr.GetOutputController.GET", "%v", err)
 					return
