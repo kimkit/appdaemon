@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/kimkit/appdaemon/pkg/cmdsvr"
 	"github.com/kimkit/appdaemon/pkg/common"
 	"github.com/kimkit/dbutil"
 )
@@ -156,10 +157,11 @@ func (c *GetTaskListController) GET(ctx *gin.Context) {
 
 	for _, row := range list {
 		row["updatetime"] = updateTimeList[row["name"]]
+		row["jobname"] = cmdsvr.GetTaskKey(row["name"])
 		if row["addr"] == "" {
-			row["connaddr"] = defaultAddr
+			row["subaddr"] = defaultAddr
 		} else {
-			row["connaddr"] = row["addr"]
+			row["subaddr"] = row["addr"]
 		}
 	}
 

@@ -23,7 +23,6 @@ func init() {
 	common.ApiSvr.Register(&UpdateLuaScriptController{Path: "/UpdateLuaScript"})
 	common.ApiSvr.Register(&UpdateLuaScriptStatusController{Path: "/UpdateLuaScriptStatus"})
 	common.ApiSvr.Register(&DeleteLuaScriptController{Path: "/DeleteLuaScript"})
-	common.ApiSvr.Register(&GetOutputListController{Path: "/GetOutputList"})
 	common.ApiSvr.Register(&GetServerListController{Path: "/GetServerList"})
 	common.ApiSvr.Register(&GetTaskListController{Path: "/GetTaskList"})
 	common.ApiSvr.Register(&GetTaskController{Path: "/GetTask"})
@@ -31,6 +30,8 @@ func init() {
 	common.ApiSvr.Register(&UpdateTaskController{Path: "/UpdateTask"})
 	common.ApiSvr.Register(&UpdateTaskStatusController{Path: "/UpdateTaskStatus"})
 	common.ApiSvr.Register(&DeleteTaskController{Path: "/DeleteTask"})
+	common.ApiSvr.Register(&GetOutputListController{Path: "/GetOutputList"})
+	common.ApiSvr.Register(&GetOutputController{Path: "/GetOutput"})
 
 	if handler, err := static.NewHandler("/"); err != nil {
 		common.Logger.LogError("apisvr.init", "%v", err)

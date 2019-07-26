@@ -2,7 +2,6 @@ package apisvr
 
 import (
 	"fmt"
-	"net/http"
 	"strconv"
 	"time"
 
@@ -12,14 +11,6 @@ import (
 	"github.com/kimkit/dbutil"
 )
 
-var (
-	upgrader = websocket.Upgrader{
-		CheckOrigin: func(r *http.Request) bool {
-			return true
-		},
-	}
-)
-
 type GetOutputListController struct {
 	BaseController
 	Path string
@@ -27,8 +18,8 @@ type GetOutputListController struct {
 
 func (c *GetOutputListController) GET(ctx *gin.Context) {
 	if err := c.CheckPermission(ctx); err != nil {
-		// c.Failure(ctx, err)
-		// return
+		c.Failure(ctx, err)
+		return
 	}
 
 	name := ctx.Query("name")
