@@ -26,6 +26,7 @@ require (
 	github.com/kimkit/proctl v0.0.0-20190421063323-f7d3ecf97d21
 	github.com/kimkit/redsvr v0.0.0-20190725050244-6f7c5e1c2ca2
 	github.com/kimkit/reqctl v0.0.0-20190627004744-233a41c8c0b9
+	github.com/kimkit/thread v0.0.0-20190321020915-48a92938178a
 	github.com/mattn/go-shellwords v1.0.5
 	github.com/rakyll/statik v0.1.6
 	github.com/yuin/gopher-lua v0.0.0-20190514113301-1cd887cd7036

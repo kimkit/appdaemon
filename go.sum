@@ -94,6 +94,8 @@ github.com/kimkit/redsvr v0.0.0-20190725050244-6f7c5e1c2ca2 h1:aQQca6pTzBi4aCZb8
 github.com/kimkit/redsvr v0.0.0-20190725050244-6f7c5e1c2ca2/go.mod h1:MO6vIkHBYjqf9aEXct+EBuSrP6R9pb5W2xBM4tt0Gns=
 github.com/kimkit/reqctl v0.0.0-20190627004744-233a41c8c0b9 h1:xn35sy9edsC1hn9IHRMlSXwZUDU3LgXSHnOmyeP4heg=
 github.com/kimkit/reqctl v0.0.0-20190627004744-233a41c8c0b9/go.mod h1:HQ1o+QJgUJjPBP0wHR2YcCc0yj8THARarNsEaZGO5L8=
+github.com/kimkit/thread v0.0.0-20190321020915-48a92938178a h1:zXxMWKX2E4SgsRMS68wd14LxrRxoIJLW1AETMFAzPuU=
+github.com/kimkit/thread v0.0.0-20190321020915-48a92938178a/go.mod h1:msA4Tb2AV7qvk91WCAgCrxYOXbeOxwT7q6sXSmUJ1Gc=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
 github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=

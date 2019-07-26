@@ -1,12 +1,15 @@
 package cmdsvr
 
 import (
+	"fmt"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/hpcloud/tail"
 	"github.com/kimkit/appdaemon/pkg/common"
 	"github.com/kimkit/redsvr"
+	"github.com/kimkit/thread"
 )
 
 type subscribeCommand struct {
@@ -21,21 +24,40 @@ func (cmd *subscribeCommand) S1Handler(_cmd *redsvr.Command, args []string, conn
 			return err
 		}
 	}
-	file := path.Join(common.Config.LogsDir, args[0]+".output")
-	if _, err := os.Stat(file); err != nil {
-		return err
-	}
 
-	tf, err := tail.TailFile(file, tail.Config{
-		Location: &tail.SeekInfo{
-			Offset: 0,
-			Whence: os.SEEK_END,
-		},
-		Follow: true,
-		Logger: tail.DiscardingLogger,
-	})
+	fp, err := os.Open(common.Config.LogsDir)
 	if err != nil {
 		return err
+	}
+	fis, err := fp.Readdir(0)
+	if err != nil {
+		return err
+	}
+	var files []string
+	for _, fi := range fis {
+		file := fi.Name()
+		if strings.HasSuffix(file, ".output") && (file == args[0]+".output" || strings.HasPrefix(file, args[0]+"_")) {
+			files = append(files, file)
+		}
+	}
+	if len(files) == 0 {
+		return fmt.Errorf("no matched files")
+	}
+
+	tfs := make(map[string]*tail.Tail)
+	for _, file := range files {
+		tf, err := tail.TailFile(path.Join(common.Config.LogsDir, file), tail.Config{
+			Location: &tail.SeekInfo{
+				Offset: 0,
+				Whence: os.SEEK_END,
+			},
+			Follow: true,
+			Logger: tail.DiscardingLogger,
+		})
+		if err != nil {
+			return err
+		}
+		tfs[file] = tf
 	}
 
 	err = redsvr.WriteArray(conn, []interface{}{
@@ -48,48 +70,56 @@ func (cmd *subscribeCommand) S1Handler(_cmd *redsvr.Command, args []string, conn
 		return nil
 	}
 
-	errch := make(chan error, 1)
-	go func() {
-		defer common.Logger.LogInfo("cmdsvr.subscribeCommand.S1Handler", "reader stopped (%s)", args[0])
+	tm := thread.ThreadManager{}
+	exit := make(chan error)
+
+	for file, tf := range tfs {
+		tm.New(func(file string, tf *tail.Tail) func() {
+			return func() {
+				for {
+					select {
+					case line, ok := <-tf.Lines:
+						if !ok {
+							common.Logger.LogError("cmdsvr.subscribeCommand.S1Handler", "file tail stopped (%s)", file)
+							return
+						}
+						if line.Err != nil {
+							common.Logger.LogError("cmdsvr.subscribeCommand.S1Handler", "%v (%s)", line.Err, file)
+						} else {
+							err := redsvr.WriteArray(conn, []interface{}{
+								"message",
+								args[0],
+								fmt.Sprintf("%s: %s", file, line.Text),
+							})
+							if err != nil {
+								common.Logger.LogError("cmdsvr.subscribeCommand.S1Handler", "%v (%s)", err, file)
+								return
+							}
+						}
+					case <-exit:
+						common.Logger.LogError("cmdsvr.subscribeCommand.S1Handler", "tail exit (%s)", file)
+						tf.Stop()
+						tf.Cleanup()
+						return
+					}
+				}
+			}
+		}(file, tf))
+	}
+
+	tm.New(func() {
 		buf := make([]byte, 1)
 		for {
 			if _, err := conn.Read(buf); err != nil {
-				errch <- err
+				common.Logger.LogError("cmdsvr.subscribeCommand.S1Handler", "reader stopped: %v (%s)", err, args[0])
+				close(exit)
 				return
 			}
 		}
-	}()
+	})
 
-	defer func() {
-		conn.Close()
-		common.Logger.LogInfo("cmdsvr.subscribeCommand.S1Handler", "sender stopped (%s)", args[0])
-	}()
-
-	for {
-		select {
-		case line, ok := <-tf.Lines:
-			if !ok {
-				common.Logger.LogError("cmdsvr.subscribeCommand.S1Handler", "file tail stopped (%s)", args[0])
-				return nil
-			}
-			if line.Err != nil {
-				common.Logger.LogError("cmdsvr.subscribeCommand.S1Handler", "%v (%s)", line.Err, args[0])
-			} else {
-				err := redsvr.WriteArray(conn, []interface{}{
-					"message",
-					args[0],
-					line.Text,
-				})
-				if err != nil {
-					common.Logger.LogError("cmdsvr.subscribeCommand.S1Handler", "%v (%s)", err, args[0])
-					return nil
-				}
-			}
-		case err := <-errch:
-			common.Logger.LogError("cmdsvr.subscribeCommand.S1Handler", "%v (%s)", err, args[0])
-			return nil
-		}
-	}
+	tm.Wait()
+	common.Logger.LogInfo("cmdsvr.subscribeCommand.S1Handler", "sender stopped (%s)", args[0])
 	return nil
 }
 
