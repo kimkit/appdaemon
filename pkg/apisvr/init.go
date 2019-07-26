@@ -24,6 +24,8 @@ func init() {
 	common.ApiSvr.Register(&UpdateLuaScriptStatusController{Path: "/UpdateLuaScriptStatus"})
 	common.ApiSvr.Register(&DeleteLuaScriptController{Path: "/DeleteLuaScript"})
 	common.ApiSvr.Register(&GetServerListController{Path: "/GetServerList"})
+	common.ApiSvr.Register(&UpdateServerStatusController{Path: "/UpdateServerStatus"})
+	common.ApiSvr.Register(&DeleteServerController{Path: "/DeleteServer"})
 	common.ApiSvr.Register(&GetTaskListController{Path: "/GetTaskList"})
 	common.ApiSvr.Register(&GetTaskController{Path: "/GetTask"})
 	common.ApiSvr.Register(&AddTaskController{Path: "/AddTask"})

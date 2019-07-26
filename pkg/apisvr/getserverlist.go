@@ -17,19 +17,25 @@ func (c *GetServerListController) GET(ctx *gin.Context) {
 		return
 	}
 
+	all := ctx.Query("all")
+
 	db, err := common.GetDB("#")
 	if err != nil {
 		c.Failure(ctx, err)
 		return
 	}
 
-	list, err := dbutil.FetchAll(db.Query("select addr from server where status = 1 order by updatetime desc"))
+	sql := ""
+	if all == "1" {
+		sql = "select id,addr,status,updatetime from server order by updatetime desc"
+	} else {
+		sql = "select id,addr,status,updatetime from server where status = 1 order by updatetime desc"
+	}
+	list, err := dbutil.FetchAll(db.Query(sql))
 	if err != nil {
 		c.Failure(ctx, err)
 		return
 	}
-
-	common.SortMaps(list, "addr")
 
 	c.Success(ctx, gin.H{
 		"list": list,

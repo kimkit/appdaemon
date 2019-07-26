@@ -67,8 +67,18 @@ async function deleteluascript (id) {
   return r.data
 }
 
-async function getserverlist () {
-  let r = await axios.get(geturl('GetServerList', { token: gettoken() }))
+async function getserverlist (all) {
+  let r = await axios.get(geturl('GetServerList', { token: gettoken(), all }))
+  return r.data
+}
+
+async function deleteserver (id) {
+  let r = await axios.post(geturl('DeleteServer', { token: gettoken() }), qs.stringify({ id }))
+  return r.data
+}
+
+async function updateserverstatus (id, status) {
+  let r = await axios.post(geturl('UpdateServerStatus', { token: gettoken() }), qs.stringify({ id, status }))
   return r.data
 }
 
@@ -116,6 +126,8 @@ export default {
   updateluascriptstatus,
   deleteluascript,
   getserverlist,
+  updateserverstatus,
+  deleteserver,
   gettasklist,
   gettask,
   addtask,
