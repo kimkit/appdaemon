@@ -1,10 +1,12 @@
 luascript:
   dbconfig:
     dsn: "root@tcp(172.16.238.100)/base"
-  sql: "select id,name,script from luascript where status = 1 and id > %d order by id asc limit 64"
+  sql: "select id,addr,name,script from luascript where status = 1 and id > %d order by id asc limit 64"
   idname: id
   idinit: 0
-  filterprefix: cron_
+  filterprefix:
+    - tmp_
+    - sys_
   libs:
     runtags: |
       function runtags(scriptname, args)
@@ -19,11 +21,137 @@ luascript:
           end
           return nil
       end
+    getserveraddr: |
+      function getserveraddr()
+        local ips = getserveriplist()
+        return ips[1] .. ":" .. getserverport()
+      end
     outputhook: |
       function outputhook(line)
-        local ips = getserveriplist()
-        local addr = ips[1] .. ":" .. getserverport()
+        local addr = getserveraddr()
         local createtime = os.date("%Y-%m-%d %H:%M:%S")
-        local sql = "insert into output (name,addr,line,createtime) values (?, ?, ?, ?)"
+        local sql = "insert into output (name,addr,line,createtime) values (?,?,?,?)"
         db.insert("#", sql, scriptname, addr, line, createtime)
+      end
+    reportserverinfo: |
+      function reportserverinfo()
+        local addr = getserveraddr()
+        local updatetime = os.date("%Y-%m-%d %H:%M:%S")
+        local sql = "select id from server where addr = ?"
+        local res, err = db.query("#", sql, addr)
+        if err ~= nil then
+            return err
+        end
+        if #res == 0 then
+            local sql = "insert into server (addr,status,updatetime) values (?,1,?)"
+            local ret, err = db.insert("#", sql, addr, updatetime)
+            if err ~= nil then
+                return err
+            end
+        else
+            local sql = "update server set updatetime = ? where addr = ?"
+            local ret, err = db.exec("#", sql, updatetime, addr)
+            if err ~= nil then
+                return err
+            end
+        end
+      end
+    getserverlist: |
+      function getrandomserveraddr()
+        local sql = "select addr from server where status = 1 and unix_timestamp() - unix_timestamp(updatetime) < 60 order by addr asc"
+        local res, err = db.query("#", sql)
+        if err ~= nil then
+            return nil, err
+        end
+        local list = {}
+        for k, v in ipairs(res) do
+            table.insert(list, v["addr"])
+        end
+        return list, nil
+      end
+    synctasklist: |
+      function synctasklist(ctx)
+        local prefix = "tmp_"
+        if ctx.id == nil then ctx.id = 0 end
+        if ctx.tasklist == nil then ctx.tasklist = {} end
+        if ctx.step == nil then ctx.step = 0 end
+        if ctx.step == 0 then
+            local sql = "select id,name,rule,command from task where status = 1 and (addr = '' or addr = ?) and name like ? and id > ? order by id asc limit 100"
+            local res, err = db.query("#", sql, getserveraddr(), prefix .. "%", ctx.id)
+            if err ~= nil then
+                return err
+            end
+            for k, v in ipairs(res) do
+                ctx.tasklist[v["name"]] = true
+                ctx.id = v["id"]
+                local args, err = shellparse(v["command"])
+                if err ~= nil then
+                    log.error("%v: %v", jobname, err)
+                else
+                    local ret, err = redis.call("#", "task.add", v["name"], v["rule"], unpack(args))
+                    if err ~= nil then
+                        log.error("%v: %v", jobname, err)
+                    end
+                end
+            end
+            if #res == 0 then
+                ctx.step = 1
+            end
+        end
+        if ctx.step == 1 then
+            local res, err = redis.call("#", "task.list", trim(prefix, "_", "r"))
+            if err ~= nil then
+                return err
+            end
+            for k, v in ipairs(res) do
+                local arr = split(v, "|")
+                local name = trim(arr[2])
+                if string.sub(name, 1, #prefix) == prefix then
+                    if ctx.tasklist[name] == nil then
+                        local ret, err = redis.call("#", "task.delete", name)
+                        if err ~= nil then
+                            log.error("%v: %v", jobname, err)
+                        end
+                    end
+                end
+            end
+            ctx.id = nil
+            ctx.tasklist = nil
+            ctx.step = nil
+        end
+      end
+  bootstrap:
+    reportserverinfo: |
+      if cron == nil then cron = newcron("*/5 * * * * * *") end
+      if nexttime == nil then nexttime = cron:next() end
+      now = os.time()
+      if now >= nexttime then
+          err = reportserverinfo()
+          if err ~= nil then
+              log.error("%v: %v", jobname, err)
+          else
+              log.info("%v: done", jobname)
+          end
+          nexttime = cron:next()
+      else
+          sleep(200)
+      end
+    synctasklist: |
+      if cron == nil then cron = newcron("*/2 * * * * * *") end
+      if nexttime == nil then nexttime = cron:next() end
+      if ctx == nil then ctx = {} end
+      now = os.time()
+      if now >= nexttime then
+          err = synctasklist(ctx)
+          if err ~= nil then
+              log.error("%v: %v", jobname, err)
+              sleep(500)
+              return
+          end
+          if ctx.id == nil then
+              log.info("%v: done", jobname)
+              nexttime = cron:next()
+          end
+      else
+          sleep(200)
       end
