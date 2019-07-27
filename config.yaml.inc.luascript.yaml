@@ -87,6 +87,11 @@ luascript:
             end
             for k, v in ipairs(res) do
                 ctx.tasklist[v["name"]] = true
+                if string.match(v["rule"], "^%d+$") ~= nil then
+                    for i=0,v["rule"]-1,1 do
+                        ctx.tasklist[string.format("%s_%03d", v["name"], i)] = true
+                    end
+                end
                 ctx.id = v["id"]
                 local args, err = shellparse(v["command"])
                 if err ~= nil then
