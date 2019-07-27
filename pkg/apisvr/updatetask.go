@@ -46,20 +46,18 @@ func (c *UpdateTaskController) POST(ctx *gin.Context) {
 		c.Failure(ctx, ErrTaskNameFormatInvalid)
 		return
 	}
-	if rule == "" {
-		c.Failure(ctx, ErrTaskRuleEmpty)
-		return
-	}
-	ruleType := "cron"
+	ruleType := "single"
 	processNum := 0
-	if _, err := cronexpr.Parse(rule); err != nil {
-		num, err := strconv.Atoi(rule)
-		if err != nil || num <= 0 {
-			c.Failure(ctx, ErrTaskRuleInvalid)
-			return
+	if rule != "" {
+		if _, err := cronexpr.Parse(rule); err != nil {
+			num, err := strconv.Atoi(rule)
+			if err != nil || num <= 0 {
+				c.Failure(ctx, ErrTaskRuleInvalid)
+				return
+			}
+			ruleType = "multi"
+			processNum = num
 		}
-		ruleType = "daemon"
-		processNum = num
 	}
 	if command == "" {
 		c.Failure(ctx, ErrTaskCommandEmpty)
@@ -127,18 +125,20 @@ func (c *UpdateTaskController) POST(ctx *gin.Context) {
 	var checkNames []string
 	var checkAddrs []string
 
-	oldRuleType := "cron"
+	oldRuleType := "single"
 	oldProcessNum := 0
-	if _, err := cronexpr.Parse(oldTask["rule"]); err != nil {
-		num, err := strconv.Atoi(oldTask["rule"])
-		if err != nil || num <= 0 {
-			c.Failure(ctx, ErrTaskRuleInvalid)
-			return
+	if oldTask["rule"] != "" {
+		if _, err := cronexpr.Parse(oldTask["rule"]); err != nil {
+			num, err := strconv.Atoi(oldTask["rule"])
+			if err != nil || num <= 0 {
+				c.Failure(ctx, ErrTaskRuleInvalid)
+				return
+			}
+			oldRuleType = "multi"
+			oldProcessNum = num
 		}
-		oldRuleType = "daemon"
-		oldProcessNum = num
 	}
-	if oldRuleType == "cron" {
+	if oldRuleType == "single" {
 		checkNames = append(checkNames, cmdsvr.GetTaskKey(oldTask["name"]))
 	} else {
 		for i := 0; i < oldProcessNum; i++ {
@@ -161,7 +161,7 @@ func (c *UpdateTaskController) POST(ctx *gin.Context) {
 	checkNames = nil
 	checkAddrs = nil
 
-	if ruleType == "cron" {
+	if ruleType == "single" {
 		checkNames = append(checkNames, cmdsvr.GetTaskKey(name))
 	} else {
 		for i := 0; i < processNum; i++ {

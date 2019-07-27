@@ -49,7 +49,8 @@
       <el-table-column prop="name" label="任务名称 / 规则 / 命令" width="320">
         <template slot-scope="scope">
           <div class="task-info">{{scope.row.name}}</div>
-          <div class="task-info">{{scope.row.rule}}</div>
+          <div class="task-info" v-if="scope.row.rule != ''">{{scope.row.rule}}</div>
+          <div class="task-info" v-else>&nbsp;</div>
           <div class="task-info task-info-command">{{scope.row.command}}</div>
         </template>
       </el-table-column>

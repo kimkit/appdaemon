@@ -44,20 +44,18 @@ func (c *AddTaskController) POST(ctx *gin.Context) {
 		c.Failure(ctx, ErrTaskNameFormatInvalid)
 		return
 	}
-	if rule == "" {
-		c.Failure(ctx, ErrTaskRuleEmpty)
-		return
-	}
-	ruleType := "cron"
+	ruleType := "single"
 	processNum := 0
-	if _, err := cronexpr.Parse(rule); err != nil {
-		num, err := strconv.Atoi(rule)
-		if err != nil || num <= 0 {
-			c.Failure(ctx, ErrTaskRuleInvalid)
-			return
+	if rule != "" {
+		if _, err := cronexpr.Parse(rule); err != nil {
+			num, err := strconv.Atoi(rule)
+			if err != nil || num <= 0 {
+				c.Failure(ctx, ErrTaskRuleInvalid)
+				return
+			}
+			ruleType = "multi"
+			processNum = num
 		}
-		ruleType = "daemon"
-		processNum = num
 	}
 	if command == "" {
 		c.Failure(ctx, ErrTaskCommandEmpty)
@@ -104,7 +102,7 @@ func (c *AddTaskController) POST(ctx *gin.Context) {
 
 	var checkNames []string
 	var checkAddrs []string
-	if ruleType == "cron" {
+	if ruleType == "single" {
 		checkNames = append(checkNames, cmdsvr.GetTaskKey(name))
 	} else {
 		for i := 0; i < processNum; i++ {
