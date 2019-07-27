@@ -4,7 +4,7 @@ all: fmt
 	rm -rf bin/appdaemon.*
 	go build -o bin/appdaemon cmd/appdaemon/main.go
 
-simple:
+simple: fmt
 	rm -rf bin/appdaemon.*
 	go build -o bin/appdaemon cmd/appdaemon-simple/main.go
 
