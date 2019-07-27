@@ -52,6 +52,8 @@ func (cmd *subscribeCommand) S1Handler(_cmd *redsvr.Command, args []string, conn
 				Whence: os.SEEK_END,
 			},
 			Follow: true,
+			Poll:   true,
+			ReOpen: true,
 			Logger: tail.DiscardingLogger,
 		})
 		if err != nil {
