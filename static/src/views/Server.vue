@@ -18,6 +18,11 @@
           <span class="addr">{{scope.row.updatetime}}</span>
         </template>
       </el-table-column>
+      <el-table-column prop="name" label="任务数" width="100">
+        <template slot-scope="scope">
+          <span class="addr">{{scope.row.jobcount}}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="status" label="状态" width="100">
         <template slot-scope="scope">
           <el-tag

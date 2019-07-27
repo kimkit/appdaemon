@@ -27,9 +27,9 @@ func (c *GetServerListController) GET(ctx *gin.Context) {
 
 	sql := ""
 	if all == "1" {
-		sql = "select id,addr,status,updatetime from server order by updatetime desc,addr asc"
+		sql = "select id,addr,status,updatetime,jobcount from server order by updatetime desc,addr asc"
 	} else {
-		sql = "select id,addr,status,updatetime from server where status = 1 order by updatetime desc,addr asc"
+		sql = "select id,addr,status,updatetime,jobcount from server where status = 1 order by updatetime desc,addr asc"
 	}
 	list, err := dbutil.FetchAll(db.Query(sql))
 	if err != nil {

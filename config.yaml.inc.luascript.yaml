@@ -35,6 +35,10 @@ luascript:
       end
     reportserverinfo: |
       function reportserverinfo()
+        local jobcount, err = redis.call("#", "job.count")
+        if err ~= nil then
+            return err
+        end
         local addr = getserveraddr()
         local updatetime = os.date("%Y-%m-%d %H:%M:%S")
         local sql = "select id from server where addr = ?"
@@ -43,14 +47,14 @@ luascript:
             return err
         end
         if #res == 0 then
-            local sql = "insert into server (addr,status,updatetime) values (?,1,?)"
-            local ret, err = db.insert("#", sql, addr, updatetime)
+            local sql = "insert into server (addr,status,jobcount,updatetime) values (?,1,?,?)"
+            local ret, err = db.insert("#", sql, addr, jobcount, updatetime)
             if err ~= nil then
                 return err
             end
         else
-            local sql = "update server set updatetime = ? where addr = ?"
-            local ret, err = db.exec("#", sql, updatetime, addr)
+            local sql = "update server set jobcount = ?, updatetime = ? where addr = ?"
+            local ret, err = db.exec("#", sql, jobcount, updatetime, addr)
             if err ~= nil then
                 return err
             end

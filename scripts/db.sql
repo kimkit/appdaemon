@@ -6,6 +6,7 @@ create table if not exists server (
     id bigint unsigned auto_increment primary key,
     addr varchar(128) not null default '' unique key,
     status tinyint not null default 0,
+    jobcount int unsigned not null default 0,
     updatetime datetime
 ) engine=innodb default charset utf8mb4;
 
