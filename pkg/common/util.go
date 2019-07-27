@@ -48,7 +48,11 @@ func BuildTable(list [][]string) []string {
 	for _, row := range list {
 		var fields []interface{}
 		for idx, field := range row {
-			fields = append(fields, field+strings.Repeat(" ", widths[idx]-len(field)))
+			if idx == len(row)-1 {
+				fields = append(fields, field)
+			} else {
+				fields = append(fields, field+strings.Repeat(" ", widths[idx]-len(field)))
+			}
 		}
 		res = append(res, fmt.Sprintf(format, fields...))
 	}

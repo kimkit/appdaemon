@@ -27,15 +27,17 @@ func (cmd *taskListCommand) S1Handler(_cmd *redsvr.Command, args []string, conn 
 		job, _ := v.(*jobctl.Job)
 		if job != nil {
 			if len(args) == 0 {
-				list = append(list, []string{
-					common.Time2str(common.GetMapValueInt(&job.Map, "last")),
-					"|",
-					common.GetMapValueString(&job.Map, "name"),
-					"|",
-					common.GetMapValueString(&job.Map, "rule"),
-					"|",
-					common.Args2str(common.GetMapValueStringArr(&job.Map, "args")),
-				})
+				if strings.HasPrefix(name, GetTaskKeyPrefix()) {
+					list = append(list, []string{
+						common.Time2str(common.GetMapValueInt(&job.Map, "last")),
+						"|",
+						common.GetMapValueString(&job.Map, "name"),
+						"|",
+						common.GetMapValueString(&job.Map, "rule"),
+						"|",
+						common.Args2str(common.GetMapValueStringArr(&job.Map, "args")),
+					})
+				}
 				return true
 			}
 			for _, filter := range args {

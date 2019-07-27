@@ -168,7 +168,7 @@ func (job *taskJob) InitHandler(_job *jobctl.Job) {
 	job.proc.SetOutput(getTaskOutputFile(_job))
 	job.proc.SetEnv("TASK_NAME", job.name)
 	job.proc.SetEnv("TASK_RULE", job.rule)
-	job.proc.SetEnv("TASK_COMMAND", strings.Join(job.args, " "))
+	job.proc.SetEnv("TASK_COMMAND", common.Args2str(job.args))
 	job.proc.SetEnv("TASK_STATUS_FILE", getTaskStatusFile(_job))
 }
 
@@ -200,8 +200,13 @@ func (job *taskJob) ExecHandler(_job *jobctl.Job) {
 			} else {
 				_job.Map.Store("last", status)
 				if int(now.Unix())-status > common.Config.ReportInterval {
+					if err := os.Remove(getTaskStatusFile(_job)); err != nil {
+						common.Logger.LogError("cmdsvr.taskJob.ExecHandler", "%v (%s)", err, common.JobManager.GetJobName(_job))
+					}
 					if err := job.proc.Kill(); err != nil {
 						common.Logger.LogError("cmdsvr.taskJob.ExecHandler", "%v (%s)", err, common.JobManager.GetJobName(_job))
+					} else {
+						common.Logger.LogInfo("cmdsvr.taskJob.ExecHandler", "process killed (%s)", common.JobManager.GetJobName(_job))
 					}
 					return
 				}
