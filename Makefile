@@ -4,6 +4,10 @@ all: fmt
 	rm -rf bin/appdaemon.*
 	go build -o bin/appdaemon cmd/appdaemon/main.go
 
+simple:
+	rm -rf bin/appdaemon.*
+	go build -o bin/appdaemon cmd/appdaemon-simple/main.go
+
 release: fmt static
 	rm -rf bin/appdaemon.*
 	GOOS=linux GOARCH=amd64 go build -o bin/appdaemon.linux.$(VERSION_TAG) cmd/appdaemon/main.go
