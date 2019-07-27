@@ -40,6 +40,9 @@ var (
 	ErrTaskNameDuplicate          = apires.NewError(-1025, "ErrTaskNameDuplicate", nil)
 	ErrJobNameEmpty               = apires.NewError(-1026, "ErrJobNameEmpty", nil)
 	ErrServerAddrEmpty            = apires.NewError(-1027, "ErrServerAddrEmpty", nil)
+	ErrJobIsRunning               = apires.NewError(-1028, "ErrJobIsRunning", nil)
+	ErrTaskNotExist               = apires.NewError(-1029, "ErrTaskNotExist", nil)
+	ErrTaskEnable                 = apires.NewError(-1030, "ErrTaskEnable", nil)
 )
 
 type BaseController struct{}

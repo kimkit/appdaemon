@@ -1,6 +1,7 @@
 package apisvr
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -47,12 +48,16 @@ func (c *AddTaskController) POST(ctx *gin.Context) {
 		c.Failure(ctx, ErrTaskRuleEmpty)
 		return
 	}
+	ruleType := "cron"
+	processNum := 0
 	if _, err := cronexpr.Parse(rule); err != nil {
 		num, err := strconv.Atoi(rule)
 		if err != nil || num <= 0 {
 			c.Failure(ctx, ErrTaskRuleInvalid)
 			return
 		}
+		ruleType = "daemon"
+		processNum = num
 	}
 	if command == "" {
 		c.Failure(ctx, ErrTaskCommandEmpty)
@@ -95,6 +100,28 @@ func (c *AddTaskController) POST(ctx *gin.Context) {
 			c.Failure(ctx, ErrServerAddrNotExist)
 			return
 		}
+	}
+
+	var checkNames []string
+	var checkAddrs []string
+	if ruleType == "cron" {
+		checkNames = append(checkNames, cmdsvr.GetTaskKey(name))
+	} else {
+		for i := 0; i < processNum; i++ {
+			checkNames = append(checkNames, cmdsvr.GetTaskKey(fmt.Sprintf("%s_%03d", name, i)))
+		}
+	}
+	if addr != "" {
+		checkAddrs = append(checkAddrs, addr)
+	}
+	ret, err := IsRunning(checkNames, checkAddrs)
+	if err != nil {
+		c.Failure(ctx, err)
+		return
+	}
+	if ret {
+		c.Failure(ctx, ErrJobIsRunning)
+		return
 	}
 
 	_, err = db.Exec(

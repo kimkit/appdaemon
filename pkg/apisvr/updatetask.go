@@ -1,6 +1,7 @@
 package apisvr
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -49,12 +50,16 @@ func (c *UpdateTaskController) POST(ctx *gin.Context) {
 		c.Failure(ctx, ErrTaskRuleEmpty)
 		return
 	}
+	ruleType := "cron"
+	processNum := 0
 	if _, err := cronexpr.Parse(rule); err != nil {
 		num, err := strconv.Atoi(rule)
 		if err != nil || num <= 0 {
 			c.Failure(ctx, ErrTaskRuleInvalid)
 			return
 		}
+		ruleType = "daemon"
+		processNum = num
 	}
 	if command == "" {
 		c.Failure(ctx, ErrTaskCommandEmpty)
@@ -98,6 +103,82 @@ func (c *UpdateTaskController) POST(ctx *gin.Context) {
 			c.Failure(ctx, ErrServerAddrNotExist)
 			return
 		}
+	}
+
+	rows, err = dbutil.FetchAll(db.Query(
+		"select addr,name,rule,status from task where id = ?",
+		id,
+	))
+	if err != nil {
+		c.Failure(ctx, err)
+		return
+	}
+	if len(rows) == 0 {
+		c.Failure(ctx, ErrTaskNotExist)
+		return
+	}
+	if rows[0]["status"] != "0" {
+		c.Failure(ctx, ErrTaskEnable)
+		return
+	}
+
+	oldTask := rows[0]
+
+	var checkNames []string
+	var checkAddrs []string
+
+	oldRuleType := "cron"
+	oldProcessNum := 0
+	if _, err := cronexpr.Parse(oldTask["rule"]); err != nil {
+		num, err := strconv.Atoi(oldTask["rule"])
+		if err != nil || num <= 0 {
+			c.Failure(ctx, ErrTaskRuleInvalid)
+			return
+		}
+		oldRuleType = "daemon"
+		oldProcessNum = num
+	}
+	if oldRuleType == "cron" {
+		checkNames = append(checkNames, cmdsvr.GetTaskKey(oldTask["name"]))
+	} else {
+		for i := 0; i < oldProcessNum; i++ {
+			checkNames = append(checkNames, cmdsvr.GetTaskKey(fmt.Sprintf("%s_%03d", oldTask["name"], i)))
+		}
+	}
+	if oldTask["addr"] != "" {
+		checkAddrs = append(checkAddrs, oldTask["addr"])
+	}
+	ret, err := IsRunning(checkNames, checkAddrs)
+	if err != nil {
+		c.Failure(ctx, err)
+		return
+	}
+	if ret {
+		c.Failure(ctx, ErrJobIsRunning)
+		return
+	}
+
+	checkNames = nil
+	checkAddrs = nil
+
+	if ruleType == "cron" {
+		checkNames = append(checkNames, cmdsvr.GetTaskKey(name))
+	} else {
+		for i := 0; i < processNum; i++ {
+			checkNames = append(checkNames, cmdsvr.GetTaskKey(fmt.Sprintf("%s_%03d", name, i)))
+		}
+	}
+	if addr != "" {
+		checkAddrs = append(checkAddrs, addr)
+	}
+	ret, err = IsRunning(checkNames, checkAddrs)
+	if err != nil {
+		c.Failure(ctx, err)
+		return
+	}
+	if ret {
+		c.Failure(ctx, ErrJobIsRunning)
+		return
 	}
 
 	_, err = db.Exec(
