@@ -43,6 +43,7 @@ var (
 	ErrJobIsRunning               = apires.NewError(-1028, "ErrJobIsRunning", nil)
 	ErrTaskNotExist               = apires.NewError(-1029, "ErrTaskNotExist", nil)
 	ErrTaskEnable                 = apires.NewError(-1030, "ErrTaskEnable", nil)
+	ErrLuaScriptEnable            = apires.NewError(-1031, "ErrLuaScriptEnable", nil)
 )
 
 type BaseController struct{}

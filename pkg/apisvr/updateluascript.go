@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kimkit/apires"
+	"github.com/kimkit/appdaemon/pkg/cmdsvr"
 	"github.com/kimkit/appdaemon/pkg/common"
 	"github.com/kimkit/dbutil"
 	"github.com/kimkit/luactl"
@@ -89,6 +90,59 @@ func (c *UpdateLuaScriptController) POST(ctx *gin.Context) {
 			c.Failure(ctx, ErrServerAddrNotExist)
 			return
 		}
+	}
+
+	rows, err = dbutil.FetchAll(db.Query(
+		"select addr,name,status from luascript where id = ?",
+		id,
+	))
+	if err != nil {
+		c.Failure(ctx, err)
+		return
+	}
+	if len(rows) == 0 {
+		c.Failure(ctx, ErrLuaScriptNotExist)
+		return
+	}
+	if rows[0]["status"] != "0" {
+		c.Failure(ctx, ErrLuaScriptEnable)
+		return
+	}
+
+	oldLuaScript := rows[0]
+
+	var checkNames []string
+	var checkAddrs []string
+
+	checkNames = append(checkNames, cmdsvr.GetLuaScriptKey(oldLuaScript["name"]))
+	if oldLuaScript["addr"] != "" {
+		checkAddrs = append(checkAddrs, oldLuaScript["addr"])
+	}
+	ret, err := IsRunning(checkNames, checkAddrs)
+	if err != nil {
+		c.Failure(ctx, err)
+		return
+	}
+	if ret {
+		c.Failure(ctx, ErrJobIsRunning)
+		return
+	}
+
+	checkNames = nil
+	checkAddrs = nil
+
+	checkNames = append(checkNames, cmdsvr.GetLuaScriptKey(name))
+	if addr != "" {
+		checkAddrs = append(checkAddrs, addr)
+	}
+	ret, err = IsRunning(checkNames, checkAddrs)
+	if err != nil {
+		c.Failure(ctx, err)
+		return
+	}
+	if ret {
+		c.Failure(ctx, ErrJobIsRunning)
+		return
 	}
 
 	_, err = db.Exec(

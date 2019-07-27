@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kimkit/apires"
+	"github.com/kimkit/appdaemon/pkg/cmdsvr"
 	"github.com/kimkit/appdaemon/pkg/common"
 	"github.com/kimkit/dbutil"
 	"github.com/kimkit/luactl"
@@ -86,6 +87,22 @@ func (c *AddLuaScriptController) POST(ctx *gin.Context) {
 			c.Failure(ctx, ErrServerAddrNotExist)
 			return
 		}
+	}
+
+	var checkNames []string
+	var checkAddrs []string
+	checkNames = append(checkNames, cmdsvr.GetLuaScriptKey(name))
+	if addr != "" {
+		checkAddrs = append(checkAddrs, addr)
+	}
+	ret, err := IsRunning(checkNames, checkAddrs)
+	if err != nil {
+		c.Failure(ctx, err)
+		return
+	}
+	if ret {
+		c.Failure(ctx, ErrJobIsRunning)
+		return
 	}
 
 	_, err = db.Exec(
