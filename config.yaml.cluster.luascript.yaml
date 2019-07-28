@@ -8,6 +8,11 @@ luascript:
     - tmp_
     - sys_
   libs:
+    getserveraddr: |
+      function getserveraddr()
+        local ips = getserveriplist()
+        return ips[1] .. ":" .. getserverport()
+      end
     runtags: |
       function runtags(scriptname, args)
           -- args = {}
@@ -20,18 +25,6 @@ luascript:
               end
           end
           return nil
-      end
-    getserveraddr: |
-      function getserveraddr()
-        local ips = getserveriplist()
-        return ips[1] .. ":" .. getserverport()
-      end
-    outputhook: |
-      function outputhook(line)
-        local addr = getserveraddr()
-        local createtime = os.date("%Y-%m-%d %H:%M:%S")
-        local sql = "insert into output (name,addr,line,createtime) values (?,?,?,?)"
-        db.insert("#", sql, scriptname, addr, line, createtime)
       end
     reportserverinfo: |
       function reportserverinfo()
@@ -59,19 +52,6 @@ luascript:
                 return err
             end
         end
-      end
-    getserverlist: |
-      function getrandomserveraddr()
-        local sql = "select addr from server where status = 1 and unix_timestamp() - unix_timestamp(updatetime) < 60 order by addr asc"
-        local res, err = db.query("#", sql)
-        if err ~= nil then
-            return nil, err
-        end
-        local list = {}
-        for k, v in ipairs(res) do
-            table.insert(list, v["addr"])
-        end
-        return list, nil
       end
     synctasklist: |
       function synctasklist(ctx)

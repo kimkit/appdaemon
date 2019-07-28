@@ -1,7 +1,11 @@
 tasks:
   - name: getipinfo
     rule: "*/10 * * * * * *"
-    args: [php, scripts/getipinfo.php]
+    args:
+      - php
+      - scripts/getipinfo.php
   - name: getipinfoloop
     rule: 2
-    args: [php, scripts/getipinfoloop.php]
+    args:
+      - php
+      - scripts/getipinfoloop.php
