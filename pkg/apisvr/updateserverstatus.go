@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kimkit/appdaemon/pkg/common"
+	"github.com/kimkit/dbutil"
 )
 
 type UpdateServerStatusController struct {
@@ -13,7 +14,8 @@ type UpdateServerStatusController struct {
 }
 
 func (c *UpdateServerStatusController) POST(ctx *gin.Context) {
-	if err := c.CheckPermission(ctx); err != nil {
+	user, err := c.GetLoginUser(ctx)
+	if err != nil {
 		c.Failure(ctx, err)
 		return
 	}
@@ -32,6 +34,22 @@ func (c *UpdateServerStatusController) POST(ctx *gin.Context) {
 		return
 	}
 
+	rows, err := dbutil.FetchAll(db.Query(
+		"select addr from server where id = ?",
+		id,
+	))
+	if err != nil {
+		c.Failure(ctx, err)
+		return
+	}
+
+	if len(rows) == 0 {
+		c.Failure(ctx, ErrServerNotExist)
+		return
+	}
+
+	addr := rows[0]["addr"]
+
 	_, err = db.Exec(
 		"update server set status = ? where id = ?",
 		status,
@@ -41,6 +59,8 @@ func (c *UpdateServerStatusController) POST(ctx *gin.Context) {
 		c.Failure(ctx, err)
 		return
 	}
+
+	common.Logger.LogInfo("apisvr.UpdateServerStatusController.POST", "server `%s` status `%d` updated by `%s`", addr, status, user)
 
 	c.Success(ctx, nil)
 }

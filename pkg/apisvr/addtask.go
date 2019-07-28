@@ -137,5 +137,7 @@ func (c *AddTaskController) POST(ctx *gin.Context) {
 		return
 	}
 
+	common.Logger.LogInfo("apisvr.AddTaskController.POST", "task `%s` added by `%s`", name, user)
+
 	c.Success(ctx, nil)
 }

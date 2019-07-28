@@ -197,5 +197,7 @@ func (c *UpdateTaskController) POST(ctx *gin.Context) {
 		return
 	}
 
+	common.Logger.LogInfo("apisvr.UpdateTaskController.POST", "task `%s` updated by `%s`", name, user)
+
 	c.Success(ctx, nil)
 }

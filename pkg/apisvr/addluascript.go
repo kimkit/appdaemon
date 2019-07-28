@@ -119,5 +119,7 @@ func (c *AddLuaScriptController) POST(ctx *gin.Context) {
 		return
 	}
 
+	common.Logger.LogInfo("apisvr.AddLuaScriptController.POST", "luascript `%s` added by `%s`", name, user)
+
 	c.Success(ctx, nil)
 }

@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kimkit/appdaemon/pkg/common"
+	"github.com/kimkit/dbutil"
 )
 
 type DeleteLuaScriptController struct {
@@ -13,7 +14,8 @@ type DeleteLuaScriptController struct {
 }
 
 func (c *DeleteLuaScriptController) POST(ctx *gin.Context) {
-	if err := c.CheckPermission(ctx); err != nil {
+	user, err := c.GetLoginUser(ctx)
+	if err != nil {
 		c.Failure(ctx, err)
 		return
 	}
@@ -27,6 +29,22 @@ func (c *DeleteLuaScriptController) POST(ctx *gin.Context) {
 		return
 	}
 
+	rows, err := dbutil.FetchAll(db.Query(
+		"select name from luascript where id = ?",
+		id,
+	))
+	if err != nil {
+		c.Failure(ctx, err)
+		return
+	}
+
+	if len(rows) == 0 {
+		c.Failure(ctx, ErrLuaScriptNotExist)
+		return
+	}
+
+	name := rows[0]["name"]
+
 	_, err = db.Exec(
 		"delete from luascript where id = ?",
 		id,
@@ -35,6 +53,8 @@ func (c *DeleteLuaScriptController) POST(ctx *gin.Context) {
 		c.Failure(ctx, err)
 		return
 	}
+
+	common.Logger.LogInfo("apisvr.DeleteLuaScriptController.POST", "luascript `%s` deleted by `%s`", name, user)
 
 	c.Success(ctx, nil)
 }

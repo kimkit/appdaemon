@@ -160,5 +160,7 @@ func (c *UpdateLuaScriptController) POST(ctx *gin.Context) {
 		return
 	}
 
+	common.Logger.LogInfo("apisvr.UpdateLuaScriptController.POST", "luascript `%s` updated by `%s`", name, user)
+
 	c.Success(ctx, nil)
 }
