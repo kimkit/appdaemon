@@ -4,18 +4,14 @@ name: default
 steps:
 - name: static
   image: node:10.16
-  environment:
-    VERSION_TAG: $DRONE_TAG
   commands:
-  - make static
+  - VERSION_TAG=$DRONE_TAG make static
 
 - name: appdaemon
   image: golang:1.12
-  environment:
-    VERSION_TAG: $DRONE_TAG
   commands:
   - go get github.com/rakyll/statik
-  - make release
+  - VERSION_TAG=$DRONE_TAG make release
   - ls bin
 
 - name: docker
@@ -32,6 +28,7 @@ steps:
   settings:
     api_key:
       from_secret: github_api_key
+    prerelease: true
     files: bin/appdaemon.*.*
 
 trigger:
