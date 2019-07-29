@@ -25,18 +25,8 @@
       </el-table-column>
       <el-table-column prop="status" label="状态" width="100">
         <template slot-scope="scope">
-          <el-tag
-            type="success"
-            size="mini"
-            v-if="scope.row.status == 1"
-            @click="updateserverstatus(scope.row.id, 0)"
-          >启用</el-tag>
-          <el-tag
-            type="info"
-            size="mini"
-            v-if="scope.row.status == 0"
-            @click="updateserverstatus(scope.row.id, 1)"
-          >停用</el-tag>
+          <el-tag type="success" size="mini" v-if="scope.row.status == 1" style="cursor: auto;">启用</el-tag>
+          <el-tag type="info" size="mini" v-if="scope.row.status == 0" style="cursor: auto;">停用</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="action" label="操作" min-width="150">
