@@ -1,0 +1,15 @@
+kind: pipeline
+name: default
+
+steps:
+- name: static
+  image: node:10.16
+  commands:
+  - make static
+
+- name: appdaemon
+  image: golang:1.12
+  commands:
+  - go get github.com/rakyll/statik
+  - make release
+  - ls bin
