@@ -27,7 +27,7 @@ steps:
   image: plugins/docker
   settings:
     registry: reg.qiniu.com
-    repo: kimkit/appdaemon
+    repo: reg.qiniu.com/kimkit/appdaemon
     username:
       from_secret: qiniu_username
     password:
