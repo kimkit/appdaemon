@@ -20,12 +20,12 @@ image: release
 	docker build -t kimkit/appdaemon:$(VERSION_TAG) .
 
 fmt:
+	if [ -d static/dist ]; then statik -src static/dist -dest static; fi
 	find . -name '*.go' | grep -v '^\./vendor/' | xargs -i go fmt {}
 
 static:
 	rm -rf static/dist
-	cd static && pnpm run lint && pnpm run build
-	statik -src static/dist -dest static
+	cd static && npm run lint && npm run build
 
 update:
 	go list -m -u all
