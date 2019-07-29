@@ -4,11 +4,15 @@ name: default
 steps:
 - name: static
   image: node:10.16
+  environment:
+    VERSION_TAG: $DRONE_TAG
   commands:
   - make static
 
 - name: appdaemon
   image: golang:1.12
+  environment:
+    VERSION_TAG: $DRONE_TAG
   commands:
   - go get github.com/rakyll/statik
   - make release
@@ -22,16 +26,6 @@ steps:
       from_secret: docker_username
     password:
       from_secret: docker_password
-
-- name: qiniu
-  image: plugins/docker
-  settings:
-    registry: reg.qiniu.com
-    repo: reg.qiniu.com/kimkit/appdaemon
-    username:
-      from_secret: qiniu_username
-    password:
-      from_secret: qiniu_password
 
 - name: github
   image: plugins/github-release

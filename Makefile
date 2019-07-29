@@ -1,4 +1,4 @@
-VERSION_TAG:=$(shell git describe --always --tag)
+VERSION_TAG ?= $(shell git describe --always --tag)
 
 all: fmt
 	rm -rf bin/appdaemon.*
