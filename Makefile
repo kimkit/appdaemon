@@ -8,7 +8,7 @@ simple:
 	rm -rf bin/appdaemon.*
 	go build -o bin/appdaemon cmd/appdaemon-simple/main.go
 
-release: fmt static
+release: fmt
 	rm -rf bin/appdaemon.*
 	GOOS=linux GOARCH=amd64 go build -o bin/appdaemon.linux.$(VERSION_TAG) cmd/appdaemon/main.go
 	GOOS=darwin GOARCH=amd64 go build -o bin/appdaemon.darwin.$(VERSION_TAG) cmd/appdaemon/main.go
