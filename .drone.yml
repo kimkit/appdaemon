@@ -22,3 +22,14 @@ steps:
       from_secret: docker_username
     password:
       from_secret: docker_password
+
+- name: github
+  image: plugins/github-release
+  settings:
+    api_key:
+      from_secret: github_api_key
+    files: bin/appdaemon.*
+
+trigger:
+  event:
+    - tag
