@@ -23,12 +23,22 @@ steps:
     password:
       from_secret: docker_password
 
+- name: qiniu
+  image: plugins/docker
+  settings:
+    registry: reg.qiniu.com
+    repo: kimkit/appdaemon
+    username:
+      from_secret: qiniu_username
+    password:
+      from_secret: qiniu_password
+
 - name: github
   image: plugins/github-release
   settings:
     api_key:
       from_secret: github_api_key
-    files: bin/appdaemon.*
+    files: bin/appdaemon.*.*
 
 trigger:
   event:
