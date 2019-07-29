@@ -13,3 +13,12 @@ steps:
   - go get github.com/rakyll/statik
   - make release
   - ls bin
+
+- name: docker
+  image: plugins/docker
+  settings:
+    repo: kimkit/appdaemon
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password

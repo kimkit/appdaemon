@@ -13,6 +13,7 @@ release: fmt
 	GOOS=linux GOARCH=amd64 go build -o bin/appdaemon.linux.$(VERSION_TAG) cmd/appdaemon/main.go
 	GOOS=darwin GOARCH=amd64 go build -o bin/appdaemon.darwin.$(VERSION_TAG) cmd/appdaemon/main.go
 	cp bin/appdaemon.linux.$(VERSION_TAG) bin/appdaemon.linux
+	echo $(VERSION_TAG) > .tags
 
 image: release
 	docker build -t kimkit/appdaemon:$(VERSION_TAG) .
