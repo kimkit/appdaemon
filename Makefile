@@ -25,7 +25,7 @@ fmt:
 
 static:
 	rm -rf static/dist
-	cd static && npm run lint && npm run build
+	cd static && npm install && npm run lint && npm run build
 
 update:
 	go list -m -u all
