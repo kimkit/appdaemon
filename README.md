@@ -2,20 +2,11 @@
 
 Please read [Wiki](https://github.com/kimkit/appdaemon/wiki) page for more details.
 
-## images
-
-```shell
-# qiniu
-docker pull reg.qiniu.com/kimkit/appdaemon:v1.0-beta14
-# docker
-docker pull kimkit/appdaemon:v1.0-beta14
-```
-
 ## quick start
 
 ```shell
 # 1. start container
-docker run -d --name appdaemon -p 6380:6380 kimkit/appdaemon:v1.0-beta14
+docker run -d --name appdaemon -p 6380:6380 kimkit/appdaemon:v1.0-beta22
 # 2. add task (print `hello` every 10 seconds)
 redis-cli -p 6380 task.add hello "*/10 * * * * * *" echo hello
 # 3. list all tasks
