@@ -6,7 +6,7 @@ Please read [Wiki](https://github.com/kimkit/appdaemon/wiki) page for more detai
 
 ```shell
 # 1. start container
-docker run -d --name appdaemon -p 6380:6380 kimkit/appdaemon:v1.0-beta22
+docker run -d --name appdaemon -p 6380:6380 kimkit/appdaemon:v1.0-beta23
 # 2. add task (print `hello` every 10 seconds)
 redis-cli -p 6380 task.add hello "*/10 * * * * * *" echo hello
 # 3. list all tasks
