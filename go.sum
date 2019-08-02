@@ -1,3 +1,5 @@
+github.com/bluele/gcache v0.0.0-20190518031135-bc40bd653833 h1:yCfXxYaelOyqnia8F/Yng47qhmfC9nKTRIbYRrRueq4=
+github.com/bluele/gcache v0.0.0-20190518031135-bc40bd653833/go.mod h1:8c4/i2VlovMO2gBnHGQPN5EJw+H0lx1u/5p+cgsXtCk=
 github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWRnGsAI=
 github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e/go.mod h1:nSuG5e5PlCu98SY8svDHJxuZscDgtXS6KTTbou5AhLI=
 github.com/chzyer/test v0.0.0-20180213035817-a1ea475d72b1/go.mod h1:Q3SI9o4m/ZMnBNeIyt5eFwwo7qiLfzFZmjNmxjkiQlU=
@@ -85,6 +87,8 @@ github.com/kimkit/lualib v0.0.0-20190718080008-75fb8f781b9a h1:FktSV5la1BCXNOqey
 github.com/kimkit/lualib v0.0.0-20190718080008-75fb8f781b9a/go.mod h1:0ue+f+MfEeRJiuqvnEbMC94ayM1T/34yZx3DUMXnN4Y=
 github.com/kimkit/lualib v0.0.0-20190723071335-9ccf967a423f h1:PH42QzPPfAp8r7WZD3mt2u3S9RjBvNkjx+8sm9/q2R8=
 github.com/kimkit/lualib v0.0.0-20190723071335-9ccf967a423f/go.mod h1:0ue+f+MfEeRJiuqvnEbMC94ayM1T/34yZx3DUMXnN4Y=
+github.com/kimkit/lualib v0.0.0-20190802000127-0e9f8319ef12 h1:+GrCAwQDYv6kZBwTSFZCXF++bxiDQ2p+VTC1w0mXFzM=
+github.com/kimkit/lualib v0.0.0-20190802000127-0e9f8319ef12/go.mod h1:knJIJ0R25TLuyZCMRorB9oAoeP0b8Aegoy5xT8QDIC0=
 github.com/kimkit/proctl v0.0.0-20190421063323-f7d3ecf97d21 h1:c9nbidxDnJADmgT46T2qD1AfAEmTDCoO/F8naqGjoUM=
 github.com/kimkit/proctl v0.0.0-20190421063323-f7d3ecf97d21/go.mod h1:u0lPj6IrMcBD8KTTl6L2Lx2/G2nSjRrkvHlj/OBsdV8=
 github.com/kimkit/redsvr v0.0.0-20190327070501-e1cdea9134f0/go.mod h1:MO6vIkHBYjqf9aEXct+EBuSrP6R9pb5W2xBM4tt0Gns=
@@ -94,6 +98,8 @@ github.com/kimkit/redsvr v0.0.0-20190725050244-6f7c5e1c2ca2 h1:aQQca6pTzBi4aCZb8
 github.com/kimkit/redsvr v0.0.0-20190725050244-6f7c5e1c2ca2/go.mod h1:MO6vIkHBYjqf9aEXct+EBuSrP6R9pb5W2xBM4tt0Gns=
 github.com/kimkit/reqctl v0.0.0-20190627004744-233a41c8c0b9 h1:xn35sy9edsC1hn9IHRMlSXwZUDU3LgXSHnOmyeP4heg=
 github.com/kimkit/reqctl v0.0.0-20190627004744-233a41c8c0b9/go.mod h1:HQ1o+QJgUJjPBP0wHR2YcCc0yj8THARarNsEaZGO5L8=
+github.com/kimkit/reqctl v0.0.0-20190801235814-f71b090a7dc9 h1:QrXw8xtZ+GLCNkjD4zh3CfBhgbZUfp+xrWk7OOIxE+Q=
+github.com/kimkit/reqctl v0.0.0-20190801235814-f71b090a7dc9/go.mod h1:HQ1o+QJgUJjPBP0wHR2YcCc0yj8THARarNsEaZGO5L8=
 github.com/kimkit/thread v0.0.0-20190321020915-48a92938178a h1:zXxMWKX2E4SgsRMS68wd14LxrRxoIJLW1AETMFAzPuU=
 github.com/kimkit/thread v0.0.0-20190321020915-48a92938178a/go.mod h1:msA4Tb2AV7qvk91WCAgCrxYOXbeOxwT7q6sXSmUJ1Gc=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=

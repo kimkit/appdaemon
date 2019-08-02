@@ -22,10 +22,10 @@ require (
 	github.com/kimkit/lister v0.0.0-20190605222412-4d3c2d38ae7a
 	github.com/kimkit/logger v0.0.0-20190421055409-d37049967e09
 	github.com/kimkit/luactl v0.0.0-20190621104429-0fa18f4fbbee
-	github.com/kimkit/lualib v0.0.0-20190723071335-9ccf967a423f
+	github.com/kimkit/lualib v0.0.0-20190802000127-0e9f8319ef12
 	github.com/kimkit/proctl v0.0.0-20190421063323-f7d3ecf97d21
 	github.com/kimkit/redsvr v0.0.0-20190725050244-6f7c5e1c2ca2
-	github.com/kimkit/reqctl v0.0.0-20190627004744-233a41c8c0b9
+	github.com/kimkit/reqctl v0.0.0-20190801235814-f71b090a7dc9
 	github.com/kimkit/thread v0.0.0-20190321020915-48a92938178a
 	github.com/mattn/go-shellwords v1.0.5
 	github.com/rakyll/statik v0.1.6
