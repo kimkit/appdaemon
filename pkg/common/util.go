@@ -100,7 +100,7 @@ func Addslashes(str string) string {
 }
 
 var (
-	shellSCRegexp = regexp.MustCompile("[ \t\r\n`$\\\";&|<>]")
+	shellSCRegexp = regexp.MustCompile("[ \t\r\n`$\\\\\";&|<>]")
 )
 
 func Args2str(args []string) string {
