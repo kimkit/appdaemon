@@ -93,7 +93,6 @@ export default {
   background-color: #1a1a1a;
   box-shadow: rgba(0, 21, 41, 0.38) 0px 1px 4px;
   width: 200px;
-  overflow-y: scroll;
   height: 100%;
 }
 .el-main {
