@@ -3,6 +3,11 @@ module github.com/kimkit/appdaemon
 go 1.12
 
 require (
+	github.com/facebookgo/ensure v0.0.0-20200202191622-63f1cf65ac4c // indirect
+	github.com/facebookgo/freeport v0.0.0-20150612182905-d4adf43b75b9 // indirect
+	github.com/facebookgo/stack v0.0.0-20160209184415-751773369052 // indirect
+	github.com/facebookgo/subset v0.0.0-20200203212716-c811ad88dec4 // indirect
+	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/gin-contrib/cors v1.3.0
 	github.com/gin-gonic/gin v1.4.0
 	github.com/go-redis/redis v6.15.2+incompatible
@@ -23,15 +28,18 @@ require (
 	github.com/kimkit/logger v0.0.0-20190421055409-d37049967e09
 	github.com/kimkit/luactl v0.0.0-20190621104429-0fa18f4fbbee
 	github.com/kimkit/lualib v0.0.0-20190802000127-0e9f8319ef12
-	github.com/kimkit/proctl v0.0.0-20190421063323-f7d3ecf97d21
+	github.com/kimkit/proctl v0.0.0-20230925085050-dcfdeb5d1d40
 	github.com/kimkit/redsvr v0.0.0-20190725050244-6f7c5e1c2ca2
 	github.com/kimkit/reqctl v0.0.0-20190801235814-f71b090a7dc9
 	github.com/kimkit/thread v0.0.0-20190321020915-48a92938178a
 	github.com/mattn/go-shellwords v1.0.5
+	github.com/onsi/ginkgo v1.16.5 // indirect
+	github.com/onsi/gomega v1.27.10 // indirect
 	github.com/rakyll/statik v0.1.6
 	github.com/yuin/gopher-lua v0.0.0-20190514113301-1cd887cd7036
+	google.golang.org/appengine v1.6.8 // indirect
 	gopkg.in/fsnotify.v1 v1.4.7 // indirect
-	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
 replace (
