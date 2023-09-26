@@ -3,9 +3,9 @@ package apisvr
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/kimkit/appdaemon/pkg/appdaemon/static"
 	"github.com/kimkit/appdaemon/pkg/common"
 	"github.com/kimkit/appdaemon/pkg/daemon"
+	"github.com/kimkit/appdaemon/static"
 )
 
 func init() {
