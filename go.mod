@@ -3,39 +3,30 @@ module github.com/kimkit/appdaemon
 go 1.12
 
 require (
+	github.com/bluele/gcache v0.0.2
+	github.com/facebookgo/clock v0.0.0-20150410010913-600d898af40a // indirect
 	github.com/facebookgo/ensure v0.0.0-20200202191622-63f1cf65ac4c // indirect
 	github.com/facebookgo/freeport v0.0.0-20150612182905-d4adf43b75b9 // indirect
+	github.com/facebookgo/grace v0.0.0-20180706040059-75cf19382434
+	github.com/facebookgo/httpdown v0.0.0-20180706035922-5979d39b15c2 // indirect
 	github.com/facebookgo/stack v0.0.0-20160209184415-751773369052 // indirect
+	github.com/facebookgo/stats v0.0.0-20151006221625-1b76add642e4 // indirect
 	github.com/facebookgo/subset v0.0.0-20200203212716-c811ad88dec4 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/gin-contrib/cors v1.3.0
 	github.com/gin-gonic/gin v1.4.0
 	github.com/go-redis/redis v6.15.2+incompatible
 	github.com/go-sql-driver/mysql v1.4.1
+	github.com/go-yaml/yaml v2.1.0+incompatible
+	github.com/google/uuid v1.3.1
 	github.com/gorhill/cronexpr v0.0.0-20180427100037-88b0669f7d75
 	github.com/gorilla/websocket v1.4.0
 	github.com/hpcloud/tail v1.0.0
-	github.com/kimkit/apires v0.0.0-20190328022601-89d5831bc037
-	github.com/kimkit/cmdlib v0.0.0-20190724140923-167d0c8a76ef
-	github.com/kimkit/config v0.0.0-20190710213055-dab728751fdf
-	github.com/kimkit/daemon v0.0.0-20190311070945-72a1e459e89d
-	github.com/kimkit/dbutil v0.0.0-20190718005856-fa8a1609bb8e
-	github.com/kimkit/ginsvr v0.0.0-20190422062603-59ab961f4e48
-	github.com/kimkit/iputil v0.0.0-20190721080944-abe76cf5c995
-	github.com/kimkit/jobctl v0.0.0-20190409020851-262d222c1b93
-	github.com/kimkit/jobext v0.0.0-20190524000718-705bf59952ad
-	github.com/kimkit/lister v0.0.0-20190605222412-4d3c2d38ae7a
-	github.com/kimkit/logger v0.0.0-20190421055409-d37049967e09
-	github.com/kimkit/luactl v0.0.0-20190621104429-0fa18f4fbbee
-	github.com/kimkit/lualib v0.0.0-20190802000127-0e9f8319ef12
-	github.com/kimkit/proctl v0.0.0-20230925085050-dcfdeb5d1d40
-	github.com/kimkit/redsvr v0.0.0-20190725050244-6f7c5e1c2ca2
-	github.com/kimkit/reqctl v0.0.0-20190801235814-f71b090a7dc9
-	github.com/kimkit/thread v0.0.0-20190321020915-48a92938178a
 	github.com/mattn/go-shellwords v1.0.5
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/onsi/gomega v1.27.10 // indirect
 	github.com/rakyll/statik v0.1.6
+	github.com/rokumoe/redisgo v0.0.0-20180602193945-55321cfdb027
 	github.com/yuin/gopher-lua v0.0.0-20190514113301-1cd887cd7036
 	google.golang.org/appengine v1.6.8 // indirect
 	gopkg.in/fsnotify.v1 v1.4.7 // indirect

@@ -1,10 +1,10 @@
 package cmdsvr
 
 import (
+	"github.com/kimkit/appdaemon/pkg/cmdlib"
 	"github.com/kimkit/appdaemon/pkg/common"
-	"github.com/kimkit/cmdlib"
-	"github.com/kimkit/daemon"
-	"github.com/kimkit/redsvr"
+	"github.com/kimkit/appdaemon/pkg/daemon"
+	"github.com/kimkit/appdaemon/pkg/redsvr"
 )
 
 func authHandler(cmd *redsvr.Command, args []string, conn *redsvr.Conn) error {

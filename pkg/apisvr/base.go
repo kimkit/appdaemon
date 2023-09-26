@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kimkit/apires"
+	"github.com/kimkit/appdaemon/pkg/apires"
 	"github.com/kimkit/appdaemon/pkg/common"
-	"github.com/kimkit/luactl"
+	"github.com/kimkit/appdaemon/pkg/luactl"
 )
 
 var (

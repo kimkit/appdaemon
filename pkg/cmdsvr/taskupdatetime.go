@@ -2,7 +2,7 @@ package cmdsvr
 
 import (
 	"github.com/kimkit/appdaemon/pkg/common"
-	"github.com/kimkit/redsvr"
+	"github.com/kimkit/appdaemon/pkg/redsvr"
 )
 
 type taskUpdateTimeCommand struct {

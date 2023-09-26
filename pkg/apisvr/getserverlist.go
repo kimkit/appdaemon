@@ -3,7 +3,7 @@ package apisvr
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/kimkit/appdaemon/pkg/common"
-	"github.com/kimkit/dbutil"
+	"github.com/kimkit/appdaemon/pkg/dbutil"
 )
 
 type GetServerListController struct {

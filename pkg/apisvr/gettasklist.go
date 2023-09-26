@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/kimkit/appdaemon/pkg/cmdsvr"
 	"github.com/kimkit/appdaemon/pkg/common"
-	"github.com/kimkit/dbutil"
+	"github.com/kimkit/appdaemon/pkg/dbutil"
 )
 
 type GetTaskListController struct {

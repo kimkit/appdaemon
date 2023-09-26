@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kimkit/appdaemon/pkg/common"
-	"github.com/kimkit/luactl"
+	"github.com/kimkit/appdaemon/pkg/luactl"
 )
 
 type LoginController struct {

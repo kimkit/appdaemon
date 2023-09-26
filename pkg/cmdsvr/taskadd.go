@@ -12,9 +12,9 @@ import (
 
 	"github.com/gorhill/cronexpr"
 	"github.com/kimkit/appdaemon/pkg/common"
-	"github.com/kimkit/jobctl"
-	"github.com/kimkit/proctl"
-	"github.com/kimkit/redsvr"
+	"github.com/kimkit/appdaemon/pkg/jobctl"
+	"github.com/kimkit/appdaemon/pkg/proctl"
+	"github.com/kimkit/appdaemon/pkg/redsvr"
 )
 
 var (

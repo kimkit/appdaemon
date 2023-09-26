@@ -11,14 +11,14 @@ import (
 
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/kimkit/config"
-	"github.com/kimkit/dbutil"
-	"github.com/kimkit/ginsvr"
-	"github.com/kimkit/jobext"
-	"github.com/kimkit/logger"
-	"github.com/kimkit/luactl"
-	"github.com/kimkit/redsvr"
-	"github.com/kimkit/reqctl"
+	"github.com/kimkit/appdaemon/pkg/config"
+	"github.com/kimkit/appdaemon/pkg/dbutil"
+	"github.com/kimkit/appdaemon/pkg/ginsvr"
+	"github.com/kimkit/appdaemon/pkg/jobext"
+	"github.com/kimkit/appdaemon/pkg/logger"
+	"github.com/kimkit/appdaemon/pkg/luactl"
+	"github.com/kimkit/appdaemon/pkg/redsvr"
+	"github.com/kimkit/appdaemon/pkg/reqctl"
 )
 
 type TaskConfig struct {

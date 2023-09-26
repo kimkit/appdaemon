@@ -8,8 +8,8 @@ import (
 
 	"github.com/hpcloud/tail"
 	"github.com/kimkit/appdaemon/pkg/common"
-	"github.com/kimkit/redsvr"
-	"github.com/kimkit/thread"
+	"github.com/kimkit/appdaemon/pkg/redsvr"
+	"github.com/kimkit/appdaemon/pkg/thread"
 )
 
 type subscribeCommand struct {

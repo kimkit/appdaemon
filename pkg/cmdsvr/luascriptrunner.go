@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"github.com/kimkit/appdaemon/pkg/common"
-	"github.com/kimkit/jobctl"
-	"github.com/kimkit/lualib"
-	"github.com/kimkit/redsvr"
+	"github.com/kimkit/appdaemon/pkg/jobctl"
+	"github.com/kimkit/appdaemon/pkg/lualib"
+	"github.com/kimkit/appdaemon/pkg/redsvr"
 	"github.com/yuin/gopher-lua"
 )
 

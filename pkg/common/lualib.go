@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/go-redis/redis"
-	"github.com/kimkit/iputil"
-	"github.com/kimkit/luactl"
-	"github.com/kimkit/lualib"
+	"github.com/kimkit/appdaemon/pkg/iputil"
+	"github.com/kimkit/appdaemon/pkg/luactl"
+	"github.com/kimkit/appdaemon/pkg/lualib"
 	"github.com/mattn/go-shellwords"
 	"github.com/yuin/gopher-lua"
 )

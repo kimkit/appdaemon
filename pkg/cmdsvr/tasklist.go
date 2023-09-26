@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/kimkit/appdaemon/pkg/common"
-	"github.com/kimkit/jobctl"
-	"github.com/kimkit/redsvr"
+	"github.com/kimkit/appdaemon/pkg/jobctl"
+	"github.com/kimkit/appdaemon/pkg/redsvr"
 )
 
 type taskListCommand struct {

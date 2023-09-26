@@ -8,9 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
 	"github.com/gorilla/websocket"
-	"github.com/kimkit/apires"
+	"github.com/kimkit/appdaemon/pkg/apires"
 	"github.com/kimkit/appdaemon/pkg/common"
-	"github.com/kimkit/dbutil"
+	"github.com/kimkit/appdaemon/pkg/dbutil"
 )
 
 var (

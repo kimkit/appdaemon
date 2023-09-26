@@ -10,7 +10,7 @@ import (
 	"github.com/gorhill/cronexpr"
 	"github.com/kimkit/appdaemon/pkg/cmdsvr"
 	"github.com/kimkit/appdaemon/pkg/common"
-	"github.com/kimkit/dbutil"
+	"github.com/kimkit/appdaemon/pkg/dbutil"
 	"github.com/mattn/go-shellwords"
 )
 
